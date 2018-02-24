@@ -5,8 +5,22 @@
 // Fecha: 11/11/2017
 
 $(document).ready(function(){
-    
+
    	$("#B_referencias").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': ''},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
+	});	
+    
+    $("#B_facturas").click(function(event){
 		
 		event.preventDefault();
 		$.ajax({
@@ -168,6 +182,15 @@ function registrarUsuario()
 		},
         complete: function(){
             
+            
+        $('#id_rol').selectize({
+			create: false,
+			sortField: {
+				field: 'text',
+				direction: 'asc'
+			},
+			dropdownParent: 'body'
+		});
             //var that = $("#loadAjax");
             //$("body").removeClass("modal-open");
             //$("body").css({"padding-right": "0"});
@@ -181,7 +204,7 @@ function registrarUsuario()
 
             //$("#loadAjax").modal('hide');
         } 
-	}); 
+	});     
 }
 
 function atrasRegistro()
@@ -207,12 +230,12 @@ function guardarUsuario()
         
     if($.trim($("#TB_nombre").val()) == "")
     {
-        $("#mensaje").html("¡El nombre requerido!");
+        $("#mensaje").html("¡El nombre es requerido!");
 		mensaje.modal("show");
     }    
     else if($.trim($("#TB_apellido").val()) == "")
     {
-        $("#mensaje").html("¡El apellido requerido!");
+        $("#mensaje").html("¡El apellido es requerido!");
 		mensaje.modal("show");
     }
     else if($.trim($("#TB_documento").val()) == "")
@@ -289,7 +312,7 @@ function guardarUsuario()
     		},
             error: function(ex){
                 
-                $("#mensaje").html("¡Se ha generado un error, <br /> comuníquese con el administrador!");
+                $("#mensaje").html(ex.responseText);
         		mensaje.modal("show");
             }
     	}); 

@@ -93,11 +93,57 @@ if(isset($_POST['desea']))
             $rol = $_POST["id_rol"];
             $direccion = $_POST["TB_direccion"];
             $email = $_POST["TB_email"];
-            $clave = $_POST["TB_clave"];           
+            $clave = $_POST["TB_clave"];
+            $claveConfirma = $_POST["TB_confirmaclave"];           
             
-            $objData->guardarUsuario($nombre, $apellido, $documento, $telefono, $rol, $direccion, $email, $clave );
+            $ContDoc = $objData -> ConsultaUsuarioDocumento($documento);      
             
-            echo $objPresentacion ->mensajeRedirect("'¡Se han guardado los datos satisfactoriamente !'","redirectLogin()");
+            if(trim($nombre) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡El nombre es requerido!";                 
+            }
+            else if(trim($apellido) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡El apellido es requerido!";                 
+            }            
+            else if(trim($documento) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡El documento es requerido!";                 
+            }
+            else if($ContDoc > 0){                
+                header('HTTP/1.1 500');
+                echo "¡El documento ya esta registrado!";                 
+            }
+            else if(trim($telefono) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡El teléfono es requerido!";                 
+            }
+            else if(trim($rol) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡El rol es requerido!";                 
+            }
+            else if(trim($direccion) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡La dirección es requerido!";                 
+            }
+            else if(trim($email) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡El Email es requerido!";                 
+            }
+            else if(trim($clave) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡La Clave es requerida!";                 
+            }
+            else if(trim($clave) != trim($claveConfirma)){                
+                header('HTTP/1.1 500');
+                echo "¡las claves no coinciden!";                 
+            }
+            else
+            {
+                $objData->guardarUsuario($nombre, $apellido, $documento, $telefono, $rol, $direccion, $email, $clave );            
+                echo $objPresentacion ->mensajeRedirect("'¡Se han guardado los datos satisfactoriamente !'","redirectLogin()");    
+            }
+            
         }break;
                              
                                      

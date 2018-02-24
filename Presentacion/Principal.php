@@ -11,22 +11,29 @@ class Principal
 {
     function PaginaPrincipal()
     {
+		header('Content-Type:text/html; charset=UTF-8');
+		// echo '<?xml version="1.0" encoding="iso-8859-1"
         ?>
             <!DOCTYPE html>
             
             <head>
               <!-- Required meta tags -->
-              <!-- <meta charset="utf-8" /> -->
-              
+              <!--<meta charset="utf-8" />-->
+              <!--
               <meta charset="iso-8859-1" />
+			  -->
               <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
               <title>Grupo Casale</title>
               <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.min.css" />
               <link rel="stylesheet" href="../node_modules/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
-              <link rel="stylesheet" href="../css/style.css" />              
-              <link rel="stylesheet" type="text/css" href="../datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css"/>
-              <link rel="stylesheet" type="text/css" href="../datatables/Buttons-1.4.2/css/buttons.bootstrap4.min.css"/>
+               
+              <link rel="stylesheet" href="../css/style.css" /> 
               
+			  <link rel="stylesheet" type="text/css" href="../datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css"/>
+              <link rel="stylesheet" type="text/css" href="../datatables/Buttons-1.4.2/css/buttons.bootstrap4.min.css"/>
+                            
+			  <link rel="stylesheet" href="../selectize.js-master/dist/css/selectize.bootstrap3.css" />              
+              <link href="../selectize.js-master/src/less/selectize.less" />              
               <link rel="shortcut icon" href="../images/Tracto.png" />
               
             </head>
@@ -55,6 +62,7 @@ class Principal
                                 <input id="TB_clave" name="TB_clave" type="password" class="form-control p_input" placeholder="Clave" />
                               </div>
                             </div>
+                                                                 
                             <div class="text-center">
                               <input type="button" onclick="registrarUsuario()" class="btn btn-secondary" value="Registrarse" />
                               <input type="button" onclick="IniciaSesion()" class="btn btn-primary" value="Login" />
@@ -97,9 +105,12 @@ class Principal
             
             <script src="../node_modules/jquery/dist/jquery.min.js"></script>
             <script src="../node_modules/tether/dist/js/tether.min.js"></script>
-            <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>              
+            <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
             <script src="../js/jsSitio/principal.js"></script>
             
+            <script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
+            <script src="../selectize.js-master/examples/js/index.js"></script>
+			           
             </body>            
             </html>
         <?php
@@ -108,6 +119,8 @@ class Principal
     function mensajeRedirect($mensaje, $url)
     {
         ?>
+        
+        <meta charset="iso-8859-1" />
         <div class="modal fade" id="mensajeEmergenteRedirect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -142,6 +155,8 @@ class Principal
     function cargaContenido()
     {
         ?>        
+        
+        <meta charset="iso-8859-1" />
         <div class="container-scroller">
             <!--Navbar-->
             <nav class="navbar bg-primary-gradient col-lg-12 col-12 p-0 fixed-top navbar-inverse d-flex flex-row">
@@ -199,7 +214,7 @@ class Principal
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="pages/widgets.html">
+                                <a id="B_facturas" class="nav-link" href="../Logica de presentacion/Factura_Logica.php">
                                     <img src="../images/icons/2.png" alt="">
                                     <span class="menu-title">Facturas</span>
                                 </a>
@@ -496,7 +511,7 @@ class Principal
     {
         ?>
         
-         <meta charset="iso-8859-1" />
+         <meta charset="iso-8859-1" /> 
          <div class="container-scroller">
             <div class="container-fluid">
               <div class="row">
@@ -535,7 +550,8 @@ class Principal
     function registroUsuario()
     {
         ?>  
-         <meta charset="iso-8859-1" />
+        
+         <!-- <meta charset="iso-8859-1" />-->
          <div class="container-scroller">
             <div class="container-fluid">
               <div class="row">
@@ -591,13 +607,13 @@ class Principal
                         </div>
                         
                         <div class="row">
-                            <div class="col-md-12">                                
+                            <div class="col-md-6">                                
                                 <div class="form-group">
                                     
                                   <label for="id_rol">Rol</label>            
                                   <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-users"></i></span>                                    
-                                        <select style="width: 400px!important;" id="id_rol" name="id_rol" class="">                                   
+                                        <select style="width: 400px!important;" id="id_rol" name="id_rol" class="show-tick form-control">                                   
                                         </select>
                                   </div>
                                 </div>
@@ -662,8 +678,9 @@ class Principal
             </div>
           </div>       
           
+        
           <script>
-          
+                    
            $("#TB_documento").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
                 if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||

@@ -25,8 +25,7 @@ class Ado{
         $con->Connect($nomServidor,$nomUsuario,$Clave,$nomBaseDatos);
         $con->SetCharSet("utf8");
         
-        return $con;
-        
+        return $con;        
     }
     
 	//ejecuta consultar sin parametros
@@ -40,6 +39,14 @@ class Ado{
     public function EjecutarP($cadena,$parame){        
         global $con;
         $resultado = $con->execute($cadena, $parame);
+        return $resultado;
+    }
+	
+    
+	//obtener error
+    public function ObtenerError(){        
+        global $con;
+        $resultado = $con->ErrorMsg();
         return $resultado;
     }
 	

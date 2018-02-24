@@ -134,5 +134,30 @@ class usuarioData {
         
         $conexion->Close();		
 	}
+        
+    public function ConsultaUsuarioDocumento($documento)
+    {
+        global $conexion;
+        $conexion->conectarAdo();
+        
+        $cadena = "SELECT COUNT(*) FROM usuario WHERE Documento = ? ;";
+        $arr = array($documento);
+        
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        $conexion->Close();              
+                       
+        $usuario = 0;
+        $i=0;
+        
+        while(!$recordSet->EOF)
+        {        
+            $usuario=$recordSet->fields[0];
+            $recordSet->MoveNext();
+            $i++;
+        }       
+        return $usuario;  
+    }
+    
 }
 ?>
