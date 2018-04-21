@@ -58,16 +58,137 @@ class referenciaData{
                     piso,
                     Stock,
                     Estado)
-                    VALUES(?,?,?,?,?,?,?)"; 
+                    VALUES(?,?,?,?,?,?,?);"; 
         
         $arr = array($nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso, $Stock, 1);
         $recordSet = $conexion->EjecutarP($cadena, $arr);
-        
-        $conexion->Close();
-		
-        return $recordSet; 
+       
+        if($conexion->ObtenerError() != "" )
+        {
+            return "error";
+        }
+        else
+        {
+			$cadena = "SELECT MAX(id) id_referencia FROM referencia;";
+			$recordSet = $conexion->Ejecutar($cadena);
+			
+			if($conexion->ObtenerError() != "" )
+			{
+				echo $conexion->ObtenerError();
+				return "error";
+			}
+			else
+			{
+				 $id_referencia = 0;        
+				while(!$recordSet->EOF)
+				{        
+					$id_referencia=$recordSet->fields[0];
+					$recordSet->MoveNext();
+				}   
+				return $id_referencia;   				
+			}		            
+        }
+        $conexion -> Close();
 	}    
-    
+	
+	public function guardarInventario($id_referencia)
+	{
+
+		global $conexion;
+        $conexion->conectarAdo();
+		
+		$cadena = "INSERT INTO inventario
+				(id_referencia, 
+				Nombre, 
+				id_clasificacion, 
+				Stante, 
+				Piso, 
+				Stock, 
+				id_tipoEmpaque, 
+				cantidad, 
+				ValorUnitario, 
+				ValorTotalInicial, 
+				CantidadUsada, 
+				ValorTotalUsado, 
+				CantidadActual, 
+				ValorTotalActual)
+				SELECT r.id id_referencia, 
+				r.Nombre,
+				r.id_clasificacion,
+				r.Stante,
+				r.Piso,
+				r.Stock,
+				r.id_tipoEmpaque, 
+				0 Cantidad,
+				0 ValorUnitario,
+				0 ValorTotalInicial,
+				0 CantidadUsada,
+				0 ValorTotalUsado,
+				0 CantidadActual,
+				0 ValorTotalActual
+				FROM referencia r 
+				WHERE r.id = ?";
+					
+        $arr = array($id_referencia);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+               
+        if($conexion->ObtenerError() != "" )
+        {
+            return $conexion->ObtenerError();
+        }
+        else
+        {
+            return "";   
+        }
+        $conexion -> Close();		
+	}
+		
+	
+	public function editarInventario($id_referencia, 
+				$Nombre, 
+				$id_clasificacion, 
+				$Stante, 
+				$Piso, 
+				$Stock, 
+				$id_tipoEmpaque )
+	{
+
+		global $conexion;
+        $conexion->conectarAdo();
+		
+		$cadena = "
+			UPDATE inventario SET
+			Nombre = ?,
+			id_clasificacion = ?,
+			Stante = ?,
+			Piso = ?,
+			Stock = ?,
+			id_tipoEmpaque = ?
+			WHERE id_referencia = ?
+		";
+					
+        $arr = array($Nombre, 
+				$id_clasificacion, 
+				$Stante, 
+				$Piso, 
+				$Stock, 
+				$id_tipoEmpaque,
+				$id_referencia);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+               
+        if($conexion->ObtenerError() != "" )
+        {
+            return "error";
+        }
+        else
+        {
+            return "";   
+        }
+        $conexion -> Close();		
+	}
+	
+	
+	
     public function editarReferencia($Id, $nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso, $Stock)
 	{
 		global $conexion;

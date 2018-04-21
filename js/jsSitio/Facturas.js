@@ -15,12 +15,20 @@ $(document).ready(function(){
         scrollX: true,
         columns: [
             { data: "NumeroFactura",    title: "No. Factura",   },
-            { data: "empresaId",    title: "Empresa que compra", visible:"false"},
+            { data: "empresaId",    title: "Empresa que compra"},
             { data: "EmpresaCompra",    title: "Empresa que compra",},
-            { data: "ValorFactura",     title: "Valor Factura",   },
-            { data: "proveedorId",        title: "Proveedor", visible:"false"},
+			{ 
+				data: "ValorFactura",
+				title: "Valor Factura",
+				mRender: function (data, type, full) {
+					 var formmatedvalue = data.replace(/\D/g, "");
+						formmatedvalue = formmatedvalue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					  return formmatedvalue;
+					}
+			},
+            { data: "proveedorId",        title: "Proveedor"},
             { data: "proveedor",        title: "Proveedor",   },
-            { data: "modopagoId",         title: "Modo de pago", visible:"false"},
+            { data: "modopagoId",         title: "Modo de pago"},
             { data: "modopago",         title: "Modo de pago",      },
             { data: "Fecha",            title: "Fecha",            },
             { 
@@ -44,7 +52,24 @@ $(document).ready(function(){
                     return "<button class='A_detalle btn btn-danger' >Detalle</button>";
                 }  
             }
-        ]
+        ],
+		columnDefs: [
+			{
+				targets: [ 1 ],
+				visible: false,
+				searchable: false
+			},
+			{
+				targets: [ 4 ],
+				visible: false,
+				searchable: false
+			},
+			{
+				targets: [ 6 ],
+				visible: false,
+				searchable: false
+			}
+		]
     });
     
     $.ajax({
@@ -55,6 +80,7 @@ $(document).ready(function(){
     	success:  function (data) {
     	     
             $('#table_facturas').DataTable().clear().draw().rows.add(data).draw();
+			
     	},
         error: function(ex){
             console.log(ex);
@@ -131,21 +157,38 @@ $('#table_facturas').on( 'click', 'td .A_detalle', function (e) {
 
 function cargarRefFacturas()
 {
-        $('#table_reffacturas').DataTable({
-        
+        $('#table_reffacturas').DataTable({        
         language: { url: '../datatables/Spanish.json' },
         data: null,
         scrollX: true,
         columns: [
-            { data: "id_referencia",    title: "No. Referencia"   },
-            { data: "Nombre",    title: "Nombre de la referencia"},
-            { data: "TipoEmpaque",    title: "Tipo de empaque"},
+            { data: "id_referencia",title: "No. Referencia"   },
+            { data: "Nombre",		title: "Nombre de la referencia"},
+            { data: "TipoEmpaqueId",	title: "Tipo de empaque Id"},
+			{ data: "TipoEmpaque",	title: "Tipo de empaque"},
             { data: "cantidad",     title: "Cantidad"  },
-            { data: "valorunitario",        title: "Valor Unitario"},
-            { data: "descuento",        title: "Descuento"   },
-            { data: "iva",         title: "Iva"},
-            { data: "Utilidad",         title: "Utilidad"      },
-            { data: "valortotal",            title: "Valor Total"  },
+            { 
+				data: "valorunitario",
+				title: "Valor Unitario",
+				mRender: function (data, type, full) {
+					 var formmatedvalue = data.replace(/\D/g, "");
+						formmatedvalue = formmatedvalue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					  return formmatedvalue;
+					}
+			},
+            { data: "descuento",	title: "Descuento %"   },
+			{ data: "asumeiva",		title: "Asume Iva"  },
+            { data: "iva",          title: "Iva %"},
+            { data: "Utilidad", 	title: "Utilidad %"      },
+            { 
+				data: "valortotal",	
+				title: "Valor Total",
+				mRender: function (data, type, full) {
+					 var formmatedvalue = data.replace(/\D/g, "");
+						formmatedvalue = formmatedvalue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					  return formmatedvalue;
+					}				
+			},
             { 
                 title: "Editar",
                 targets: -1,
@@ -160,11 +203,16 @@ function cargarRefFacturas()
                     return "<button class='A_eliminar btn btn-secondary' >Eliminar</button>";
                 }  
             }
-        ]
+        ],
+		columnDefs: [
+			{
+				targets: [ 2 ],
+				visible: false,
+				searchable: false
+			}
+		]
     });
-    
-    
-    
+	
     $.ajax({
         url: '../Logica de presentacion/Factura_Logica.php',
     	type:  'post',
@@ -174,12 +222,70 @@ function cargarRefFacturas()
                },
     	success:  function (data) {
     	     
+			var valorTotal =parseFloat(0);
+			var cont =0;
+			while(cont < data.length)
+			{
+				valorTotal = parseFloat(valorTotal) + parseFloat(data[0].valortotal);
+				cont ++;
+			}
+			
+			var formmatedvalue = parseFloat(valorTotal).toString().replace(/\D/g, "");
+			formmatedvalue = formmatedvalue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			
+			console.log(formmatedvalue);
             $('#table_reffacturas').DataTable().clear().draw().rows.add(data).draw();
+			$("#totalFactura").text("Valor Total: " + formmatedvalue);
     	},
         error: function(ex){
             console.log(ex);
         }
     });  
+	
+		
+	$('#table_reffacturas').on('click', 'td .A_editar', function (e) {
+				
+		e.preventDefault();
+		
+		var table = $('#table_reffacturas').DataTable();
+		var dataItem = table.row($(this).closest('tr')).data();        
+				
+		$.ajax({
+		    url: '../Logica de presentacion/Factura_Logica.php',
+			type:  'post',
+			dataType:'html',
+			data: {'desea': 'editarReferenciaFactura', 
+		           "id_referenciafac": dataItem.Id, 
+				   "id_factura": dataItem.facturaId, 
+		           "cantidad": dataItem.cantidad,
+				   "valorunitario": dataItem.valorunitario,
+				   "descuento": dataItem.descuento,
+				   "asumeiva": dataItem.asumeiva,
+				   "iva": dataItem.iva,
+				   "Utilidad": dataItem.Utilidad,
+				   "valortotal": dataItem.valortotal
+				   },
+			success:  function (data) {  
+		        $('.dashboard').html(data);
+		        cargarListasReferenciasTipoEmpaque(dataItem.id_referencia, dataItem.TipoEmpaqueId);
+			},
+		    error: function(ex){
+		        console.log(ex);
+		    }
+		});
+	});
+
+	$('#table_reffacturas').on( 'click', 'td .A_eliminar', function (e) {
+				
+		e.preventDefault();
+
+		var table = $('#table_reffacturas').DataTable();
+		var dataItem = table.row($(this).closest('tr')).data();        
+				
+		$("#id_referenciafac").val(dataItem.Id);
+		$("#mensajeConfRef").html("¿Esta seguro de eliminar el registro?");
+		$("#mensajeConfirmaReferencia").modal("show");		
+	}); 
 }
  
 function formularioCrearFacturas()
@@ -314,6 +420,39 @@ function mostrarFacturas(temp)
         
 }
 
+function mostrarDetalleFactura(temp, NumeroFactura)
+{
+	if(temp == 1)
+    {
+        var that = $("#mensajeEmergenteRedirect");
+        $("body").removeClass("modal-open");
+        $("body").css({"padding-right": "0"});
+        that.removeClass("show");
+        that.css({"display": "none"});
+        $(".modal-backdrop").remove();
+        var bsModal = that.data('bs.modal');
+        bsModal["_isShown"] = false;
+        bsModal["_isTransitioning"] = false;
+        that.data('bs.modal', bsModal);
+    }
+	
+	
+    $.ajax({
+        url: '../Logica de presentacion/Factura_Logica.php',
+    	type:  'post',
+    	dataType:'html',
+    	data: {'desea': 'detalleFactura', 
+               "id_factura": NumeroFactura},
+    	success:  function (data) {  
+            $('.dashboard').html(data);   
+            cargarRefFacturas();                     
+    	},
+        error: function(ex){
+            console.log(ex);
+        }
+    });    
+}
+
 function guardarFacturas(){
         
     $('#desea').val("guardarFactura");
@@ -353,6 +492,9 @@ function guardarFacturas(){
     }
     else
     {
+		valor = valor.replace(",","");
+		$("#TB_valor").val(valor);
+		
         $.ajax({
     		url:   '../Logica de presentacion/Factura_Logica.php',
     		type:  'post',
@@ -369,8 +511,7 @@ function guardarFacturas(){
     		},
             error: function(ex){
                 
-                console.log(ex);
-                
+                console.log(ex);                
                 $("#mensaje").html(ex.responseText);
         		mensaje.modal("show");
             }            
@@ -519,7 +660,7 @@ function cargarListasReferenciasTipoEmpaque(referenciaId, tipoEmpaqueId)
             }); 
             
             if(tipoEmpaqueId != 0){             
-                $('#id_tipoempaque')[0].selectize.setValue(referenciaId);     
+                $('#id_tipoempaque')[0].selectize.setValue(tipoEmpaqueId);     
             }           
         }
 	}); 
@@ -584,6 +725,12 @@ function guardarReferenciaFactura()
     }
     else
     {
+		TB_valorUnitario = TB_valorUnitario.replace(",","");
+		$("#TB_valorUnitario").val(TB_valorUnitario);
+				
+		TB_valortotal = TB_valortotal.replace(",","");
+		$("#TB_valortotal").val(TB_valortotal);
+				
         $.ajax({
     		url:   '../Logica de presentacion/Factura_Logica.php',
     		type:  'post',
@@ -608,3 +755,154 @@ function guardarReferenciaFactura()
     	});	   
     }
 }
+
+
+function actualizarCalculos()
+{
+	//
+	var TB_cantidad = $("#TB_cantidad").val();
+	var TB_valorUnitario = $("#TB_valorUnitario").val();
+	var TB_descuento = $("#TB_descuento").val();
+	var TB_iva = $("#TB_iva").val();
+	var TB_utilidad = $("#TB_utilidad").val();
+	
+	
+	TB_valorUnitario = TB_valorUnitario.replace(",","");
+				
+	//refresca el valor total
+	var valorTotalFinal = (parseInt(TB_cantidad) * parseFloat(TB_valorUnitario));
+	var valorIva = ((parseInt(TB_iva) * valorTotalFinal)/100);
+	var valorDescuento = ((parseInt(TB_descuento)*valorTotalFinal)/100);
+	var valorUtilidad = ((parseInt(TB_utilidad)*valorTotalFinal)/100);
+	
+	if ($('#CB_iva').is(':checked')) {
+		valorTotalFinal = ((valorTotalFinal - valorDescuento) + valorIva + valorUtilidad);
+	}
+	else{
+		valorTotalFinal = ((valorTotalFinal - valorDescuento) + valorUtilidad);
+	}
+	
+	
+	$("#TB_valortotal").val(valorTotalFinal);
+	
+	  // format number
+	$("#TB_valortotal").val(function(index, value) {
+		return value
+		.replace(/\D/g, "")
+		.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	});
+}
+
+function editarReferenciaFactura()
+{
+	$('#desea').val("guardarEditarReferenciaFactura");
+    
+    var mensaje = $("#mensajeEmergente");    
+    var id_referencia = $("#id_referencia").val();
+    var id_referenciafac = $("#id_referenciafac").val();
+    var id_tipoempaque = $("#id_tipoempaque").val();
+    var TB_cantidad = $("#TB_cantidad").val();
+    var TB_valorUnitario = $("#TB_valorUnitario").val();
+    var TB_descuento = $("#TB_descuento").val();
+	var TB_iva = $("#TB_iva").val();
+	var TB_utilidad = $("#TB_utilidad").val();
+	var TB_valortotal = $("#TB_valortotal").val();
+       
+    
+    if(id_referencia == "")
+    {
+        $("#mensaje").html("¡La referencia es requerida!");
+		mensaje.modal("show");
+    }
+    else if( id_tipoempaque == "")
+    {
+        $("#mensaje").html("¡El el tipo de empaque es requerido!");
+		mensaje.modal("show");
+    }    
+    else if($.trim(TB_cantidad) == "")
+    {
+        $("#mensaje").html("¡La cantidad requerida!");
+		mensaje.modal("show");
+    }    
+    else if($.trim(TB_valorUnitario) == "")
+    {
+        $("#mensaje").html("¡El valor unitario es requerido!");
+		mensaje.modal("show");
+    }
+    else if($.trim(TB_descuento) == "")
+    {
+        $("#mensaje").html("¡El descuento es requerido!");
+		mensaje.modal("show");
+    }
+    else if($.trim(TB_iva) == "")
+    {
+        $("#mensaje").html("¡El iva es requerido!");
+		mensaje.modal("show");
+    }
+    else if($.trim(TB_utilidad) == "")
+    {
+        $("#mensaje").html("¡La utilidad es requerida!");
+		mensaje.modal("show");
+    }
+    else if($.trim(TB_valortotal) == "")
+    {
+        $("#mensaje").html("¡El valor total es requerido!");
+		mensaje.modal("show");
+    }
+    else
+    {
+		TB_valorUnitario = TB_valorUnitario.replace(",","");
+		$("#TB_valorUnitario").val(TB_valorUnitario);
+				
+		TB_valortotal = TB_valortotal.replace(",","");
+		$("#TB_valortotal").val(TB_valortotal);
+				
+        $.ajax({
+    		url:   '../Logica de presentacion/Factura_Logica.php',
+    		type:  'post',
+    		dataType:'html',
+    		data: $("#referenciafactura").serialize(),
+    		success:  function (data) {
+    			if(data){    			 
+    		      $('.dashboard').html(data);
+    			}
+                //else {               
+    			//	$("#mensaje").html("¡se genero un error al guardar la información!");
+    			//	mensaje.modal("show"); 
+                //}
+    		},
+            error: function(ex){
+                
+                console.log(ex);
+                
+                $("#mensaje").html(ex.responseText);
+        		mensaje.modal("show");
+            }            
+    	});	   
+    }
+}
+
+function eliminarReferenciaFactura()
+{
+	$.ajax({
+		url:   '../Logica de presentacion/Factura_Logica.php',
+		type:  'post',
+		dataType:'html',
+		data: {'desea': 'eliminaReferenciaFactura',
+		'id_referenciafac': $("#id_referenciafac").val()},
+		success:  function (data) {
+			if(data){    			 
+			  $('.dashboard').html(data);
+			}			
+		},
+		error: function(ex){
+			
+			console.log(ex);
+			
+			$("#mensaje").html(ex.responseText);
+			mensaje.modal("show");
+		}            
+	});	   
+}
+
+

@@ -11,9 +11,8 @@ class Facturas
 {
     function mostrarFacturas()
     {
-        ?>        
-        <meta charset="iso-8859-1" />
-        
+		header('Content-Type:text/html; charset=iso-8859-1');
+        ?>                
         <input type="hidden" id="id_factura" name="id_factura" value="" /> 
         <div class="content-wrapper" style="width: 80% !important;">
             <h3 class="text-primary mb-4">Facturas</h3>
@@ -28,13 +27,14 @@ class Facturas
                             <br />
                             
                             <table id="table_facturas" class="display" cellspacing="0"></table>
+							
                         </div>
                     </div>
                 </div>                    
             </div>               
         </div>   
         
-          <div class="modal fade" id="mensajeConfirma" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="mensajeConfirma" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -58,10 +58,10 @@ class Facturas
     
     function formularioCrear(){
     
+		header('Content-Type:text/html; charset=iso-8859-1');
     ?>
-        <meta charset="iso-8859-1" />
         <div class="content-wrapper" style="width: 90% !important;">
-            <h3 class="text-primary mb-4">Agregar Factura</h3>
+           <h3 class="text-primary mb-4">Agregar Factura</h3>
             
            <form id="factura">                
                 <input type="hidden" id="desea" name="desea" value="" />                                              
@@ -73,8 +73,7 @@ class Facturas
                                 <span class="input-group-addon"><i class="fa fa-briefcase"></i></span>                                    
                                 <select style="width: 400px!important;" id="id_empresaCompra" name="id_empresaCompra" class="show-tick form-control" >                                   
                                 </select>
-                            </div>
-                                                      
+                            </div>                                                      
                         </div>
                     </div>
                     
@@ -137,14 +136,51 @@ class Facturas
                 </div>
            </form>
         </div>   
+		<script>
+		
+			$("#TB_valor").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});   		
+			
+			$('input#TB_valor').keyup(function(event) {
+			  // skip for arrow keys
+			  if(event.which >= 37 && event.which <= 40)
+				  return;
+
+			  // format number
+			  $(this).val(function(index, value) {
+				return value
+				.replace(/\D/g, "")
+				.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			  });			  
+			});
+		</script>
     <?php        
     }
     
     
     function formularioEditar($numeroFactura, $valorFactura, $Fecha ){
     
+		header('Content-Type:text/html; charset=iso-8859-1');
     ?>
-        <meta charset="iso-8859-1" />
         <div class="content-wrapper" style="width: 90% !important;">
             <h3 class="text-primary mb-4">Editar Factura</h3>
             
@@ -222,6 +258,20 @@ class Facturas
                 </div>
            </form>
         </div>   
+		<script>
+		$('input#TB_valor').keyup(function(event) {
+
+			  // skip for arrow keys
+			  if(event.which >= 37 && event.which <= 40) return;
+
+			  // format number
+			  $(this).val(function(index, value) {
+				return value
+				.replace(/\D/g, "")
+				.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			  });			  
+			});
+		</script>
     <?php        
     }
     
@@ -229,8 +279,8 @@ class Facturas
     
     function mensajeRedirect($mensaje, $url)
     {
+		header('Content-Type:text/html; charset=iso-8859-1');
         ?>
-        <meta charset="iso-8859-1" />
         <div class="modal fade" id="mensajeEmergenteRedirect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -263,16 +313,15 @@ class Facturas
     
     function detalleFactura($id_factura)
     {
-        ?>
-        <meta charset="iso-8859-1" />
-        
+		header('Content-Type:text/html; charset=iso-8859-1');
+        ?>        
         <input type="hidden" id="id_factura" name="id_factura" value="" /> 
+		<input type="hidden" id="id_referenciafac" name="id_referenciafac" value="" /> 
         <div class="content-wrapper" style="width: 80% !important;">
             <h3 class="text-primary mb-4">Referencias de la Factura</h3>
             
             <div class="row mb-2">
-                <div class="col-lg-12">
-                    
+                <div class="col-lg-12">                    
                     <div class="card">
                         <div class="card-block">
                             <button type="button" class="btn btn-primary" onclick="formularioCrearReferenciasFacturas()">Crear Nueva</button>
@@ -280,13 +329,18 @@ class Facturas
                             <br />
                             
                             <table id="table_reffacturas" class="display" cellspacing="0"></table>
+							
+							
+							<br />
+                            <br />
+							<label id="totalFactura" style="font-weight: bold;" />
                         </div>
                     </div>
                 </div>                    
             </div>               
         </div>   
         
-        <div class="modal fade" id="mensajeConfirma" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="mensajeConfirmaReferencia" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -294,13 +348,13 @@ class Facturas
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
               </div>
               <div class="modal-body">
-                <div id="mensajeConf">
+                <div id="mensajeConfRef">
                 
                 </div>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
-                <button onclick="eliminarFactura()" type="button" class="btn btn-primary" >Aceptar</button>
+                <button onclick="eliminarReferenciaFactura()" type="button" class="btn btn-primary" >Aceptar</button>
               </div>
             </div>
           </div>
@@ -313,8 +367,8 @@ class Facturas
 	
 	function crearReferenciaFacturas($id_factura)
 	{
+		header('Content-Type:text/html; charset=iso-8859-1');
 		?>
-		<meta charset="iso-8859-1" />
         <div class="content-wrapper" style="width: 90% !important;">
            <h3 class="text-primary mb-4">Agregar Referencia de la Factura</h3>
             
@@ -351,7 +405,9 @@ class Facturas
 						  <label for="TB_cantidad">Cantidad</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-database"></i></span>
-							<input id="TB_cantidad" name="TB_cantidad" type="text" class="form-control p_input" placeholder="Cantidad" value="" maxlength="10" />
+							<input id="TB_cantidad" name="TB_cantidad" type="text" 
+							class="form-control p_input" placeholder="Cantidad" 
+							value="" maxlength="10" onblur="actualizarCalculos()"  />
 						  </div>
 						</div>
 					</div>
@@ -360,7 +416,10 @@ class Facturas
 						  <label for="TB_valorUnitario">Valor Unitario</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-							<input id="TB_valorUnitario" name="TB_valorUnitario" type="text" class="form-control p_input" placeholder="Valor Unitario" value=""  maxlength="11" />
+							<input id="TB_valorUnitario" name="TB_valorUnitario" 
+							type="text" class="form-control p_input" 
+							placeholder="Valor Unitario" value=""  maxlength="11" 
+							onblur="actualizarCalculos()" />
 						  </div>
 						</div>
 					</div>
@@ -368,19 +427,32 @@ class Facturas
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
-						  <label for="TB_descuento">Descuento</label> 
+						  <label for="TB_descuento">Descuento %</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-							<input id="TB_descuento" name="TB_descuento" type="text" class="form-control p_input" placeholder="Descuento" value=""  maxlength="10" />
+							<input id="TB_descuento" name="TB_descuento" type="text" 
+							class="form-control p_input" placeholder="Descuento" 
+							value=""  maxlength="10" onblur="actualizarCalculos()"/>
 						  </div>
 						</div>
 					</div>
-					<div class="col-md-6">
+					
+					<div class="col-md-2">
+						<label class="form-check-label">
+							<input id="CB_iva" name="CB_iva" type="checkbox" 
+							class="form-check-input" checked="true">
+							¿Lo asume?
+						</label>
+					</div>
+
+					<div class="col-md-4">
 						<div class="form-group">
-						  <label for="TB_iva">Iva</label> 
+						  <label for="TB_iva">Iva %</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-							<input id="TB_iva" name="TB_iva" type="text" class="form-control p_input" placeholder="Iva" value=""  maxlength="11" />
+							<input id="TB_iva" name="TB_iva" type="text" 
+							class="form-control p_input" placeholder="Iva" value=""  
+							maxlength="11" onblur="actualizarCalculos()" />
 						  </div>
 						</div>
 					</div>
@@ -389,10 +461,13 @@ class Facturas
 				<div class="row">
 					<div class="col-md-6">
 						<div class="form-group">
-						  <label for="TB_utilidad">Utilidad</label> 
+						  <label for="TB_utilidad">Utilidad %</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-							<input id="TB_utilidad" name="TB_utilidad" type="text" class="form-control p_input" placeholder="Utilidad" value="" maxlength="11" />
+							<input id="TB_utilidad" name="TB_utilidad" 
+							type="text" class="form-control p_input" 
+							placeholder="Utilidad" value="" maxlength="11" 
+							onblur="actualizarCalculos()" />
 						  </div>
 						</div>
 					</div>
@@ -401,7 +476,7 @@ class Facturas
 						  <label for="TB_valortotal">Valor Total</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-							<input id="TB_valortotal" name="TB_valortotal" type="text" class="form-control p_input" placeholder="Valor Total" value="" maxlength="11" />
+							<input id="TB_valortotal" name="TB_valortotal" type="text" class="form-control p_input" placeholder="Valor Total" value="0" maxlength="11" disabled />
 						  </div>
 						</div>
 					</div>
@@ -414,29 +489,374 @@ class Facturas
            </form>
         </div>   
 		<script>
-		$("#id_factura").val(<?php echo $id_factura; ?>);
-	
-		$('input#TB_valorUnitario').blur(function(){
+					
+		$(document).ready(function(){
+			$("#id_factura").val(<?php echo $id_factura; ?>);
+			 
+			 $('#CB_iva').change(function () {
+				$("#TB_iva").val("0");
+				actualizarCalculos();				 
+			 });
+			 
+			$('input#TB_valorUnitario').keyup(function(event) {
+
+			  // skip for arrow keys
+			  if(event.which >= 37 && event.which <= 40) return;
+
+			  // format number
+			  $(this).val(function(index, value) {
+				return value
+				.replace(/\D/g, "")
+				.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+				;
+			  });			  
+			});
 			
-		 var num = parseFloat($(this).val());
-		 var cleanNum = num.toFixed(2);
-		 $(this).val(cleanNum);
-		 if(num/cleanNum < 1){
-			$('#error').text('Por favor ingrese solo dos decimales!');
-			}
-         });
-		 
-		 $('input#TB_valortotal').blur(function(){
-		 var num = parseFloat($(this).val());
-		 var cleanNum = num.toFixed(2);
-		 $(this).val(cleanNum);
-		 if(num/cleanNum < 1){
-			$('#error').text('Por favor ingrese solo dos decimales!');
-			}
-         });
-		 
-		 
+			$("#TB_cantidad").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});   
+			
+					
+			$("#TB_descuento").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});   
+			
+					
+			$("#TB_iva").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});   
+			
+			$("#TB_utilidad").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});   		
+		});
+		</script>
+		<?php		
+	}
+	
+	function editarReferenciaFacturas(
+				$id_referenciafac,
+				$id_factura,
+				$cantidad,
+				$valorunitario,
+				$descuento,
+				$asumeiva,
+				$iva,
+				$Utilidad,
+				$valortotal )		
+	{
 		
+		header('Content-Type:text/html; charset=iso-8859-1');
+		?>
+        <div class="content-wrapper" style="width: 90% !important;">
+           <h3 class="text-primary mb-4">Editar Referencia de la Factura</h3>
+            
+           <form id="referenciafactura">                
+                <input type="hidden" id="desea" name="desea" value="" />   
+				<input type="hidden" id="id_factura" name="id_factura" value="<?php echo $id_factura;?>" />   
+				<input type="hidden" id="id_referenciafac" name="id_referenciafac" value="<?php echo $id_referenciafac;?>" />   				
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_referencia">Referencia</label>   
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-archive"></i></span>                                    
+                                <select style="width: 400px!important;" id="id_referencia" name="id_referencia" class="show-tick form-control" >                                   
+                                </select>
+                            </div>                                                      
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="id_tipoempaque">Tipo Empaque</label>   
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-inbox"></i></span>                                    
+                                <select style="width: 400px!important;" id="id_tipoempaque" name="id_tipoempaque" class="show-tick form-control" >                                   
+                                </select>
+                            </div>                 
+                        </div>
+                    </div>
+                </div>
+				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="TB_cantidad">Cantidad</label> 
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-database"></i></span>
+							<input id="TB_cantidad" name="TB_cantidad" type="text" 
+							class="form-control p_input" placeholder="Cantidad" 
+							value="<?php echo $cantidad;?>" maxlength="10" onblur="actualizarCalculos()"  />
+						  </div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="TB_valorUnitario">Valor Unitario</label> 
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_valorUnitario" name="TB_valorUnitario" 
+							type="text" class="form-control p_input" 
+							placeholder="Valor Unitario" value="<?php echo $valorunitario;?>"  maxlength="11" 
+							onblur="actualizarCalculos()" />
+						  </div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="TB_descuento">Descuento %</label> 
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_descuento" name="TB_descuento" type="text" 
+							class="form-control p_input" placeholder="Descuento" 
+							value="<?php echo $descuento;?>"  maxlength="10" onblur="actualizarCalculos()"/>
+						  </div>
+						</div>
+					</div>
+					
+					<div class="col-md-2">
+						<label class="form-check-label">
+							<input id="CB_iva" name="CB_iva" type="checkbox" 
+							class="form-check-input" <?php if($asumeiva == "Si"){echo "checked";}else {echo "";}?> />
+							¿Lo asume?
+						</label>
+					</div>
+
+					<div class="col-md-4">
+						<div class="form-group">
+						  <label for="TB_iva">Iva %</label> 
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_iva" name="TB_iva" type="text" 
+							class="form-control p_input" placeholder="Iva"
+							value="<?php echo $iva;?>"  
+							maxlength="11" onblur="actualizarCalculos()" />
+						  </div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="TB_utilidad">Utilidad %</label> 
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_utilidad" name="TB_utilidad" 
+							type="text" class="form-control p_input" 
+							placeholder="Utilidad" 
+							value="<?php echo $Utilidad; ?>" maxlength="11" 
+							onblur="actualizarCalculos()" />
+						  </div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="TB_valortotal">Valor Total</label> 
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_valortotal" name="TB_valortotal" 
+							type="text" class="form-control p_input" 
+							placeholder="Valor Total" 
+							value="<?php echo $valortotal; ?>" maxlength="11" disabled />
+						  </div>
+						</div>
+					</div>
+				</div>
+
+                <div class="text-center">
+                    <button type="button" onclick="atrasCrearReferenciaFactura(<?php echo $id_factura; ?>)" class="btn btn-secondary">Atrás</button>
+                    <button type="button" onclick="editarReferenciaFactura()" class="btn btn-primary">Editar</button>
+                </div>
+           </form>
+        </div>   
+		<script>
+					
+		$(document).ready(function(){
+			$("#id_factura").val(<?php echo $id_factura; ?>);
+			 
+			 $('#CB_iva').change(function () {
+				$("#TB_iva").val("0");
+				actualizarCalculos();				 
+			 });
+			 
+			$('input#TB_valorUnitario').keyup(function(event) {
+
+			  // skip for arrow keys
+			  if(event.which >= 37 && event.which <= 40) return;
+
+			  // format number
+			  $(this).val(function(index, value) {
+				return value
+				.replace(/\D/g, "")
+				.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+			  });			  
+			});
+			
+			$("#TB_cantidad").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+					  if (event.keyCode < 96 || event.keyCode > 105) {
+						  event.preventDefault();
+					  }
+					}
+				}
+			});   
+			
+			$("#TB_descuento").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});   
+			
+					
+			$("#TB_iva").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8){
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+					  if (event.keyCode < 96 || event.keyCode > 105) {
+						  event.preventDefault();
+					  }
+					}
+				  }
+			});   
+			
+			$("#TB_utilidad").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});   		
+		});
 		</script>
 		<?php		
 	}

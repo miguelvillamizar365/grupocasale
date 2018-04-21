@@ -24,7 +24,7 @@
                     SELECT 	f.Id NumeroFactura,
                     	ec.Id empresaId,
                     	ec.RazonSocial EmpresaCompra, 
-                    	f.ValorFactura,
+						CAST(f.ValorFactura AS UNSIGNED) ValorFactura,
                     	ep.Id proveedorId, 
                     	ep.RazonSocial proveedor, 
                     	mp.Id modopagoId,
@@ -208,17 +208,24 @@
 		global $conexion;
         $conexion->conectarAdo();
 		
-        $cadena = "      
-                
-            SELECT rf.id_referencia, 
+        $cadena = "   
+            SELECT 
+				rf.Id,
+				rf.id_referencia, 
+				f.id facturaId, 
             	r.Nombre,
+				te.Id TipoEmpaqueId,
             	te.descripcion TipoEmpaque,
             	rf.cantidad,
-            	rf.valorunitario,
+            	CAST(rf.valorunitario AS UNSIGNED) valorunitario,
             	rf.descuento,
             	rf.iva, 
             	rf.Utilidad,
-            	rf.valortotal
+            	CAST(rf.valortotal AS UNSIGNED) valortotal,
+				CASE WHEN ( rf.asumeiva = 1 ) 
+						THEN 'Si'
+						ELSE 'No'
+					END asumeiva
             FROM referenciafactura rf 
             	INNER JOIN factura f
             		ON rf.id_factura = f.id
@@ -229,9 +236,9 @@
             WHERE f.id = ?
             AND r.estado = 1
             AND f.estado = 1
-                    
-                "; 
-        
+			ORDER BY rf.id ASC
+			"; 
+				
         $arr = ($id_factura);
         $recordSet = $conexion->EjecutarP($cadena, $arr);
         
@@ -256,7 +263,8 @@
             	rf.descuento,
             	rf.iva, 
             	rf.Utilidad,
-            	rf.valortotal
+            	rf.valortotal,
+				rf.asumeiva
             FROM referenciafactura rf 
             	INNER JOIN factura f
             		ON rf.id_factura = f.id
@@ -315,30 +323,128 @@
         return $recordSet; 
 	}
 	
-	public function GuardaReferenciaFactura($id_referencia, $Id_factura, $id_tipoempaque, $cantidad, $ValorUnitario, $descuento, $Iva, $Utilidad, $ValorTotal)
+	public function GuardaReferenciaFactura($id_referencia, $Id_factura, $id_tipoempaque, $cantidad, $ValorUnitario, $descuento, $Iva, $Utilidad, $ValorTotal, $asumeiva)
 	{
 		global $conexion;
         $conexion->conectarAdo();
 		
         $cadena = " 
 				INSERT INTO referenciafactura
-				(id_referencia, Id_factura, id_tipoempaque, cantidad, ValorUnitario, descuento, Iva, Utilidad, ValorTotal)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
+				(id_referencia, Id_factura, id_tipoempaque, cantidad, ValorUnitario, descuento, Iva, Utilidad, ValorTotal, asumeiva)
+				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				
+				
+				"; 
         
-		$arr = array($id_referencia, $Id_factura, $id_tipoempaque, $cantidad, $ValorUnitario, $descuento, $Iva, $Utilidad, $ValorTotal);
+		$arr = array($id_referencia, $Id_factura, $id_tipoempaque, $cantidad, $ValorUnitario, $descuento, $Iva, $Utilidad, $ValorTotal, $asumeiva);
         $recordSet = $conexion->EjecutarP($cadena, $arr);   
 		
 		
 		if($conexion->ObtenerError() != "" )
         {
-            return $conexion->ObtenerError();
+            return "error";
         }
         else
         {
             return "";   
         }
         $conexion->Close();
-	}	
+	}
+	
+	
+	public function GuardaInventario($id_referencia, $cantidad, $ValorUnitario)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = " 
+				UPDATE inventario SET
+				cantidad = ?,
+				ValorUnitario = ?,
+				ValorTotalInicial = ?,
+				CantidadActual = ?,
+				ValorTotalActual = ?
+				WHERE id_referencia = ? "; 
+        
+		$arr = array($cantidad, 
+		$ValorUnitario, 
+		($cantidad * $ValorUnitario), 
+		$cantidad, 
+		($cantidad * $ValorUnitario),
+		$id_referencia);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);   
+		
+		
+		if($conexion->ObtenerError() != "" )
+        {
+            return "error";
+        }
+        else
+        {
+            return "";   
+        }
+        $conexion->Close();
+	}
+
+	public function EditarReferenciaFactura($id_referenciafac, $id_referencia, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $TB_utilidad, $valorTotalFinal, $asumeiva)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = " 								
+				UPDATE  referenciafactura SET
+				id_referencia = ?,
+				id_tipoempaque = ?, 
+				cantidad = ?, 
+				ValorUnitario = ?,  
+				descuento = ?, 
+				Iva = ?, 
+				Utilidad = ?,  
+				ValorTotal = ?, 
+				asumeiva = ?
+				WHERE id = ? 
+				"; 
+        
+		$arr = array($id_referencia, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $TB_utilidad, $valorTotalFinal, $asumeiva, $id_referenciafac);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);   
+		
+		
+		if($conexion->ObtenerError() != "" )
+        {
+            return "error";
+        }
+        else
+        {
+            return "";   
+        }
+        $conexion->Close();
+	}
+	
+	
+	public function EliminarReferenciaFactura($id_referenciafac)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = " 	
+				DELETE FROM referenciafactura
+				WHERE id = ?
+				"; 
+        
+		$arr = array($id_referenciafac);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);   
+		
+		if($conexion->ObtenerError() != "" )
+        {
+            return "error";
+        }
+        else
+        {
+            return "";   
+        }
+        $conexion->Close();
+	}
+
  }
 
 ?>

@@ -11,17 +11,15 @@ class Principal
 {
     function PaginaPrincipal()
     {
-		header('Content-Type:text/html; charset=UTF-8');
-		// echo '<?xml version="1.0" encoding="iso-8859-1"
+		header('Content-Type:text/html; charset=iso-8859-1');
         ?>
             <!DOCTYPE html>
             
             <head>
               <!-- Required meta tags -->
               <!--<meta charset="utf-8" />-->
-              <!--
-              <meta charset="iso-8859-1" />
-			  -->
+              
+			  
               <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
               <title>Grupo Casale</title>
               <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.min.css" />
@@ -33,7 +31,8 @@ class Principal
               <link rel="stylesheet" type="text/css" href="../datatables/Buttons-1.4.2/css/buttons.bootstrap4.min.css"/>
                             
 			  <link rel="stylesheet" href="../selectize.js-master/dist/css/selectize.bootstrap3.css" />              
-              <link href="../selectize.js-master/src/less/selectize.less" />              
+              <link href="../selectize.js-master/src/less/selectize.less" />     
+			   
               <link rel="shortcut icon" href="../images/Tracto.png" />
               
             </head>
@@ -106,11 +105,9 @@ class Principal
             <script src="../node_modules/jquery/dist/jquery.min.js"></script>
             <script src="../node_modules/tether/dist/js/tether.min.js"></script>
             <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-            <script src="../js/jsSitio/principal.js"></script>
             
-            <script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
-            <script src="../selectize.js-master/examples/js/index.js"></script>
-			           
+			<script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
+			<script src="../selectize.js-master/examples/js/index.js"></script>
             </body>            
             </html>
         <?php
@@ -120,8 +117,7 @@ class Principal
     {
         ?>
         
-        <meta charset="iso-8859-1" />
-        <div class="modal fade" id="mensajeEmergenteRedirect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal fade" id="mensajeEmergenteRedirect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -154,9 +150,8 @@ class Principal
     
     function cargaContenido()
     {
+		header('Content-Type:text/html; charset=iso-8859-1');
         ?>        
-        
-        <meta charset="iso-8859-1" />
         <div class="container-scroller">
             <!--Navbar-->
             <nav class="navbar bg-primary-gradient col-lg-12 col-12 p-0 fixed-top navbar-inverse d-flex flex-row">
@@ -226,7 +221,7 @@ class Principal
                                 </a>
                             </li>
     						<li class="nav-item">
-                                <a class="nav-link" href="pages/widgets.html">
+                                <a id="B_ordenTrabajo" class="nav-link" href="../Logica de presentacion/Orden_Trabajo_Logica.php">
                                     <img src="../images/icons/2.png" alt="">
                                     <span class="menu-title">Orden Trabajo</span>
                                 </a>
@@ -250,54 +245,54 @@ class Principal
                                 </a>
                             </li>
     						<li class="nav-item">
-                                <a class="nav-link" href="pages/widgets.html">
+                                <a class="nav-link" href="..pages/widgets.html">
                                     <img src="../images/icons/2.png" alt="">
                                     <span class="menu-title">Alertas</span>
                                 </a>
                             </li>
     						<li class="nav-item">
-                                <a class="nav-link" href="pages/widgets.html">
+                                <a class="nav-link" href="..pages/widgets.html">
                                     <img src="../images/icons/2.png" alt="">
                                     <span class="menu-title">Widgets</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="pages/forms.html">
+                                <a class="nav-link" href="..pages/forms.html">
                                     <!-- <i class="fa fa-wpforms"></i> -->
                                     <img src="../images/icons/3.png" alt="">
                                     <span class="menu-title">Forms</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="pages/buttons.html">
+                                <a class="nav-link" href="..pages/buttons.html">
                                     <!-- <i class="fa fa-calculator"></i> -->
                                     <img src="../images/icons/4.png" alt="">
                                     <span class="menu-title">Buttons</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="pages/tables.html">
+                                <a class="nav-link" href="..pages/tables.html">
                                     <!-- <i class="fa fa-table"></i> -->
                                     <img src="../images/icons/5.png" alt="">
                                     <span class="menu-title">Tables</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="pages/charts.html">
+                                <a class="nav-link" href="..pages/charts.html">
                                     <!-- <i class="fa fa-bar-chart"></i> -->
                                     <img src="../images/icons/6.png" alt="">
                                     <span class="menu-title">Charts</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="pages/icons.html">
+                                <a class="nav-link" href="..pages/icons.html">
                                     <!-- <i class="fa fa-font"></i> -->
                                     <img src="../images/icons/7.png" alt="">
                                     <span class="menu-title">Icons</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="pages/typography.html">
+                                <a class="nav-link" href="..pages/typography.html">
                                     <!-- <i class="fa fa-bold"></i> -->
                                     <img src="../images/icons/8.png" alt="">
                                     <span class="menu-title">Typography</span>
@@ -490,7 +485,7 @@ class Principal
                     <footer class="footer">
                         <div class="container-fluid clearfix">
                           <span class="float-right">
-                              <a href="#">Grupo Casale</a> &copy; 2017
+                              <a href="#">Grupo Casale</a> &copy; 2018
                           </span>
                         </div>
                     </footer>
@@ -509,9 +504,7 @@ class Principal
     
     function cargaLogin()
     {
-        ?>
-        
-         <meta charset="iso-8859-1" /> 
+        ?>		
          <div class="container-scroller">
             <div class="container-fluid">
               <div class="row">
@@ -549,9 +542,9 @@ class Principal
     
     function registroUsuario()
     {
-        ?>  
+		header('Content-Type:text/html; charset=iso-8859-1');
+        ?>  		
         
-         <!-- <meta charset="iso-8859-1" />-->
          <div class="container-scroller">
             <div class="container-fluid">
               <div class="row">
@@ -676,11 +669,9 @@ class Principal
                 </div>
               </div>
             </div>
-          </div>       
-          
-        
-          <script>
-                    
+          </div>     
+		  
+          <script>                    
            $("#TB_documento").keydown(function (e) {
                 // Allow: backspace, delete, tab, escape, enter and .
                 if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
@@ -713,6 +704,7 @@ class Principal
                 }
             });
           </script>  
+
         <?php
     }
 }

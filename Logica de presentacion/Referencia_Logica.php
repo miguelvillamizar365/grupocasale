@@ -6,10 +6,11 @@
  * @author miguel villamizar
  * @copyright 2017/11/13
  */
+session_start();
 
-
-global $objPresenta, $objData;
+global $objPresenta, $objData, $objDataAuditoria;
 include('../Acceso a datos/ReferenciaData.php');
+include('../Acceso a datos/AuditoriaData.php');
 include('../Presentacion/Referencia.php');
 include('../srcBarcode/BarcodeGenerator.php');
 include('../srcBarcode/BarcodeGeneratorPNG.php');
@@ -24,6 +25,8 @@ $objPresenta = new Referencias();
 $objData = new referenciaData();
 $objData->Conectar();
 
+$objDataAuditoria = new AuditoriaData();
+$objDataAuditoria->Conectar();
 
 if(isset($_POST['desea']))
 {
@@ -87,9 +90,35 @@ if(isset($_POST['desea']))
             }
             else
             {
-                $recodSet = $objData->guardarReferencia($nombre, $id_tipoempaque, $id_clasificacion, $TB_stante, $TB_piso, $TB_stock);
-                echo $objPresenta->mensajeRedirect("'Se han guardado los datos satisfactoriamente !'", "mostrarReferencias(1)");    
-            }
+				$fechaActual = getdate();
+                $error = $objDataAuditoria->guardarAuditoria("Guarda referencia", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"]);
+                if($error == "error")
+                {
+                    header('HTTP/1.1 500');
+                    echo "¡Se ha generado un error al guardar la información! ";    
+                }
+                else
+                {
+					$recodSet = $objData->guardarReferencia($nombre, $id_tipoempaque, $id_clasificacion, $TB_stante, $TB_piso, $TB_stock);
+					
+					if($recodSet != "error")
+					{
+						$recodSet = $objData -> guardarInventario($recodSet);
+						if($recodSet != "")
+						{							
+							header('HTTP/1.1 500');
+							echo "¡Se ha generado un error al guardar el inventario! ".$recodSet;
+						}
+						else{
+							echo $objPresenta->mensajeRedirect("'Se han guardado los datos satisfactoriamente !'", "mostrarReferencias(1)");    
+						}					
+					}
+					else{
+						header('HTTP/1.1 500');
+						echo "¡Se ha generado un error al guardar la información! ";					
+					}
+				}
+			}
             
         }break;
         
@@ -141,8 +170,30 @@ if(isset($_POST['desea']))
             }
             else
             {
-                 $recodSet = $objData->editarReferencia($Id, $nombre, $id_tipoempaque, $id_clasificacion, $TB_stante, $TB_piso, $TB_stock);
-                 echo $objPresenta->mensajeRedirect("'Se han guardado los datos satisfactoriamente !'", "mostrarReferencias(1)");              
+				
+				$fechaActual = getdate();
+                $error = $objDataAuditoria->guardarAuditoria("Editar referencia", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"]);
+                if($error == "error")
+                {
+                    header('HTTP/1.1 500');
+                    echo "¡Se ha generado un error al guardar la auditoria! ";    
+                }
+                else
+                {
+					$error = $objData->editarInventario($Id, $nombre, $id_clasificacion, $TB_stante, $TB_piso, $TB_stock, $id_tipoempaque );
+					
+					if($error =="error")
+					{
+						header('HTTP/1.1 500');
+						echo "¡Se ha generado un error al guardar el inventario! ";    
+					}
+					else
+					{
+					 $recodSet = $objData->editarReferencia($Id, $nombre, $id_tipoempaque, $id_clasificacion, $TB_stante, $TB_piso, $TB_stock);
+					 echo $objPresenta->mensajeRedirect("'Se han guardado los datos satisfactoriamente !'", "mostrarReferencias(1)");              
+					}
+					
+				}
             }    
         }break;
         

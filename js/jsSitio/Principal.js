@@ -33,6 +33,20 @@ $(document).ready(function(){
 			}
 		});		
 	});	
+	
+    $("#B_ordenTrabajo").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': ''},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
+	});	
     
     function loadReferencias()
     {               
@@ -209,7 +223,7 @@ function registrarUsuario()
 
 function atrasRegistro()
 {
-    $('#desea').val("cerrarSesion");
+    $('#desea').val("");
     $.ajax({
 		url: '../Logica de presentacion/Principal_Logica.php',
 		method: 'post',
@@ -221,11 +235,9 @@ function atrasRegistro()
 		}
 	}); 
 }
-    
-    
+        
 function guardarUsuario()
-{
-    
+{    
     var mensaje = $("#mensajeEmergente");
         
     if($.trim($("#TB_nombre").val()) == "")

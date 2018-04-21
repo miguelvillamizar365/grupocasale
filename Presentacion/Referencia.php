@@ -9,8 +9,9 @@
 class Referencias{
     
     function mostrarReferencias(){
-    ?>  
-        <meta charset="iso-8859-1" />
+    
+		header('Content-Type:text/html; charset=iso-8859-1');
+	?>  
         
         <input type="hidden" id="id_referencia" name="id_referencia" value="" /> 
         <div class="content-wrapper" style="width: 80% !important;">
@@ -57,16 +58,12 @@ class Referencias{
     
     function formularioCrear()
     {
+		header('Content-Type:text/html; charset=iso-8859-1');
         ?>
         
-        <meta charset="iso-8859-1" />
-        
-        
         <div class="content-wrapper" style="width: 90% !important;">
-            <h3 class="text-primary mb-4">Agregar Referencia</h3>
-            
-           <form id="referencia">
-                
+            <h3 class="text-primary mb-4">Agregar Referencia</h3>            
+           <form id="referencia">                
                 <input type="hidden" id="desea" name="desea" value="" />                                              
                 <div class="row">
                     <div class="col-md-6">
@@ -151,14 +148,12 @@ class Referencias{
     
     function formularioEditar($Id, $Nombre, $Piso, $Stante, $Stock)
     {
+		header('Content-Type:text/html; charset=iso-8859-1');
         ?>
-        
-        <meta charset="iso-8859-1" />
+     
         <div class="content-wrapper" style="width: 90% !important;">
-            <h3 class="text-primary mb-4">Editar Referencia</h3>
-            
-           <form id="editarReferencia">
-                
+            <h3 class="text-primary mb-4">Editar Referencia</h3>            
+           <form id="editarReferencia">                
                 <input type="hidden" id="id_referencia" name="id_referencia" value="<?php echo $Id;?>" />
                 <input type="hidden" id="desea" name="desea" value="" />                                              
                 <div class="row">
@@ -236,11 +231,8 @@ class Referencias{
                 </div>
               </form>                          
         </div>
-                
-        
         <?php
-    }
-    
+    }    
     
     function mensajeRedirect($mensaje, $url)
     {

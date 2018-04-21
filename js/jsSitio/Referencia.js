@@ -15,9 +15,9 @@ $(document).ready(function(){
         columns: [
             { data: "Id",               title: "Id Referencia",   },
             { data: "Nombre",           title: "Nombre",          },
-            { data: "tipoempaqueId",      title: "Tipo Empaque", visible:"false"},
+            { data: "tipoempaqueId",      title: "Tipo Empaque"},
             { data: "tipoempaque",      title: "Tipo Empaque",    },
-            { data: "clasificacionId",    title: "Clasificacion", visible:"false"},
+            { data: "clasificacionId",    title: "Clasificacion"},
             { data: "clasificacion",    title: "Clasificacion",   },
             { data: "Stante",           title: "Stante",          },
             { data: "Piso",             title: "Piso",            },
@@ -43,7 +43,19 @@ $(document).ready(function(){
                     return "<button class='A_imprimir btn btn-danger' >Imprimir</button>";
                 }  
             }
-        ]
+        ],
+		columnDefs: [
+			{
+				targets: [ 2 ],
+				visible: false,
+				searchable: false
+			},
+			{
+				targets: [ 4 ],
+				visible: false,
+				searchable: false
+			}
+		]
     });
     
     $.ajax({

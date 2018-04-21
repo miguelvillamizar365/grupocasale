@@ -45,10 +45,10 @@ if(isset($_POST['desea']))
             
             $_SESSION["id_usuario"] = $usuario[0][0];
             $_SESSION["id_rol"] = $usuario[0][10];
-            
-                   
+                               
             $objPresentacion->cargaContenido();
-            jsInclude();
+            jsInclude();			
+			jsInclude2();
                 
         }break;   
         
@@ -145,12 +145,12 @@ if(isset($_POST['desea']))
             }
             
         }break;
-                             
-                                     
+		
         default:{
             
             session_unset();
             $objPresentacion->PaginaPrincipal();
+			jsInclude2();
         }break;   
     }
 }
@@ -158,13 +158,13 @@ else
 {
     session_unset();
     $objPresentacion->PaginaPrincipal();
+	jsInclude2();
 }
 
 
 function jsInclude()
 {
-    ?>    
-    
+    ?>        
         <script src="../node_modules/chart.js/dist/Chart.min.js"></script>
         <script src="../node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
@@ -182,9 +182,18 @@ function jsInclude()
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.html5.min.js"></script>
         <script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.responsive.js"></script>
-        
-        <script src="../js/jsSitio/Principal.js"></script>     
+            
+            <script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
+            <script src="../selectize.js-master/examples/js/index.js"></script>
+			
     <?php
 }
 
+
+function jsInclude2()
+{
+    ?>     
+        <script src="../js/jsSitio/Principal.js"></script>     
+    <?php
+}
 ?>
