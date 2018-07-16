@@ -57,14 +57,18 @@ if(isset($_POST['desea']))
         
         case 'guardarReferencia':{
             
-            $nombre = $_POST["TB_nombre"];
+            $referencia = $_POST["TB_referencia"];
+			$nombre = $_POST["TB_nombre"];
             $id_tipoempaque = $_POST["id_tipoempaque"];
             $id_clasificacion = $_POST["id_clasificacion"];
             $TB_stante = $_POST["TB_stante"];
             $TB_piso = $_POST["TB_piso"];
-            $TB_stock = $_POST["TB_stock"];
             
-            if(trim($nombre) == ""){                
+            if(trim($referencia) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡El Nro de referencia es requerido!";                 
+            }
+            else if(trim($nombre) == ""){                
                 header('HTTP/1.1 500');
                 echo "¡El nombre es requerido!";                 
             }
@@ -83,68 +87,69 @@ if(isset($_POST['desea']))
             else if((trim($TB_piso) == "") || (trim($TB_piso) == "0") ){                
                 header('HTTP/1.1 500');
                 echo "¡El piso es requerido!";                 
-            }
-            else if((trim($TB_stock) == "") || (trim($TB_stock) == "0")){                
-                header('HTTP/1.1 500');
-                echo "¡El stock es requerido!";                 
-            }
+            }//validar código existente 
             else
             {
-				$fechaActual = getdate();
-                $error = $objDataAuditoria->guardarAuditoria("Guarda referencia", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"]);
-                if($error == "error")
-                {
-                    header('HTTP/1.1 500');
-                    echo "¡Se ha generado un error al guardar la información! ";    
-                }
-                else
-                {
-					$recodSet = $objData->guardarReferencia($nombre, $id_tipoempaque, $id_clasificacion, $TB_stante, $TB_piso, $TB_stock);
-					
-					if($recodSet != "error")
+				$codigoExistente = $objData->validarCodigo($referencia);
+				
+				if($codigoExistente > 0)
+				{
+					header('HTTP/1.1 500');
+					echo "El código de referencia ya existe!";
+				}
+				else{
+				
+					$fechaActual = getdate();
+					$error = $objDataAuditoria->guardarAuditoria("Guarda referencia", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"], "referencia: ".$referencia.", nombre: ".$nombre.", id_tipoempaque: ".$id_tipoempaque.", id_clasificacion:".$id_clasificacion.", TB_stante: ".$TB_stante.", TB_piso: ".$TB_piso);
+					if($error == "error")                
 					{
-						$recodSet = $objData -> guardarInventario($recodSet);
-						if($recodSet != "")
-						{							
-							header('HTTP/1.1 500');
-							echo "¡Se ha generado un error al guardar el inventario! ".$recodSet;
+						header('HTTP/1.1 500');
+						echo "¡Se ha generado un error al guardar la auditoria! ";    
+					}
+					else
+					{
+						$recodSet = $objData->guardarReferencia($referencia,$nombre, $id_tipoempaque, $id_clasificacion, $TB_stante, $TB_piso);
+						
+						if($recodSet != "error")
+						{						
+							echo $objPresenta->mensajeRedirect("'Se han guardado los datos satisfactoriamente !'", "mostrarReferencias(1)");    
 						}
 						else{
-							echo $objPresenta->mensajeRedirect("'Se han guardado los datos satisfactoriamente !'", "mostrarReferencias(1)");    
-						}					
-					}
-					else{
-						header('HTTP/1.1 500');
-						echo "¡Se ha generado un error al guardar la información! ";					
+							header('HTTP/1.1 500');
+							echo "¡Se ha generado un error al guardar la información de la referencia ! ";					
+						}
 					}
 				}
-			}
-            
+			}            
         }break;
         
         case 'editarReferencia':{
             $Id = $_POST["Id"];
+            $Codigo = $_POST["Codigo"];
             $Nombre = $_POST["Nombre"];
             $Piso = $_POST["Piso"];
             $Stante = $_POST["Stante"];
-            $Stock = $_POST["Stock"];
             
-            echo $objPresenta->formularioEditar($Id, $Nombre, $Piso, $Stante, $Stock);
+            
+            echo $objPresenta->formularioEditar($Id, $Codigo, $Nombre, $Piso, $Stante);
            
         }break;
         
         case 'guardarEditarReferencia':{
             
-            $Id = $_POST["id_referencia"];
+            $Id = $_POST["id_referencia"];            
+			$codigo = $_POST["TB_referencia"];
             $nombre = $_POST["TB_nombre"];
             $id_tipoempaque = $_POST["id_tipoempaque"];
             $id_clasificacion = $_POST["id_clasificacion"];
             $TB_stante = $_POST["TB_stante"];
             $TB_piso = $_POST["TB_piso"];
-            $TB_stock = $_POST["TB_stock"];
             
-            
-            if(trim($nombre) == ""){                
+            if(trim($codigo) == ""){                
+                header('HTTP/1.1 500');
+                echo "¡El Nro de referencia es requerido!";                 
+            }
+            else if(trim($nombre) == ""){                
                 header('HTTP/1.1 500');
                 echo "¡El nombre es requerido!";                 
             }
@@ -164,15 +169,10 @@ if(isset($_POST['desea']))
                 header('HTTP/1.1 500');
                 echo "¡El piso es requerido!";                 
             }
-            else if((trim($TB_stock) == "") || (trim($TB_stock) == "0")){                
-                header('HTTP/1.1 500');
-                echo "¡El stock es requerido!";                 
-            }
             else
-            {
-				
+            {				
 				$fechaActual = getdate();
-                $error = $objDataAuditoria->guardarAuditoria("Editar referencia", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"]);
+                $error = $objDataAuditoria->guardarAuditoria("Editar referencia", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"], "Id: ".$Id.", codigo:".$codigo.", nombre:".$nombre.", id_tipoempaque: ".$id_tipoempaque.", id_clasificacion: ".$id_clasificacion.", TB_stante:".$TB_stante.", TB_piso: ".$TB_piso);
                 if($error == "error")
                 {
                     header('HTTP/1.1 500');
@@ -180,19 +180,17 @@ if(isset($_POST['desea']))
                 }
                 else
                 {
-					$error = $objData->editarInventario($Id, $nombre, $id_clasificacion, $TB_stante, $TB_piso, $TB_stock, $id_tipoempaque );
+					$recodSet = $objData->editarReferencia($Id, $codigo, $nombre, $id_tipoempaque, $id_clasificacion, $TB_stante, $TB_piso);
 					
-					if($error =="error")
+					if($recodSet == "error")
 					{
 						header('HTTP/1.1 500');
 						echo "¡Se ha generado un error al guardar el inventario! ";    
 					}
 					else
-					{
-					 $recodSet = $objData->editarReferencia($Id, $nombre, $id_tipoempaque, $id_clasificacion, $TB_stante, $TB_piso, $TB_stock);
-					 echo $objPresenta->mensajeRedirect("'Se han guardado los datos satisfactoriamente !'", "mostrarReferencias(1)");              
-					}
-					
+					{					 
+						echo $objPresenta->mensajeRedirect("'Se han guardado los datos satisfactoriamente !'", "mostrarReferencias(1)");              
+					}					
 				}
             }    
         }break;

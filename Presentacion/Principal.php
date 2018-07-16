@@ -25,9 +25,10 @@ class Principal
               <link rel="stylesheet" href="../node_modules/font-awesome/css/font-awesome.min.css" />
               <link rel="stylesheet" href="../node_modules/perfect-scrollbar/dist/css/perfect-scrollbar.min.css" />
                
-              <link rel="stylesheet" href="../css/style.css" /> 
+			  <link rel="stylesheet" href="../css/style.css" />
+			  <link rel="stylesheet" href="../css/bootstrap-datetimepicker.min.css" />			  
               
-			  <link rel="stylesheet" type="text/css" href="../datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css"/>
+			  <link rel="stylesheet" type="text/css" href="../datatables/DataTables-1.10.16/css/jquery.dataTables.min.css"/>
               <link rel="stylesheet" type="text/css" href="../datatables/Buttons-1.4.2/css/buttons.bootstrap4.min.css"/>
                             
 			  <link rel="stylesheet" href="../selectize.js-master/dist/css/selectize.bootstrap3.css" />              
@@ -46,7 +47,7 @@ class Principal
                     <div class="content-wrapper full-page-wrapper d-flex align-items-center">
                       <div class="card col-lg-4 offset-lg-4">
                         <div class="card-block">
-                          <h3 class="card-title text-primary text-left mb-5 mt-4">Login</h3>
+                          <h3 class="card-title text-primary text-left mb-5 mt-4">Mantenimiento</h3>
                           <form id="login"> 
                             <input type="hidden" id="desea" name="desea" value="" />
                             <div class="form-group">
@@ -64,7 +65,7 @@ class Principal
                                                                  
                             <div class="text-center">
                               <input type="button" onclick="registrarUsuario()" class="btn btn-secondary" value="Registrarse" />
-                              <input type="button" onclick="IniciaSesion()" class="btn btn-primary" value="Login" />
+                              <input type="button" onclick="IniciaSesion()" class="btn btn-primary" value="Iniciar Sesión" />
                             </div>
                           </form>
                         </div>
@@ -195,11 +196,11 @@ class Principal
                         <!-- <span class="online"></span> -->
                     <!-- </div> -->
                         <ul class="nav">
-                            <li class="nav-item active">
-                                <a class="nav-link" href="#">
+                            <li class="nav-item" >
+                                <a id="B_inicio" class="nav-link" href="../Logica de presentacion/Principal_Logica.php">
                                     <!-- <i class="fa fa-dashboard"></i> -->
                                     <img src="../images/icons/1.png" alt="">
-                                    <span class="menu-title">Dashboard</span>
+                                    <span class="menu-title">Inicio</span>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -215,9 +216,9 @@ class Principal
                                 </a>
                             </li>
     						<li class="nav-item">
-                                <a class="nav-link" href="pages/widgets.html">
+                                <a id="B_AutorizaFactura" class="nav-link" href="../Logica de presentacion/AutorizaFactura_Logica.php">
                                     <img src="../images/icons/2.png" alt="">
-                                    <span class="menu-title">Autoriza Referencia</span>
+                                    <span class="menu-title">Autoriza Factura</span>
                                 </a>
                             </li>
     						<li class="nav-item">
@@ -227,13 +228,13 @@ class Principal
                                 </a>
                             </li>
     						<li class="nav-item">
-                                <a class="nav-link" href="pages/widgets.html">
+                                <a id="B_ordenSalida" class="nav-link" href="../Logica de presentacion/OrdenSalida_Logica.php">
                                     <img src="../images/icons/2.png" alt="">
                                     <span class="menu-title">Orden Salida</span>
                                 </a>
                             </li>
     						<li class="nav-item">
-                                <a class="nav-link" href="pages/widgets.html">
+                                <a id="B_alistamiento" class="nav-link" href="../Logica de presentacion/AlistamientoPreoperacional_Logica.php">
                                     <img src="../images/icons/2.png" alt="">
                                     <span class="menu-title">Alistamiento <br /> Preoperacional</span>
                                 </a>
@@ -241,7 +242,7 @@ class Principal
     						<li class="nav-item">
                                 <a class="nav-link" href="pages/widgets.html">
                                     <img src="../images/icons/2.png" alt="">
-                                    <span class="menu-title">Control Combustible</span>
+                                    <span class="menu-title">Control <br /> Combustible</span>
                                 </a>
                             </li>
     						<li class="nav-item">
@@ -345,143 +346,143 @@ class Principal
                     </nav>
                     <!-- SIDEBAR ENDS -->
                     
-                    <div class="dashboard">                    
-                        <div class="content-wrapper">
-                            <h3 class="text-primary mb-4">Dashboard</h3>
-                            <div class="row">
-                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
-                                    <div class="card">
-                                        <div class="card-block">
-                                            <h4 class="card-title font-weight-normal text-success">7874</h4>
-                                            <p class="card-text">Visitors</p>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0"
-                                                    aria-valuemax="100">75%</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
-                                    <div class="card">
-                                        <div class="card-block">
-                                            <h4 class="card-title font-weight-normal text-info">75632</h4>
-                                            <p class="card-text ">Sales</p>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
-                                                    aria-valuemax="100">40%</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
-                                    <div class="card">
-                                        <div class="card-block">
-                                            <h4 class="card-title font-weight-normal text-warning">2156</h4>
-                                            <p class="card-text">Orders</p>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
-                                                    aria-valuemax="100">25%</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
-                                    <div class="card">
-                                        <div class="card-block">
-                                            <h4 class="card-title font-weight-normal text-danger">$ 89623</h4>
-                                            <p class="card-text">Revenue</p>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
-                                                    aria-valuemax="100">65%</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6  mb-4">
-                                    <div class="card">
-                                        <div class="card-block">
-                                            <h5 class="card-title mb-4">Sales</h5>
-                                            <canvas id="lineChart" style="height:250px"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6  mb-4">
-                                    <div class="card">
-                                        <div class="card-block">
-                                            <h5 class="card-title mb-4">Customer Satisfaction</h5>
-                                            <canvas id="doughnutChart" style="height:250px"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card">
-                                        <div class="card-block">
-                                            <h5 class="card-title mb-4">Payments</h5>
-                                            <table class="table">
-                                                <thead class="text-primary">
-                                                    <tr>
-                                                        <th><i class="fa fa-user ml-2"></i></th>
-                                                        <th>User</th>
-                                                        <th>Item</th>
-                                                        <th>Status</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
-                                                                height="40" /></th>
-                                                        <td>Larry</td>
-                                                        <td>Acer</td>
-                                                        <td><span class="badge badge-success">Success</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
-                                                                height="40" /></th>
-                                                        <td>Larry</td>
-                                                        <td>Acer</td>
-                                                        <td><span class="badge badge-danger">Failed</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
-                                                                height="40" /></th>
-                                                        <td>Larry</td>
-                                                        <td>Acer</td>
-                                                        <td><span class="badge badge-primary">Processing</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
-                                                                height="40" /></th>
-                                                        <td>Larry</td>
-                                                        <td>Acer</td>
-                                                        <td><span class="badge badge-success">Success</span></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
-                                                                height="40" /></th>
-                                                        <td>Larry</td>
-                                                        <td>Acer</td>
-                                                        <td><span class="badge badge-danger">Failed</span></td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card">
-                                        <div class="card-block">
-                                            <h5 class="card-title"></h5>
-                                            <div id="map" style="min-height:415px;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<div class="dashboard">                    
+						<div class="content-wrapper">
+							<h3 class="text-primary mb-4">Dashboard</h3>
+							<div class="row">
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+									<div class="card">
+										<div class="card-block">
+											<h4 class="card-title font-weight-normal text-success">7874</h4>
+											<p class="card-text">Visitors</p>
+											<div class="progress">
+												<div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0"
+													aria-valuemax="100">75%</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+									<div class="card">
+										<div class="card-block">
+											<h4 class="card-title font-weight-normal text-info">75632</h4>
+											<p class="card-text ">Sales</p>
+											<div class="progress">
+												<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
+													aria-valuemax="100">40%</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+									<div class="card">
+										<div class="card-block">
+											<h4 class="card-title font-weight-normal text-warning">2156</h4>
+											<p class="card-text">Orders</p>
+											<div class="progress">
+												<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
+													aria-valuemax="100">25%</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+									<div class="card">
+										<div class="card-block">
+											<h4 class="card-title font-weight-normal text-danger">$ 89623</h4>
+											<p class="card-text">Revenue</p>
+											<div class="progress">
+												<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
+													aria-valuemax="100">65%</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-6  mb-4">
+									<div class="card">
+										<div class="card-block">
+											<h5 class="card-title mb-4">Sales</h5>
+											<canvas id="lineChart" style="height:250px"></canvas>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6  mb-4">
+									<div class="card">
+										<div class="card-block">
+											<h5 class="card-title mb-4">Customer Satisfaction</h5>
+											<canvas id="doughnutChart" style="height:250px"></canvas>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-lg-6 mb-4">
+									<div class="card">
+										<div class="card-block">
+											<h5 class="card-title mb-4">Payments</h5>
+											<table class="table">
+												<thead class="text-primary">
+													<tr>
+														<th><i class="fa fa-user ml-2"></i></th>
+														<th>User</th>
+														<th>Item</th>
+														<th>Status</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+																height="40" /></th>
+														<td>Larry</td>
+														<td>Acer</td>
+														<td><span class="badge badge-success">Success</span></td>
+													</tr>
+													<tr>
+														<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+																height="40" /></th>
+														<td>Larry</td>
+														<td>Acer</td>
+														<td><span class="badge badge-danger">Failed</span></td>
+													</tr>
+													<tr>
+														<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+																height="40" /></th>
+														<td>Larry</td>
+														<td>Acer</td>
+														<td><span class="badge badge-primary">Processing</span></td>
+													</tr>
+													<tr>
+														<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+																height="40" /></th>
+														<td>Larry</td>
+														<td>Acer</td>
+														<td><span class="badge badge-success">Success</span></td>
+													</tr>
+													<tr>
+														<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+																height="40" /></th>
+														<td>Larry</td>
+														<td>Acer</td>
+														<td><span class="badge badge-danger">Failed</span></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="col-lg-6 mb-4">
+									<div class="card">
+										<div class="card-block">
+											<h5 class="card-title"></h5>
+											<div id="map" style="min-height:415px;"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
                     <footer class="footer">
                         <div class="container-fluid clearfix">
                           <span class="float-right">
@@ -495,6 +496,149 @@ class Principal
         <?php
     }         
     
+	function dashboard()
+	{
+		?>
+		<div class="dashboard">                    
+			<div class="content-wrapper">
+				<h3 class="text-primary mb-4">Dashboard</h3>
+				<div class="row">
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+						<div class="card">
+							<div class="card-block">
+								<h4 class="card-title font-weight-normal text-success">7874</h4>
+								<p class="card-text">Visitors</p>
+								<div class="progress">
+									<div class="progress-bar progress-bar-striped bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0"
+										aria-valuemax="100">75%</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+						<div class="card">
+							<div class="card-block">
+								<h4 class="card-title font-weight-normal text-info">75632</h4>
+								<p class="card-text ">Sales</p>
+								<div class="progress">
+									<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0"
+										aria-valuemax="100">40%</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+						<div class="card">
+							<div class="card-block">
+								<h4 class="card-title font-weight-normal text-warning">2156</h4>
+								<p class="card-text">Orders</p>
+								<div class="progress">
+									<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0"
+										aria-valuemax="100">25%</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 mb-4">
+						<div class="card">
+							<div class="card-block">
+								<h4 class="card-title font-weight-normal text-danger">$ 89623</h4>
+								<p class="card-text">Revenue</p>
+								<div class="progress">
+									<div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0"
+										aria-valuemax="100">65%</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6  mb-4">
+						<div class="card">
+							<div class="card-block">
+								<h5 class="card-title mb-4">Sales</h5>
+								<canvas id="lineChart" style="height:250px"></canvas>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6  mb-4">
+						<div class="card">
+							<div class="card-block">
+								<h5 class="card-title mb-4">Customer Satisfaction</h5>
+								<canvas id="doughnutChart" style="height:250px"></canvas>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-6 mb-4">
+						<div class="card">
+							<div class="card-block">
+								<h5 class="card-title mb-4">Payments</h5>
+								<table class="table">
+									<thead class="text-primary">
+										<tr>
+											<th><i class="fa fa-user ml-2"></i></th>
+											<th>User</th>
+											<th>Item</th>
+											<th>Status</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+													height="40" /></th>
+											<td>Larry</td>
+											<td>Acer</td>
+											<td><span class="badge badge-success">Success</span></td>
+										</tr>
+										<tr>
+											<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+													height="40" /></th>
+											<td>Larry</td>
+											<td>Acer</td>
+											<td><span class="badge badge-danger">Failed</span></td>
+										</tr>
+										<tr>
+											<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+													height="40" /></th>
+											<td>Larry</td>
+											<td>Acer</td>
+											<td><span class="badge badge-primary">Processing</span></td>
+										</tr>
+										<tr>
+											<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+													height="40" /></th>
+											<td>Larry</td>
+											<td>Acer</td>
+											<td><span class="badge badge-success">Success</span></td>
+										</tr>
+										<tr>
+											<th><img src="../images/profile.jpg" alt="profile" class="rounded-circle" width="40"
+													height="40" /></th>
+											<td>Larry</td>
+											<td>Acer</td>
+											<td><span class="badge badge-danger">Failed</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 mb-4">
+						<div class="card">
+							<div class="card-block">
+								<h5 class="card-title"></h5>
+								<div id="map" style="min-height:415px;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<?php
+	}
+	
     function limpiaLogin(){
         
         ?>        

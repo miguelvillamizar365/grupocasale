@@ -71,12 +71,11 @@ if(isset($_POST['desea']))
             
             $empresaCompra = $_POST["id_empresaCompra"];
             $empresaProvee = $_POST["id_proveedor"];
-            $valor = $_POST["TB_valor"];
             $modoPago = $_POST["id_modopago"];
-            $fecha = $_POST["TB_fecha"]; //input dd/mm/yyyy
+            $fecha = $_POST["TB_fecha"]; //input yyyy/mm/dd hh:mm
             $fechaFormat = explode('/', $fecha); 
-            // se debe enviar y/m/d 
-            $fechaValida = $objData->comparaFechaActual($fechaFormat[2]."/".$fechaFormat[1]."/".$fechaFormat[0]);                        
+			
+            $fechaValida = $objData->comparaFechaActual($fecha);                        
             
             
             if((trim($empresaCompra) == "")){                
@@ -86,10 +85,6 @@ if(isset($_POST['desea']))
             else if((trim($empresaProvee) == "")){                
                 header('HTTP/1.1 500');
                 echo "¡El proveedor es requerido!";                 
-            }
-            else if((trim($valor) == "") || intval(trim($valor)) <= 0){                
-                header('HTTP/1.1 500');
-                echo "¡El valor es requerido!";                 
             }
             else if((trim($modoPago) == "")){                
                 header('HTTP/1.1 500');
@@ -110,7 +105,11 @@ if(isset($_POST['desea']))
             else
             {
                 $fechaActual = getdate();
-                $error = $objDataAuditoria->guardarAuditoria("Guarda factura", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"]);
+                $error = $objDataAuditoria->guardarAuditoria("Guarda factura", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"], 
+				("empresaCompra: ".$empresaCompra.
+				", empresaProvee:".$empresaProvee.
+				", modoPago:".$modoPago.
+				", fecha:".$fecha.", estado:1"));
                 if($error == "error")
                 {
                     header('HTTP/1.1 500');
@@ -118,7 +117,75 @@ if(isset($_POST['desea']))
                 }
                 else
                 {
-                    $error = $objData->guardarFactura($empresaCompra, $valor, $empresaProvee, $modoPago, ($fechaFormat[2] . "/". $fechaFormat[1] . "/". $fechaFormat[0]),1);
+                    $error = $objData->guardarFactura($empresaCompra, $empresaProvee, $modoPago, $fecha, 1);
+                    
+                    if($error == "error")
+                    {
+                        header('HTTP/1.1 500');
+                        echo "¡Se ha generado un error al guardar la información!";
+                    }
+                    else
+                    {
+                        echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarFacturas(1)");
+                    }                  
+                }            
+            }                       
+        }break;
+		
+		
+        case 'guardarEditarFactura':{
+			
+            $IdFactura = $_POST["id_factura"];
+            $empresaCompra = $_POST["id_empresaCompra"];
+            $empresaProvee = $_POST["id_proveedor"];
+            $modoPago = $_POST["id_modopago"];
+            $fecha = $_POST["TB_fecha"]; //input yyyy/mm/dd hh:mm
+            $fechaFormat = explode('/', $fecha); 
+			
+            $fechaValida = $objData->comparaFechaActual($fecha);                        
+            
+            
+            if((trim($empresaCompra) == "")){                
+                header('HTTP/1.1 500');
+                echo "¡La empresa que compra es requerida!";                 
+            }
+            else if((trim($empresaProvee) == "")){                
+                header('HTTP/1.1 500');
+                echo "¡El proveedor es requerido!";                 
+            }
+            else if((trim($modoPago) == "")){                
+                header('HTTP/1.1 500');
+                echo "¡El modo de pago es requerido!";                 
+            }
+            else if((trim($fecha) == "")){                
+                header('HTTP/1.1 500');
+                echo "¡La fecha es requerida!";                 
+            }
+            else if( $fechaValida == "MENOR"){                
+                header('HTTP/1.1 500');
+                echo "¡La fecha no pueder ser menor a la actual! ";                 
+            }
+            else if($fechaValida == "error"){                
+                header('HTTP/1.1 500');
+                echo "¡Se ha generado un error en la fecha!";                 
+            }
+            else
+            {
+                $fechaActual = getdate();
+                $error = $objDataAuditoria->guardarAuditoria("Editar factura", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"], 
+				("empresaCompra: ".$empresaCompra.
+				", empresaProvee:".$empresaProvee.
+				", modoPago:".$modoPago.
+				", fecha:".$fecha));
+                
+				if($error == "error")
+                {
+                    header('HTTP/1.1 500');
+                    echo "¡Se ha generado un error al guardar la auditoria! ";    
+                }
+                else
+                {
+                    $error = $objData->editarFactura($IdFactura, $empresaCompra, $empresaProvee, $modoPago, $fecha);
                     
                     if($error == "error")
                     {
@@ -209,7 +276,7 @@ if(isset($_POST['desea']))
 			$TB_valorUnitario = $_POST["TB_valorUnitario"];
 			$TB_descuento = $_POST["TB_descuento"];
 			$TB_iva = $_POST["TB_iva"];
-			$TB_utilidad = $_POST["TB_utilidad"];
+			
 			if( is_null($_POST["CB_iva"]))
 			{
 				$CB_iva = 0;
@@ -252,10 +319,6 @@ if(isset($_POST['desea']))
                 header('HTTP/1.1 500');
                 echo "¡El iva es requerido! ";                 
             }
-            else if(trim($TB_utilidad) == ""){                
-                header('HTTP/1.1 500');
-                echo "¡La utilidad es requerida!";                 
-            }
             else if(!is_numeric($TB_valorUnitario)){                
                 header('HTTP/1.1 500');
                 echo "¡El valor unitario debe ser numerico!";                 
@@ -265,20 +328,32 @@ if(isset($_POST['desea']))
 				$valorTotalFinal = (intval($TB_cantidad) * floatval($TB_valorUnitario));
 				$valorIva = ((intval($TB_iva) * $valorTotalFinal)/100);
 				$valorDescuento = ((intval($TB_descuento)* $valorTotalFinal)/100);
-				$valorUtilidad = ((intval($TB_utilidad)* $valorTotalFinal)/100);
 
 				if ($CB_iva == 1) {
-					$valorTotalFinal = (($valorTotalFinal - $valorDescuento) + $valorIva + $valorUtilidad);
+					$valorTotalFinal = (($valorTotalFinal - $valorDescuento) + $valorIva);
 				}
 				else{
-					$valorTotalFinal = (($valorTotalFinal - $valorDescuento) + $valorUtilidad);
+					$valorTotalFinal = (($valorTotalFinal - $valorDescuento));
 				}
 				if($CB_iva == 1)
 					$asumeiva = 1;
 				else $asumeiva = 0;
 				
                 $fechaActual = getdate();
-                $error = $objDataAuditoria->guardarAuditoria("Guarda referencia factura", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"])-1)), $_SESSION["id_usuario"]);
+                $error = $objDataAuditoria->guardarAuditoria("Guarda referencia factura", 
+				($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"])-1)), 
+				$_SESSION["id_usuario"], 
+				("id_referencia: ".$id_referencia.", ". 
+				"id_factura: ".$id_factura.", ".
+				"id_tipoempaque: ".$id_tipoempaque.", ". 
+				"TB_cantidad: ".$TB_cantidad.", ". 
+				"TB_valorUnitario: ".$TB_valorUnitario.",". 
+				"TB_descuento: ".$TB_descuento.", ". 
+				"TB_iva: ".$TB_iva.", ". 
+				"valorTotalFinal: ".$valorTotalFinal.", ". 
+				"asumeiva: ".$asumeiva));
+				
+				
                 if($error == "error")
                 {
                     header('HTTP/1.1 500');
@@ -286,7 +361,7 @@ if(isset($_POST['desea']))
                 }
                 else
                 {
-                    $error = $objData->GuardaReferenciaFactura($id_referencia, $id_factura, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $TB_utilidad, $valorTotalFinal, $asumeiva);
+                    $error = $objData->GuardaReferenciaFactura($id_referencia, $id_factura, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $valorTotalFinal, $asumeiva);
                     
                     if($error == "error")
                     {
@@ -294,17 +369,8 @@ if(isset($_POST['desea']))
                       echo "¡Se ha generado un error al guardar la información!!!!";
                     }
                     else
-                    {
-						$error = $objData->GuardaInventario($id_referencia, $TB_cantidad, $TB_valorUnitario);
-						if($error == "error")
-						{
-						  header('HTTP/1.1 500');
-						  echo "¡Se ha generado un error al guardar la información!!!!";
-						}
-						else
-						{						
-							echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarDetalleFactura(1, ".$id_factura." )");
-						}
+                    {	
+						echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarDetalleFactura(1, ".$id_factura." )");
                     }                  
                 }            
             }
@@ -320,7 +386,6 @@ if(isset($_POST['desea']))
 				$descuento = $_POST["descuento"];
 				$asumeiva= $_POST["asumeiva"];
 				$iva = $_POST["iva"];
-				$Utilidad = $_POST["Utilidad"];
 				$valortotal = $_POST["valortotal"];
 				
 								
@@ -334,7 +399,6 @@ if(isset($_POST['desea']))
 				$descuento,
 				$asumeiva,
 				$iva,
-				$Utilidad,
 				$valortotal );				
 		}break;
 		case 'guardarEditarReferenciaFactura':{
@@ -347,7 +411,7 @@ if(isset($_POST['desea']))
 			$TB_valorUnitario = $_POST["TB_valorUnitario"];
 			$TB_descuento = $_POST["TB_descuento"];
 			$TB_iva = $_POST["TB_iva"];
-			$TB_utilidad = $_POST["TB_utilidad"];
+			
 			if( is_null($_POST["CB_iva"]))
 			{
 				$CB_iva = 0;
@@ -390,41 +454,41 @@ if(isset($_POST['desea']))
                 header('HTTP/1.1 500');
                 echo "¡El iva es requerido! ";                 
             }
-            else if(trim($TB_utilidad) == ""){                
-                header('HTTP/1.1 500');
-                echo "¡La utilidad es requerida!";                 
-            }
             else if(!is_numeric($TB_valorUnitario)){                
                 header('HTTP/1.1 500');
                 echo "¡El valor unitario debe ser numerico!";                 
             }			
             else
             {
-				$valorTotalFinal = (intval($TB_cantidad) * floatval($TB_valorUnitario));
-				$valorIva = ((intval($TB_iva) * $valorTotalFinal)/100);
-				$valorDescuento = ((intval($TB_descuento)* $valorTotalFinal)/100);
-				$valorUtilidad = ((intval($TB_utilidad)* $valorTotalFinal)/100);
+				$valorTotalFinal = (floatval($TB_cantidad) * floatval($TB_valorUnitario));
+				$valorIva = ((floatval($TB_iva) * $valorTotalFinal)/100);
+				$valorDescuento = ((floatval($TB_descuento)* $valorTotalFinal)/100);
 
 				if ($CB_iva == 1) {
-					$valorTotalFinal = (($valorTotalFinal - $valorDescuento) + $valorIva + $valorUtilidad);
+					$valorTotalFinal = (($valorTotalFinal - $valorDescuento) + $valorIva);
 				}
 				else{
-					$valorTotalFinal = (($valorTotalFinal - $valorDescuento) + $valorUtilidad);
+					$valorTotalFinal = (($valorTotalFinal - $valorDescuento));
 				}
 				if($CB_iva == 1)
 					$asumeiva = 1;
 				else $asumeiva = 0;
 				
                 $fechaActual = getdate();
-                $error = $objDataAuditoria->guardarAuditoria("Edita referencia factura", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"])-1)), $_SESSION["id_usuario"]);
+                $error = $objDataAuditoria->guardarAuditoria("Edita referencia factura", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"])-1)), $_SESSION["id_usuario"], 
+				("id_referenciafac: ".$id_referenciafac.", id_referencia:".$id_referencia.
+				", id_tipoempaque:".$id_tipoempaque.", TB_cantidad".$TB_cantidad.
+				",TB_valorUnitario: ".$TB_valorUnitario.", TB_descuento:".
+				$TB_descuento.", TB_iva:".$TB_iva.", valorTotalFinal:".
+				$valorTotalFinal.", asumeiva:".$asumeiva));
                 if($error == "error")
                 {
                     header('HTTP/1.1 500');
-                    echo "¡Se ha generado un error al guardar la información!";    
+                    echo "¡Se ha generado un error al guardar la auditoria!";    
                 }
                 else
                 {
-                    $error = $objData->EditarReferenciaFactura($id_referenciafac, $id_referencia, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $TB_utilidad, $valorTotalFinal, $asumeiva);
+                    $error = $objData->EditarReferenciaFactura($id_referenciafac, $id_referencia, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $valorTotalFinal, $asumeiva);
                     
                     if($error == "error")
                     {
@@ -433,17 +497,17 @@ if(isset($_POST['desea']))
                     }
                     else
                     {
-						$error = $objData->GuardaInventario($id_referencia, $TB_cantidad, $TB_valorUnitario);
+						// $error = $objData->GuardaInventario($id_referencia, $TB_cantidad, $TB_valorUnitario);
 						
-						if($error == "error")
-						{
-						  header('HTTP/1.1 500');
-						  echo "¡Se ha generado un error al guardar la información!";
-						}
-						else
-						{					
+						// if($error == "error")
+						// {
+						  // header('HTTP/1.1 500');
+						  // echo "¡Se ha generado un error al guardar la información!";
+						// }
+						// else
+						// {					
 							echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'",  "mostrarDetalleFactura(1, ".$id_factura." )");
-						}
+						//}
                     }                  
                 }            
             }

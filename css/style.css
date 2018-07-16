@@ -639,25 +639,7 @@ pre {
     .container {
       width: 1140px;
       max-width: 100%; } }
-  
-div.dataTables_wrapper {
-    width: 100%;}
-    /*@media (min-width: 576px) {
-    div.dataTables_wrapper {
-      width: 500px; 
-      margin: 0 auto;    } }
-    @media (min-width: 768px) {
-    div.dataTables_wrapper {
-      width: 600px;       
-      margin: 0 auto;    } }
-    @media (min-width: 992px) {
-    div.dataTables_wrapper {
-      width: 90%;    } }
-    @media (min-width: 1200px) {   
-    div.dataTables_wrapper {
-      width: 100%;    } }*/
-      
-      
+
 .container-fluid {
   position: relative;
   margin-left: auto;
@@ -671,21 +653,16 @@ div.dataTables_wrapper {
   @media (min-width: 768px) {
     .container-fluid {
       padding-right: 15px;
-      padding-left: 15px; 
-   } }
+      padding-left: 15px; } }
   @media (min-width: 992px) {
     .container-fluid {
       padding-right: 15px;
       padding-left: 15px; } }
-  @media (min-width: 1200px) {   
+  @media (min-width: 1200px) {
     .container-fluid {
       padding-right: 15px;
-      padding-left: 15px; 
-    } }
+      padding-left: 15px; } }
 
-
-    
-      
 .row, form.forms-sample {
   display: flex;
   flex-wrap: wrap;
@@ -6343,9 +6320,9 @@ select.selectpicker {
         padding-right: 2.5em; }
   @media (min-width: 992px) {
     .sidebar.sidebar-fixed {
-      position: absolute; } }
+      position: fixed; } }
   .sidebar.sidebar-fixed .nav {
-    max-height: calc(130vh - 275px);
+    max-height: calc(125vh - 275px);
     overflow: auto; }
 
 /* style for off-canvas menu*/

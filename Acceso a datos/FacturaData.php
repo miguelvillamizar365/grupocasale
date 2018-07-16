@@ -20,30 +20,44 @@
 		global $conexion;
         $conexion->conectarAdo();
 		
-        $cadena = "                    
-                    SELECT 	f.Id NumeroFactura,
-                    	ec.Id empresaId,
-                    	ec.RazonSocial EmpresaCompra, 
-						CAST(f.ValorFactura AS UNSIGNED) ValorFactura,
-                    	ep.Id proveedorId, 
-                    	ep.RazonSocial proveedor, 
-                    	mp.Id modopagoId,
-                    	mp.Descripcion modopago , 
-                        DATE_FORMAT(f.Fecha, '%d/%m/%Y') Fecha
-                        FROM 
-                    	factura f 
-                    	LEFT JOIN empresa ec
-                    		ON f.Id_EmpresaCompra = ec.Id
-                    		AND ec.Id_TipoEmpresa = 1		
-                    	LEFT JOIN empresa ep
-                    		ON f.Id_EmpresaProvee = ep.Id
-                    		AND ep.Id_TipoEmpresa = 2
-                    	LEFT JOIN modopago mp
-                    		ON f.id_modopago = mp.Id
-                        WHERE f.estado = 1
-                        AND ec.Estado = 1
-                        AND ep.Estado = 1
-                        AND mp.Estado = 1                             
+        $cadena = "    
+		
+		SELECT 	f.Id NumeroFactura,
+		ec.Id empresaId,
+		ec.RazonSocial EmpresaCompra, 
+		(SELECT CASE 
+				WHEN SUM(rf.ValorTotal) IS NULL  THEN 0 
+				ELSE SUM(rf.ValorTotal) 
+			END
+		 FROM referenciafactura rf
+		 WHERE f.Id = rf.id_factura) ValorFactura,
+		ep.Id proveedorId, 
+		ep.RazonSocial proveedor, 
+		mp.Id modopagoId,
+		mp.Descripcion modopago , 
+		DATE_FORMAT(f.Fecha, '%Y/%m/%d %H:%i') Fecha,
+		f.Estado EstadoId, 
+		(CASE WHEN f.Estado = 1 THEN 
+				'Sin Autorizar'
+				  WHEN f.Estado = 0 THEN
+					'Eliminada'
+				  WHEN f.Estado = 2 THEN
+				'Autorizado' 
+			END) AS Estado
+		FROM 
+		factura f 
+		LEFT JOIN empresa ec
+			ON f.Id_EmpresaCompra = ec.Id
+			AND ec.Id_TipoEmpresa = 1		
+		LEFT JOIN empresa ep
+			ON f.Id_EmpresaProvee = ep.Id
+			AND ep.Id_TipoEmpresa = 2
+		LEFT JOIN modopago mp
+			ON f.id_modopago = mp.Id
+		WHERE ec.Estado = 1
+		AND ep.Estado = 1
+		AND mp.Estado = 1 
+
                 "; 
                 
         $recordSet = $conexion->Ejecutar($cadena);
@@ -104,16 +118,43 @@
         return $recordSet; 
 	}    
     
-    public function guardarFactura($Id_EmpresaCompra, $ValorFactura, $Id_EmpresaProvee, $id_modopago, $fecha, $Estado)
+    public function guardarFactura($Id_EmpresaCompra, $Id_EmpresaProvee, $id_modopago, $fecha, $Estado)
     {
         global $conexion;
         $conexion ->conectarAdo();
         
         $cadena = "INSERT INTO factura
-                (Id_EmpresaCompra, ValorFactura, Id_EmpresaProvee, id_modopago, fecha, Estado)
-                VALUES (?, ?, ?, ?, ?, ?)";
+                (Id_EmpresaCompra, Id_EmpresaProvee, id_modopago, fecha, Estado)
+                VALUES (?, ?, ?, ?, ?);";
         
-        $arr = array($Id_EmpresaCompra, $ValorFactura, $Id_EmpresaProvee, $id_modopago, $fecha, $Estado);
+        $arr = array($Id_EmpresaCompra, $Id_EmpresaProvee, $id_modopago, $fecha, $Estado);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        
+        if($conexion->ObtenerError() != "" )
+        {
+            return "error";
+        }
+        else
+        {
+            return "";   
+        }
+        $conexion -> Close();        
+    }
+		
+    public function editarFactura($IdFactura, $Id_EmpresaCompra, $Id_EmpresaProvee, $id_modopago, $fecha)
+    {
+        global $conexion;
+        $conexion ->conectarAdo();
+        
+        $cadena = "UPDATE factura SET
+                Id_EmpresaCompra = ?, 
+				Id_EmpresaProvee = ? , 
+				id_modopago = ?, 
+				fecha = ?
+				WHERE Id = ?";
+        
+        $arr = array($Id_EmpresaCompra, $Id_EmpresaProvee, $id_modopago, $fecha, $IdFactura);
         $recordSet = $conexion->EjecutarP($cadena, $arr);
         
         
@@ -209,34 +250,34 @@
         $conexion->conectarAdo();
 		
         $cadena = "   
-            SELECT 
-				rf.Id,
-				rf.id_referencia, 
-				f.id facturaId, 
-            	r.Nombre,
-				te.Id TipoEmpaqueId,
-            	te.descripcion TipoEmpaque,
-            	rf.cantidad,
-            	CAST(rf.valorunitario AS UNSIGNED) valorunitario,
-            	rf.descuento,
-            	rf.iva, 
-            	rf.Utilidad,
-            	CAST(rf.valortotal AS UNSIGNED) valortotal,
-				CASE WHEN ( rf.asumeiva = 1 ) 
-						THEN 'Si'
-						ELSE 'No'
-					END asumeiva
-            FROM referenciafactura rf 
-            	INNER JOIN factura f
-            		ON rf.id_factura = f.id
-            	INNER JOIN referencia r
-            		ON rf.id_referencia = r.id
-            	INNER JOIN tipoempaque te 
-            		ON te.id = rf.id_tipoempaque
-            WHERE f.id = ?
-            AND r.estado = 1
-            AND f.estado = 1
-			ORDER BY rf.id ASC
+							
+				SELECT 
+					rf.Id,
+					rf.id_referencia, 
+					f.id facturaId, 
+				r.Nombre,
+					te.Id TipoEmpaqueId,
+				te.descripcion TipoEmpaque,
+				rf.cantidad,
+				CAST(rf.valorunitario AS UNSIGNED) valorunitario,
+				rf.descuento,
+				rf.iva, 
+				CAST(rf.valortotal AS UNSIGNED) valortotal,
+					CASE WHEN ( rf.asumeiva = 1 ) 
+							THEN 'Si'
+							ELSE 'No'
+						END asumeiva
+				FROM referenciafactura rf 
+				INNER JOIN factura f
+				ON rf.id_factura = f.id
+				INNER JOIN referencia r
+				ON rf.id_referencia = r.id
+				INNER JOIN tipoempaque te 
+				ON te.id = rf.id_tipoempaque
+				WHERE f.id = ?
+				AND r.estado = 1
+				AND f.estado = 1
+				ORDER BY rf.id ASC
 			"; 
 				
         $arr = ($id_factura);
@@ -291,9 +332,9 @@
 		global $conexion;
         $conexion->conectarAdo();
 		
-        $cadena = "      				
+        $cadena = "      		
 				SELECT Id, 
-				nombre 
+				CONCAT(codigo,' - ', nombre) nombre 
 				FROM referencia 
 				WHERE Estado = 1
 				ORDER BY nombre ASC
@@ -323,30 +364,39 @@
         return $recordSet; 
 	}
 	
-	public function GuardaReferenciaFactura($id_referencia, $Id_factura, $id_tipoempaque, $cantidad, $ValorUnitario, $descuento, $Iva, $Utilidad, $ValorTotal, $asumeiva)
+	public function GuardaReferenciaFactura($id_referencia, $Id_factura, $id_tipoempaque, $cantidad, $ValorUnitario, $descuento, $Iva, $ValorTotal, $asumeiva)
 	{
 		global $conexion;
         $conexion->conectarAdo();
 		
         $cadena = " 
-				INSERT INTO referenciafactura
-				(id_referencia, Id_factura, id_tipoempaque, cantidad, ValorUnitario, descuento, Iva, Utilidad, ValorTotal, asumeiva)
-				VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-				
-				
+				CALL SP_GuardaReferenciaFacturaActulizaInventario(?, ?, ?, ?, ?, ?, ?, ?, ?);
 				"; 
         
-		$arr = array($id_referencia, $Id_factura, $id_tipoempaque, $cantidad, $ValorUnitario, $descuento, $Iva, $Utilidad, $ValorTotal, $asumeiva);
+		$arr = array($id_referencia, $Id_factura, $id_tipoempaque, $cantidad, $ValorUnitario, $descuento, $Iva, $ValorTotal, $asumeiva);
         $recordSet = $conexion->EjecutarP($cadena, $arr);   
 		
-		
+		echo $conexion->ObtenerError() ;
 		if($conexion->ObtenerError() != "" )
         {
             return "error";
         }
         else
         {
-            return "";   
+			$mensaje = "";        
+			while(!$recordSet->EOF)
+			{        
+				$mensaje=$recordSet->fields[0];
+				$recordSet->MoveNext();
+			}       
+			
+			if($mensaje == "error")
+			{
+				return "error";
+			}
+			else{
+				return "";
+			}         
         }
         $conexion->Close();
 	}
@@ -386,36 +436,49 @@
         $conexion->Close();
 	}
 
-	public function EditarReferenciaFactura($id_referenciafac, $id_referencia, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $TB_utilidad, $valorTotalFinal, $asumeiva)
+	public function EditarReferenciaFactura($id_referenciafac, $id_referencia, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $valorTotalFinal, $asumeiva)
 	{
 		global $conexion;
         $conexion->conectarAdo();
 		
         $cadena = " 								
-				UPDATE  referenciafactura SET
-				id_referencia = ?,
-				id_tipoempaque = ?, 
-				cantidad = ?, 
-				ValorUnitario = ?,  
-				descuento = ?, 
-				Iva = ?, 
-				Utilidad = ?,  
-				ValorTotal = ?, 
-				asumeiva = ?
-				WHERE id = ? 
+				CALL SP_EditarReferenciaFacturaActualizaInventario(?,
+				?, 
+				?, 
+				?,  
+				?, 
+				?, 
+				?, 
+				?,
+				?);
 				"; 
         
-		$arr = array($id_referencia, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, $TB_descuento, $TB_iva, $TB_utilidad, $valorTotalFinal, $asumeiva, $id_referenciafac);
+		$arr = array($id_referencia, $id_tipoempaque, $TB_cantidad, $TB_valorUnitario, 
+		$TB_descuento, $TB_iva, $valorTotalFinal, $asumeiva, $id_referenciafac);
         $recordSet = $conexion->EjecutarP($cadena, $arr);   
 		
 		
 		if($conexion->ObtenerError() != "" )
         {
+			echo $conexion->ObtenerError();
             return "error";
         }
         else
         {
-            return "";   
+			$mensaje = "";        
+			while(!$recordSet->EOF)
+			{        
+				$mensaje=$recordSet->fields[0];
+				$recordSet->MoveNext();
+			}       
+			
+			if($mensaje == "error")
+			{
+				return "error";
+			}
+			else{
+				return "";
+			}          
         }
         $conexion->Close();
 	}

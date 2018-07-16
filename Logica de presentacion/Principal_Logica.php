@@ -51,6 +51,14 @@ if(isset($_POST['desea']))
 			jsInclude2();
                 
         }break;   
+		
+		case 'cargarInicio':{
+                        
+            $objPresentacion->dashboard();
+            //jsInclude();			
+			 jsInclude3();
+			jsInclude2();
+        }break;   
         
         case 'validaUsuario':{
             
@@ -175,9 +183,11 @@ function jsInclude()
         <script src="../js/maps.js"></script>
         
         <script src="../js/datatables.min.js"></script>
-        <script src="../js/jszip.min.js"></script>        
+        <script src="../js/jszip.min.js"></script>      
+        <script src="../js/bootstrap-datetimepicker.js"></script>      
+        <script src="../js/bootstrap-datetimepicker.es.js"></script>        
         <script type="text/javascript" src="../datatables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
-        <script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+        <!--<script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>-->
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.html5.min.js"></script>
@@ -194,6 +204,39 @@ function jsInclude2()
 {
     ?>     
         <script src="../js/jsSitio/Principal.js"></script>     
+    <?php
+}
+
+
+
+function jsInclude3()
+{
+    ?>  
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>	
+        <script src="../node_modules/chart.js/dist/Chart.min.js"></script>
+        <script src="../js/off-canvas.js"></script>
+        <script src="../js/hoverable-collapse.js"></script>
+        <script src="../js/misc.js"></script>
+        <script src="../js/chart.js"></script>
+        <script src="../js/maps.js"></script>
+        <!--
+		<script src="../node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
+        
+        
+        <script src="../js/datatables.min.js"></script>
+        <script src="../js/jszip.min.js"></script>      
+        <script src="../js/bootstrap-datetimepicker.js"></script>      
+        <script src="../js/bootstrap-datetimepicker.es.js"></script>        
+        <script type="text/javascript" src="../datatables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
+        <!--<script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>-->
+        <!--<script type="text/javascript" src="../datatables/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
+        <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.responsive.js"></script>
+            
+            <script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
+            <script src="../selectize.js-master/examples/js/index.js"></script>
+		-->	
     <?php
 }
 ?>

@@ -37,14 +37,21 @@ class usuarioData {
         global $conexion;
         $conexion->conectarAdo();
         
-        $cadena = "SELECT * FROM usuario WHERE Correo = ? AND clave = ?;";
+        $cadena = "call sp_usuarioLogin(?,?)";
         $arr = array($usuario, $clave);
         
         $recordSet = $conexion->EjecutarP($cadena, $arr);
+		
+        if($conexion->ObtenerError() != "" )
+        {
+			return $conexion->ObtenerError();
+        }
+        else
+        {
+			return $recordSet;
+		}
         
-        $conexion->Close();              
-                       
-        return $recordSet; 
+        $conexion->Close();   
     }
     
     public function consultarUsuario($correo, $clave)

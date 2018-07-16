@@ -11,10 +11,10 @@ class Referencias{
     function mostrarReferencias(){
     
 		header('Content-Type:text/html; charset=iso-8859-1');
-	?>  
+		?>  
         
         <input type="hidden" id="id_referencia" name="id_referencia" value="" /> 
-        <div class="content-wrapper" style="width: 80% !important;">
+        <div class="content-wrapper" style="width: 70% !important;">
             <h3 class="text-primary mb-4">Referencias</h3>
             
             <div class="row mb-2">
@@ -64,17 +64,31 @@ class Referencias{
         <div class="content-wrapper" style="width: 90% !important;">
             <h3 class="text-primary mb-4">Agregar Referencia</h3>            
            <form id="referencia">                
-                <input type="hidden" id="desea" name="desea" value="" />                                              
-                <div class="row">
+                <input type="hidden" id="desea" name="desea" value="" /> 
+
+				<div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="TB_referencia">Código Referencia</label> 
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-truck"></i></span>
+                            <input id="TB_referencia" name="TB_referencia" type="text" class="form-control p_input" placeholder="Código Referencia" maxlength="50" />
+                          </div>
+                        </div>
+                    </div>
+                    
                     <div class="col-md-6">
                         <div class="form-group">
                           <label for="TB_nombre">Nombre de referencia</label> 
                           <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-truck"></i></span>
-                            <input id="TB_nombre" name="TB_nombre" type="text" class="form-control p_input" placeholder="Nombre de referencia" />
+                            <input id="TB_nombre" name="TB_nombre" type="text" class="form-control p_input" placeholder="Nombre de referencia" maxlength="50" />
                           </div>
                         </div>
                     </div>
+                </div>		
+				
+                <div class="row">
                     
                     <div class="col-md-6">
                         <div class="form-group">
@@ -87,12 +101,9 @@ class Referencias{
                                                       
                         </div>
                     </div>
-                </div>
-                
-                <div class="row">
-                     <div class="col-md-6">
-                        <div class="form-group">
-                            
+					
+					<div class="col-md-6">
+                        <div class="form-group">                            
                             <label for="id_clasificacion">Clasificación</label>   
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-database"></i></span>                                    
@@ -101,40 +112,31 @@ class Referencias{
                             </div>   
                         </div>
                     </div>
-                    
+                </div>
+                
+                <div class="row">
+                                         
                     <div class="col-md-6">
                         <div class="form-group">
                         <label for="TB_stante">Stante</label>
                           <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-inbox"></i></span>
-                            <input id="TB_stante" name="TB_stante" type="text" class="form-control p_input" placeholder="Stante" />
+                            <input id="TB_stante" name="TB_stante" type="text" class="form-control p_input" placeholder="Stante" maxlength="50"/>
                           </div>
                         </div>
                     </div>
-                </div>                
-
-                <div class="row">
-                    <div class="col-md-6">
+					
+					<div class="col-md-6">
                         <div class="form-group">
                         <label for="TB_piso">Piso</label>
                           <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-institution"></i></span>
-                            <input id="TB_piso" name="TB_piso" type="text" class="form-control p_input" placeholder="Piso" />
+                            <input id="TB_piso" name="TB_piso" type="text" class="form-control p_input" placeholder="Piso" maxlength="50" />
                           </div>
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <div class="form-group">
-                        <label for="TB_stock">Stock</label>
-                          <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-folder-o"></i></span>
-                            <input id="TB_stock" name="TB_stock" type="text" class="form-control p_input" placeholder="Stock" />
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                                                        
+                </div>                
+                            
                 <div class="text-center">
                     <button type="button" onclick="mostrarReferencias(0)" class="btn btn-secondary">Atrás</button>
                     <button type="button" onclick="guardarReferencias()" class="btn btn-primary">Guardar</button>
@@ -146,7 +148,7 @@ class Referencias{
     }
     
     
-    function formularioEditar($Id, $Nombre, $Piso, $Stante, $Stock)
+    function formularioEditar($Id, $Codigo, $Nombre, $Piso, $Stante)
     {
 		header('Content-Type:text/html; charset=iso-8859-1');
         ?>
@@ -154,19 +156,32 @@ class Referencias{
         <div class="content-wrapper" style="width: 90% !important;">
             <h3 class="text-primary mb-4">Editar Referencia</h3>            
            <form id="editarReferencia">                
-                <input type="hidden" id="id_referencia" name="id_referencia" value="<?php echo $Id;?>" />
-                <input type="hidden" id="desea" name="desea" value="" />                                              
+                
+                <input type="hidden" id="desea" name="desea" value="" />  
+                <input type="hidden" id="id_referencia" name="id_referencia" value="<?php echo $Id;?>" />                                              
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                          <label for="TB_nombre">Nombre de referencia</label> 
+                          <label for="TB_referencia">Código Referencia</label> 
                           <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-truck"></i></span>
-                            <input id="TB_nombre" name="TB_nombre" type="text" class="form-control p_input" placeholder="Nombre de referencia" value="<?php echo $Nombre;?>" />
+                            <input id="TB_referencia" name="TB_referencia" type="text" class="form-control p_input" placeholder="Código Referencia" maxlength="50" value="<?php echo $Codigo;?>" />
                           </div>
                         </div>
                     </div>
                     
+                     <div class="col-md-6">
+                        <div class="form-group">
+                          <label for="TB_nombre">Nombre de referencia</label> 
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-truck"></i></span>
+                            <input id="TB_nombre" name="TB_nombre" type="text" class="form-control p_input" placeholder="Nombre de referencia" maxlength="50" value="<?php echo $Nombre;?>" />
+                          </div>
+                        </div>
+                    </div>
+                </div>		
+				<div class="row">
+                   
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="id_tipoempaque">Empaque</label>   
@@ -177,12 +192,9 @@ class Referencias{
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="row">
-                     <div class="col-md-6">
-                        <div class="form-group">
-                            
+					
+					 <div class="col-md-6">
+                        <div class="form-group">                            
                             <label for="id_clasificacion">Clasificación</label>   
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-database"></i></span>                                    
@@ -191,40 +203,31 @@ class Referencias{
                             </div>   
                         </div>
                     </div>
-                    
+                </div>
+                
+                <div class="row">
+                                        
                     <div class="col-md-6">
                         <div class="form-group">
                         <label for="TB_stante">Stante</label>
                           <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-inbox"></i></span>
-                            <input id="TB_stante" name="TB_stante" type="text" class="form-control p_input" placeholder="Stante" value="<?php echo $Stante;?>" />
+                            <input id="TB_stante" name="TB_stante" type="text" class="form-control p_input" placeholder="Stante" maxlength="50" value="<?php echo $Stante;?>" />
                           </div>
                         </div>
                     </div>
-                </div>                
-
-                <div class="row">
-                    <div class="col-md-6">
+					
+					<div class="col-md-6">
                         <div class="form-group">
                         <label for="TB_piso">Piso</label>
                           <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-institution"></i></span>
-                            <input id="TB_piso" name="TB_piso" type="text" class="form-control p_input" placeholder="Piso" value="<?php echo $Piso;?>" />
+                            <input id="TB_piso" name="TB_piso" type="text" class="form-control p_input" placeholder="Piso" maxlength="50" value="<?php echo $Piso;?>" />
                           </div>
                         </div>
                     </div>
-                    
-                    <div class="col-md-6">
-                        <div class="form-group">
-                        <label for="TB_stock">Stock</label>
-                          <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-folder-o"></i></span>
-                            <input id="TB_stock" name="TB_stock" type="text" class="form-control p_input" placeholder="Stock" value="<?php echo $Stock;?>" />
-                          </div>
-                        </div>
-                    </div>
-                </div>
-                                                        
+                </div>                
+                             
                 <div class="text-center">
                     <button type="button" onclick="mostrarReferencias(0)" class="btn btn-secondary">Atrás</button>
                     <button type="button" onclick="editarReferencias()" class="btn btn-primary">Editar</button>

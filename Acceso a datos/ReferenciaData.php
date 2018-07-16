@@ -20,23 +20,30 @@ class referenciaData{
         $conexion->conectarAdo();
 		
         $cadena = "
-                SELECT 
-                	r.Id, 
-                	r.Nombre, 
-                	te.id tipoempaqueId, 
-                	te.descripcion tipoempaque, 
-                	c.id clasificacionId, 
-                	c.descripcion clasificacion, 
-                	r.Stante, 
-                	r.Piso, 
-                	r.Stock, 
-                	r.Estado 
-                FROM referencia r 
-                	LEFT JOIN tipoempaque te
-                		ON r.id_tipoempaque = te.id
-                	LEFT JOIN clasificacion c
-                		ON r.id_clasificacion = c.id
-                WHERE r.estado = 1"; 
+		
+		SELECT 
+			r.Id,
+			r.Codigo,
+			r.Nombre, 
+			te.id tipoempaqueId, 
+			te.descripcion tipoempaque, 
+			c.id clasificacionId, 
+			c.descripcion clasificacion, 
+			r.Stante, 
+			r.Piso, 
+			i.Cantidad,
+			i.CantidadActual,
+			i.CantidadUsada
+		FROM referencia r 
+			LEFT JOIN tipoempaque te
+				ON r.id_tipoempaque = te.id
+			LEFT JOIN clasificacion c
+				ON r.id_clasificacion = c.id
+			LEFT JOIN inventario i
+				ON r.id = i.id_referencia
+		WHERE r.estado = 1
+		ORDER BY r.Id
+		"; 
                 
         $recordSet = $conexion->Ejecutar($cadena);
         
@@ -45,22 +52,14 @@ class referenciaData{
         return $recordSet; 
 	}    
     
-    public function guardarReferencia($nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso, $Stock)
+    public function guardarReferencia($codigo, $nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso)
 	{
 		global $conexion;
         $conexion->conectarAdo();
 		
-        $cadena = "INSERT INTO referencia 
-                    (Nombre, 
-                    id_tipoempaque,
-                    id_clasificacion,
-                    Stante,
-                    piso,
-                    Stock,
-                    Estado)
-                    VALUES(?,?,?,?,?,?,?);"; 
+        $cadena = "call SP_GuardaReferenciaInventario(?,?,?,?,?,?,?);"; 
         
-        $arr = array($nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso, $Stock, 1);
+        $arr = array($codigo, $nombre,$id_tipoempaque, $id_clasificacion, $Stante, $Piso, 1);
         $recordSet = $conexion->EjecutarP($cadena, $arr);
        
         if($conexion->ObtenerError() != "" )
@@ -69,24 +68,20 @@ class referenciaData{
         }
         else
         {
-			$cadena = "SELECT MAX(id) id_referencia FROM referencia;";
-			$recordSet = $conexion->Ejecutar($cadena);
+			$mensaje = "";        
+			while(!$recordSet->EOF)
+			{        
+				$mensaje=$recordSet->fields[0];
+				$recordSet->MoveNext();
+			}       
 			
-			if($conexion->ObtenerError() != "" )
+			if($mensaje == "error")
 			{
-				echo $conexion->ObtenerError();
 				return "error";
 			}
-			else
-			{
-				 $id_referencia = 0;        
-				while(!$recordSet->EOF)
-				{        
-					$id_referencia=$recordSet->fields[0];
-					$recordSet->MoveNext();
-				}   
-				return $id_referencia;   				
-			}		            
+			else{
+				return "";
+			}       
         }
         $conexion -> Close();
 	}    
@@ -189,25 +184,39 @@ class referenciaData{
 	
 	
 	
-    public function editarReferencia($Id, $nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso, $Stock)
+    public function editarReferencia($Id, $Codigo, $nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso)
 	{
 		global $conexion;
         $conexion->conectarAdo();
 		
-        $cadena = "UPDATE referencia SET 
-                    Nombre = ?, 
-                    id_tipoempaque = ?,
-                    id_clasificacion = ?,
-                    Stante = ?,
-                    piso = ?,
-                    Stock = ?
-                    WHERE Id = ?"; 
+        $cadena = "CALL SP_EditarReferenciaInventario(?,?,?,?,?,?,?)"; 
         
-        $arr = array($nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso, $Stock, $Id);
+        $arr = array($Id, $Codigo, $nombre, $id_tipoempaque, $id_clasificacion, $Stante, $Piso);
         $recordSet = $conexion->EjecutarP($cadena, $arr);
         
-        $conexion->Close();
-		
+        
+        if($conexion->ObtenerError() != "" )
+        {
+            return "error";
+        }
+        else
+        {
+            $mensaje = "";        
+			while(!$recordSet->EOF)
+			{        
+				$mensaje=$recordSet->fields[0];
+				$recordSet->MoveNext();
+			}       
+			
+			if($mensaje == "error")
+			{
+				return "error";
+			}
+			else{
+				return "";
+			}          
+        }
+        $conexion -> Close();		
         return $recordSet; 
 	}    
     
@@ -250,8 +259,7 @@ class referenciaData{
 		
         return $recordSet; 
 	}    
-    
-    
+        
     public function consultarTipoEmpaque()
 	{
 		global $conexion;
@@ -284,7 +292,30 @@ class referenciaData{
         $conexion->Close();
 		
         return $recordSet; 
-	} 
+	}
+	
+	
+    public function validarCodigo($codigo)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = "SELECT COUNT(*) FROM referencia WHERE codigo = ?"; 
+                
+        $arr = array($codigo);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        $conexion->Close();
+		
+        $contRefe = 0;        
+		while(!$recordSet->EOF)
+        {        
+            $contRefe=$recordSet->fields[0];
+            $recordSet->MoveNext();
+        }       
+        return $contRefe;    
+	}
+	
 }
 
 ?>

@@ -34,7 +34,7 @@
 		return $ipaddress;
 	}
 
-    public function guardarAuditoria($actividad, $fecha, $usuario)
+    public function guardarAuditoria($actividad, $fecha, $usuario, $data)
     {
         global $conexion;
         $conexion ->conectarAdo();
@@ -43,10 +43,10 @@
 		$ip = "";
 		
         $cadena = "INSERT INTO auditoria
-                (actividad, fecha, usuario, ip)
-                VALUES (?, ?, ?, ?)";
+                (actividad, fecha, usuario, ip, data)
+                VALUES (?, (SELECT CURRENT_TIMESTAMP), ?, ?, ?)";
         
-        $arr = array($actividad, $fecha, $usuario, $ip);
+        $arr = array($actividad, $usuario, $ip, $data);
         $recordSet = $conexion->EjecutarP($cadena, $arr);
         
         

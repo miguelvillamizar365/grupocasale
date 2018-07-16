@@ -18,7 +18,7 @@ class Ado{
         $nomBaseDatos = "grupocasale";
         $nomUsuario = "admin";
         $Clave = "1234";
-        
+		
         
         $con = ADONewConnection('mysqli');
         $con->debug = false;
