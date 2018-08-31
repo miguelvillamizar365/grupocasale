@@ -89,6 +89,66 @@
             return "";   
         }
         $conexion -> Close();        
-    }
+    }	
+	
+	public function consultarInformeFactura($id_factura)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena =		
+		"
+			CALL SP_InformeFactura(?);
+		"; 
+        
+		$arr = array($id_factura);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        $conexion->Close();
+		
+        return $recordSet; 
+	}	
+	
+	public function consultarInformacionEmpresa($id_empresa)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena =		
+		"
+		SELECT NumeroIdentificacion,
+			CodigoVerificacion, 
+			RazonSocial,
+			Direccion,
+			Telefono,
+			Ciudad,
+			Correo
+		FROM empresa
+		WHERE Id = ?
+		"; 
+        
+		$arr = array($id_empresa);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        $conexion->Close();
+		
+		
+        $empresa[] = array();
+        $i=0;
+        
+        while(!$recordSet->EOF)
+        {        
+            $empresa[0]=$recordSet->fields[0];
+            $empresa[1]=$recordSet->fields[1];
+            $empresa[2]=$recordSet->fields[2];
+            $empresa[3]=$recordSet->fields[3];
+            $empresa[4]=$recordSet->fields[4];
+            $empresa[5]=$recordSet->fields[5];
+            $empresa[6]=$recordSet->fields[6];
+            $recordSet->MoveNext();
+            $i++;
+        }       
+        return $empresa;
+	}
  }
 ?>

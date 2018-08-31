@@ -20,7 +20,7 @@ class AlistamientoPreoperacional
                             <br />
                             <br />
                             
-                            <table id="table_alistamiento" class="display" cellspacing="0"></table>
+                            <table id="table_alistamiento" class="cell-border display" cellspacing="0"></table>
 							
                         </div>
                     </div>
@@ -146,7 +146,7 @@ class AlistamientoPreoperacional
 								<br />
 								<br />
 								
-								<table id="table_alistamientoCheckList" class="display" cellspacing="0" >
+								<table id="table_alistamientoCheckList" class="cell-border display" cellspacing="0" >
 								   <thead>
 									  <tr>
 										 <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>

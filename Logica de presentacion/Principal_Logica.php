@@ -27,7 +27,7 @@ if(isset($_POST['desea']))
             
             $usuario = $objData->UsuarioLogin($correo, $clave);
             
-            if($usuario->GetRows()){
+            if($usuario >= 1 ){
                 echo json_encode("1");    
             }
             else
@@ -41,7 +41,7 @@ if(isset($_POST['desea']))
             $correo = $_POST["TB_correo"];
             $clave = $_POST["TB_clave"];
             
-            $usuario = $objData->consultarUsuario($correo, $clave);
+            $usuario = $objData->consultarUsuario($correo);
             
             $_SESSION["id_usuario"] = $usuario[0][0];
             $_SESSION["id_rol"] = $usuario[0][10];
@@ -148,8 +148,17 @@ if(isset($_POST['desea']))
             }
             else
             {
-                $objData->guardarUsuario($nombre, $apellido, $documento, $telefono, $rol, $direccion, $email, $clave );            
-                echo $objPresentacion ->mensajeRedirect("'¡Se han guardado los datos satisfactoriamente !'","redirectLogin()");    
+                $error = $objData->guardarUsuario($nombre, $apellido, $documento, $telefono, $rol, $direccion, $email, (password_hash($clave,PASSWORD_DEFAULT)) );            
+                
+				if($error != "")                
+				{
+					header('HTTP/1.1 500');
+					echo "¡Se ha generado un error al guardar la información! ";    
+				}
+				else
+				{
+					echo $objPresenta ->mensajeRedirect("'¡Se han guardado los datos satisfactoriamente !'","redirectLogin()");    
+				}
             }
             
         }break;
@@ -193,8 +202,9 @@ function jsInclude()
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.html5.min.js"></script>
         <script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.responsive.js"></script>
             
-            <script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
-            <script src="../selectize.js-master/examples/js/index.js"></script>
+        <script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
+        <script src="../selectize.js-master/examples/js/index.js"></script>
+		<script src="../js/jquery.blockUI.js"></script>
 			
     <?php
 }

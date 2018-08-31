@@ -33,7 +33,10 @@ class referenciaData{
 			r.Piso, 
 			i.Cantidad,
 			i.CantidadActual,
-			i.CantidadUsada
+			i.CantidadUsada,
+			i.ValorUnitario,			
+			i.ValorTotalUsado,			
+			i.ValorTotalActual
 		FROM referencia r 
 			LEFT JOIN tipoempaque te
 				ON r.id_tipoempaque = te.id

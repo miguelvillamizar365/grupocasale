@@ -6,6 +6,49 @@
 
 $(document).ready(function(){
 
+   	$("#B_inicio").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': 'cargarInicio'},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
+	});	
+    	
+	$("#B_informeTiempo").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': 'InformeTiemposMecanico'},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
+	});
+	
+   	$("#B_ordenSalida").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': ''},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
+	});	
+	
+	
    	$("#B_referencias").click(function(event){
 		
 		event.preventDefault();
@@ -32,6 +75,20 @@ $(document).ready(function(){
 				$('.dashboard').html(data);
 			}
 		});		
+	});
+	
+    $("#B_AutorizaFactura").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': ''},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
 	});	
 	
     $("#B_ordenTrabajo").click(function(event){
@@ -47,7 +104,51 @@ $(document).ready(function(){
 			}
 		});		
 	});	
+	
+
+    $("#B_ordenTrabajo").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': ''},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
+	});	
     
+	
+    $("#B_alistamiento").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': ''},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
+	});	
+	
+	$("#B_usuario").click(function(event){
+		
+		event.preventDefault();
+		$.ajax({
+			url:   $(this).attr("href"),
+			type:  'post',
+			dataType:'html',
+			data: { 'desea': ''},
+			success:  function (data) {
+				$('.dashboard').html(data);
+			}
+		});		
+	});	
+	
     function loadReferencias()
     {               
         $.ajax({
@@ -61,6 +162,26 @@ $(document).ready(function(){
     	}); 
     }
     
+	$(document).ajaxStart(function (){
+		$.blockUI({
+			css:{
+				border: 'none',
+				padding:'15px',
+				backgroundColor:'#000',
+				backgroundImage:"../images/loading.gif",
+				'-webkit-border-radius': '10px',
+				'-moz-border-radius': '10px',
+				opacity: .5,
+				color: '#fff'
+			},
+			message :"Procesando",
+			timeout: 0
+		});
+	});
+	
+	$(document).ajaxComplete(function() {
+		$.unblockUI({ fadeOut: 200 });
+	});
 });
 
 function validateEmail(email) {
@@ -148,10 +269,33 @@ function IniciaSesion()
         }
     }    
 }
+	
+
+function AlertaCerrarSesion()
+{      
+	
+	var table = $('#table_referencias').DataTable();
+	var dataItem = table.row($(this).closest('tr')).data();        
+			
+	$("#mensajeConfSesion").html("¿Esta seguro de cerrar sesión?");
+	$("#mensajeConfirmaSession").modal("show");
+}
+
 
 function CerrarSesion()
 {
-    
+	var that = $("#mensajeConfirmaSession");
+        $("body").removeClass("modal-open");
+        $("body").css({"padding-right": "0"});
+        that.removeClass("show");
+        that.css({"display": "none"});
+        $(".modal-backdrop").remove();
+        var bsModal = that.data('bs.modal');
+        bsModal["_isShown"] = false;
+        bsModal["_isTransitioning"] = false;
+        that.data('bs.modal', bsModal);
+		
+		
     $.ajax({
 		url: '../Logica de presentacion/Principal_Logica.php',
 		method: 'post',

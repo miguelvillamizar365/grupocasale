@@ -59,7 +59,15 @@ class OrdenTrabajoData{
 				meca.Nombre mecanico,
 				con.id id_conductor,
 				con.Nombre conductor,
-				o.Observaciones
+				o.Observaciones,
+				o.Estado EstadoId,
+				(CASE WHEN o.Estado = 1 THEN 
+					'Sin Autorizar'
+					  WHEN o.Estado = 0 THEN
+						'Eliminada'
+					  WHEN o.Estado = 2 THEN
+					'Autorizado' 
+				END) AS Estado
 			FROM ordentrabajo o 
 			LEFT JOIN usuario meca
 				ON o.id_mecanico = meca.id 
@@ -211,14 +219,23 @@ class OrdenTrabajoData{
 				rot.valorunitario,
 				rot.valortotal,
 				rot.Utilidad,
-				rot.ValorTotalUtilidad
+				rot.ValorTotalUtilidad,
+				ot.Estado EstadoId,
+				(CASE WHEN ot.Estado = 1 THEN 
+						'Sin Autorizar'
+					  WHEN ot.Estado = 0 THEN
+						'Eliminada'
+					  WHEN ot.Estado = 2 THEN
+						'Autorizado' 
+				END) AS Estado
 			FROM referenciaordentrabajo rot 
 			INNER JOIN referencia r 
 				ON rot.id_referencia = r.id
 			INNER JOIN tipoempaque te
 				ON te.id = rot.id_empaque
-			WHERE rot.Id_ordentrabajo = ?
-                "; 
+			INNER JOIN ordentrabajo ot
+				ON ot.id = rot.Id_ordentrabajo
+			WHERE rot.Id_ordentrabajo = ? "; 
         $arr = array($id_ordentrabajo);
         $recordSet = $conexion->EjecutarP($cadena, $arr);        
         $conexion->Close();		
@@ -234,14 +251,13 @@ class OrdenTrabajoData{
 		
         $cadena = " 
 		SELECT COUNT(*)
-		 FROM referencia r 
-			INNER JOIN referenciafactura rf
-				ON r.Id = rf.Id_referencia
-			INNER JOIN factura f
-				ON rf.Id_factura = f.Id
-		 WHERE r.Estado = 1
-		 AND f.Estado = 1
-		 AND (r.codigo LIKE CONCAT('%', ? ,'%')  OR r.Nombre LIKE CONCAT('%', ? ,'%'))"; 
+		FROM referencia r 
+		INNER JOIN referenciafactura rf
+			ON r.Id = rf.Id_referencia
+		INNER JOIN factura f
+			ON rf.Id_factura = f.Id
+		WHERE r.Estado = 1
+		AND (r.codigo LIKE CONCAT('%', ? ,'%')  OR r.Nombre LIKE CONCAT('%', ? ,'%'))"; 
 		 
         $arr = array($id_referencia, $id_referencia);
         $recordSet = $conexion->EjecutarP($cadena, $arr);        
@@ -268,8 +284,8 @@ class OrdenTrabajoData{
 		SELECT r.Id,
 		r.Codigo,
 		r.Nombre,
-		rf.id_tipoempaque,
-		(SELECT te.Descripcion FROM tipoempaque te WHERE id = rf.id_tipoempaque) tipoempaque,
+		r.id_tipoempaque,
+		(SELECT te.Descripcion FROM tipoempaque te WHERE id = r.id_tipoempaque) tipoempaque,
 		i.CantidadActual Cantidad,
 		CAST(rf.ValorUnitario AS UNSIGNED) ValorUnitario
 		 FROM referencia r 
@@ -280,8 +296,13 @@ class OrdenTrabajoData{
 			INNER JOIN inventario i 
 				ON r.Id = i.Id_referencia
 		 WHERE r.Estado = 1
-		 AND f.Estado = 1
-		 AND (r.codigo LIKE CONCAT('%', ? ,'%') OR r.Nombre LIKE CONCAT('%', ? ,'%'))"; 
+		 AND f.Estado = 2
+		 AND (r.codigo LIKE CONCAT('%', ? ,'%') OR r.Nombre LIKE CONCAT('%', ? ,'%'))
+		 GROUP BY r.Id,
+		r.Codigo,
+		r.Nombre,
+		r.id_tipoempaque,
+		i.CantidadActual;"; 
 		 
         $arr = array( $id_referencia, $id_referencia);
         $recordSet = $conexion->EjecutarP($cadena, $arr);        
@@ -321,79 +342,7 @@ class OrdenTrabajoData{
         }
         $conexion -> Close();
 	}
-	
-	public function ModificarInventario($id_referencia, $cantidad)
-	{
-		global $conexion;
-        $conexion ->conectarAdo();
 		
-        $cadena = "                 
-			SELECT CantidadUsada,
-			ValorTotalUsado,
-			CantidadActual,
-			ValorTotalActual,
-			ValorUnitario
-			FROM inventario
-			WHERE id_referencia = ? "; 
-                
-        $arr = ($id_referencia);
-        $recordSet = $conexion->EjecutarP($cadena, $arr);
-        
-        
-        if($conexion->ObtenerError() != "" )
-        {
-            return "error";
-        }
-        else
-        {
-            $CantidadUsada = 0;
-			$ValorTotalUsado = 0;
-			$CantidadActual = 0;
-			$ValorTotalActual = 0;
-			$ValorUnitario = 0;
-            $i=0;
-            
-            while(!$recordSet->EOF)
-            {        
-                $CantidadUsada = $recordSet->fields[0];
-                $ValorTotalUsado = $recordSet->fields[1];
-                $CantidadActual = $recordSet->fields[2];
-                $ValorTotalActual = $recordSet->fields[3];
-                $ValorUnitario = $recordSet->fields[4];
-                $recordSet->MoveNext();
-                $i++;
-            }       
-		
-			
-			$cadena = "
-					UPDATE inventario SET
-					CantidadActual = ?,
-					ValorTotalActual = ?,
-					CantidadUsada = ?,
-					ValorTotalUsado = ?
-					WHERE id_referencia = ? ";
-			
-			$arr = array(($CantidadActual - $cantidad),  //CantidadActual
-						(($CantidadActual - $cantidad) * $ValorUnitario), //ValorTotalActual
-						($CantidadUsada + $cantidad), //CantidadUsada
-						(($CantidadUsada + $cantidad) * $ValorUnitario), //ValorTotalUsado
-						$id_referencia);
-			$recordSet = $conexion->EjecutarP($cadena, $arr);
-			
-			
-			if($conexion->ObtenerError() != "" )
-			{
-				return $conexion->ObtenerError();
-			}
-			else
-			{
-				return "";   
-			}
-		}
-        $conexion -> Close();
-	}
-	
-	
 	public function ObtenerActividades($id_orden)
 	{
 		global $conexion;
@@ -401,15 +350,27 @@ class OrdenTrabajoData{
 		
         $cadena = " 
 		SELECT 	aot.Id, 
+			aot.Id_actividad,
 			(SELECT a.Nombre FROM Actividad a WHERE a.id = aot.Id_actividad) actividad, 
+			aot.Id_mecanico,
 			(SELECT u.Nombre FROM usuario u WHERE u.id = aot.Id_mecanico ) mecanico, 
 			aot.Tiempo, 
 			(aot.Valor) Valor, 
 			aot.Utilidad, 
 			aot.ValorTotalUtilidad,
 			DATE_FORMAT(aot.Fecha, '%Y/%m/%d %H:%i') Fecha,				
-			aot.Observaciones	 
+			aot.Observaciones,
+			ot.Estado EstadoId,
+			(CASE WHEN ot.Estado = 1 THEN 
+				'Sin Autorizar'
+				  WHEN ot.Estado = 0 THEN
+					'Eliminada'
+				  WHEN ot.Estado = 2 THEN
+				'Autorizado' 
+			END) AS Estado
 		FROM actividadordentrabajo aot
+		INNER JOIN ordentrabajo ot
+			ON aot.id_ordentrabajo = ot.Id
 			WHERE aot.id_ordentrabajo = ?"; 
 		 
         $arr = array($id_orden);
@@ -418,7 +379,6 @@ class OrdenTrabajoData{
 		
         return $recordSet; 
 	}
-	
 	
 	public function consultarActividad()
 	{
@@ -531,5 +491,37 @@ class OrdenTrabajoData{
         $conexion -> Close();
 	}
 	
+	
+	
+	public function GuardarEditarActividades($Id, $Id_actividad, $id_mecanico, $Tiempo, $Valor, $Fecha, $Observaciones, $utilidad, $valorTotalUtilidad)
+	{
+		global $conexion;
+        $conexion ->conectarAdo();
+        
+        $cadena = "
+				UPDATE actividadordentrabajo SET
+				Id_actividad = ?,
+				id_mecanico = ?, 
+				Tiempo = ?, 
+				Valor = ?, 
+				Fecha = ?,  
+				Observaciones = ?, 
+				Utilidad = ?, 
+				ValorTotalUtilidad = ?
+				WHERE Id = ?";
+        
+        $arr = array($Id_actividad, $id_mecanico, $Tiempo, $Valor, $Fecha, $Observaciones, $utilidad, $valorTotalUtilidad, $Id);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);        
+        
+        if($conexion->ObtenerError() != "" )
+        {
+            return $conexion->ObtenerError();
+        }
+        else
+        {
+            return "";   
+        }
+        $conexion -> Close();
+	}
 }
 ?>

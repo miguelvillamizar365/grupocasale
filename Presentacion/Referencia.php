@@ -14,7 +14,7 @@ class Referencias{
 		?>  
         
         <input type="hidden" id="id_referencia" name="id_referencia" value="" /> 
-        <div class="content-wrapper" style="width: 70% !important;">
+        <div class="content-wrapper" style="width: 65% !important;">
             <h3 class="text-primary mb-4">Referencias</h3>
             
             <div class="row mb-2">
@@ -26,7 +26,9 @@ class Referencias{
                             <br />
                             <br />
                             
-                            <table id="table_referencias" class="display" cellspacing="0"></table>
+                            <table id="table_referencias" class="cell-border display" cellspacing="0"></table>
+							
+							<label id="L_total" name="L_total" text="0" >0.00</label>
                         </div>
                     </div>
                 </div>                    

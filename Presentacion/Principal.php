@@ -18,7 +18,6 @@ class Principal
             <head>
               <!-- Required meta tags -->
               <!--<meta charset="utf-8" />-->
-              
 			  
               <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
               <title>Grupo Casale</title>
@@ -38,77 +37,75 @@ class Principal
               
             </head>
             
-            <body>
-                
-            <div class="row1">
-              <div class="container-scroller">
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="content-wrapper full-page-wrapper d-flex align-items-center">
-                      <div class="card col-lg-4 offset-lg-4">
-                        <div class="card-block">
-                          <h3 class="card-title text-primary text-left mb-5 mt-4">Mantenimiento</h3>
-                          <form id="login"> 
-                            <input type="hidden" id="desea" name="desea" value="" />
-                            <div class="form-group">
-                              <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                <input id="TB_correo" name="TB_correo" type="text" class="form-control p_input" placeholder="Correo electrónico" />
-                              </div>
-                            </div>
-                            <div class="form-group">
-                              <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                                <input id="TB_clave" name="TB_clave" type="password" class="form-control p_input" placeholder="Clave" />
-                              </div>
-                            </div>
-                                                                 
-                            <div class="text-center">
-                              <input type="button" onclick="registrarUsuario()" class="btn btn-secondary" value="Registrarse" />
-                              <input type="button" onclick="IniciaSesion()" class="btn btn-primary" value="Iniciar Sesión" />
-                            </div>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row2">
-            
-            </div>
-                            
-            <div class="row3">
-            
-            </div>
-              
-            <div class="modal fade" id="mensajeEmergente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel">Mensaje de aplicación</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  </div>
-                  <div class="modal-body">
-                    <div id="mensaje">
-                    
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <script src="../node_modules/jquery/dist/jquery.min.js"></script>
-            <script src="../node_modules/tether/dist/js/tether.min.js"></script>
-            <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-            
-			<script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
-			<script src="../selectize.js-master/examples/js/index.js"></script>
+            <body>					
+				<div class="row1">
+				  <div class="container-scroller">
+					<div class="container-fluid">
+					  <div class="row">
+						<div class="content-wrapper full-page-wrapper d-flex align-items-center">
+						  <div class="card col-lg-4 offset-lg-4">
+							<div class="card-block">
+							  <h3 class="card-title text-primary text-left mb-5 mt-4">Mantenimiento</h3>
+							  <form id="login"> 
+								<input type="hidden" id="desea" name="desea" value="" />
+								<div class="form-group">
+								  <div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-user"></i></span>
+									<input id="TB_correo" name="TB_correo" type="text" class="form-control p_input" placeholder="Correo electrónico" />
+								  </div>
+								</div>
+								<div class="form-group">
+								  <div class="input-group">
+									<span class="input-group-addon"><i class="fa fa-lock"></i></span>
+									<input id="TB_clave" name="TB_clave" type="password" class="form-control p_input" placeholder="Clave" />
+								  </div>
+								</div>
+																	 
+								<div class="text-center">
+								  <input type="button" onclick="registrarUsuario()" class="btn btn-secondary" value="Registrarse" />
+								  <input type="button" onclick="IniciaSesion()" class="btn btn-primary" value="Iniciar Sesión" />
+								</div>
+							  </form>
+							</div>
+						  </div>
+						</div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				
+				<div class="row2">				
+				</div>
+								
+				<div class="row3">				
+				</div>
+				  
+				<div class="modal fade" id="mensajeEmergente" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<h4 class="modal-title" id="myModalLabel">Mensaje de aplicación</h4>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					  </div>
+					  <div class="modal-body">
+						<div id="mensaje">
+						
+						</div>
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				
+				<script src="../node_modules/jquery/dist/jquery.min.js"></script>
+				<script src="../node_modules/tether/dist/js/tether.min.js"></script>
+				<script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+				
+				<script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
+				<script src="../selectize.js-master/examples/js/index.js"></script>
+				<script src="../js/jquery.blockUI.js"></script>
             </body>            
             </html>
         <?php
@@ -152,12 +149,34 @@ class Principal
     function cargaContenido()
     {
 		header('Content-Type:text/html; charset=iso-8859-1');
-        ?>        
+		
+        ?>      
+	 
+			<div class="modal fade" id="mensajeConfirmaSession" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			  <div class="modal-dialog" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h4 class="modal-title" id="myModalLabel">Mensaje de aplicación</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				  </div>
+				  <div class="modal-body">
+					
+					<div id="mensajeConfSesion">
+					
+					</div>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+					<button onclick="CerrarSesion()" type="button" class="btn btn-primary" >Aceptar</button>
+				  </div>
+				</div>
+			  </div>
+			</div> 		
         <div class="container-scroller">
             <!--Navbar-->
             <nav class="navbar bg-primary-gradient col-lg-12 col-12 p-0 fixed-top navbar-inverse d-flex flex-row">
                 <div class="bg-white text-center navbar-brand-wrapper">
-                    <a class="navbar-brand brand-logo" href="#"><img src="../images/logo_star_black.png" /></a>
+                    <a class="navbar-brand brand-logo" href="#"><img src="../images/logo_centro2.jpg" /></a>
                     <a class="navbar-brand brand-logo-mini" href="#"><img src="../images/logo_star_mini.jpg" alt=""></a>
                 </div>
                 <div class="navbar-menu-wrapper d-flex align-items-center">
@@ -173,7 +192,7 @@ class Principal
                         </li>-->
                         <li class="nav-item">   
                             <form id="login"> 
-                                <a class="nav-link" onclick="CerrarSesion()" href="#">
+                                <a class="nav-link" onclick="AlertaCerrarSesion()" href="#">
                                     Cerrar Sesión
                                     <i class="fa fa-window-close"></i>
                                 </a>
@@ -185,6 +204,9 @@ class Principal
                     </button>
                 </div>
             </nav>
+			
+			     
+		
             <!--End navbar-->
             <div class="container-fluid">
                 <div class="row row-offcanvas row-offcanvas-right">
@@ -205,38 +227,40 @@ class Principal
                             </li>
                             <li class="nav-item">
                                 <a id="B_referencias" class="nav-link" href="../Logica de presentacion/Referencia_Logica.php" >
-                                    <img src="../images/icons/2.png" alt="">
-                                    <span class="menu-title">Referencias</span>
+                                    <i class="fa fa-barcode"></i>
+                                    <span class="menu-title"> Referencias</span>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a id="B_facturas" class="nav-link" href="../Logica de presentacion/Factura_Logica.php">
-                                    <img src="../images/icons/2.png" alt="">
+                                    
+									<i class="fa fa-briefcase"></i>
                                     <span class="menu-title">Facturas</span>
                                 </a>
                             </li>
     						<li class="nav-item">
                                 <a id="B_AutorizaFactura" class="nav-link" href="../Logica de presentacion/AutorizaFactura_Logica.php">
-                                    <img src="../images/icons/2.png" alt="">
+                                    
+									<i class="fa fa-check"></i>
                                     <span class="menu-title">Autoriza Factura</span>
                                 </a>
                             </li>
     						<li class="nav-item">
                                 <a id="B_ordenTrabajo" class="nav-link" href="../Logica de presentacion/Orden_Trabajo_Logica.php">
-                                    <img src="../images/icons/2.png" alt="">
+                                    <img src="../images/icons/10.png" alt="">
                                     <span class="menu-title">Orden Trabajo</span>
                                 </a>
                             </li>
     						<li class="nav-item">
                                 <a id="B_ordenSalida" class="nav-link" href="../Logica de presentacion/OrdenSalida_Logica.php">
-                                    <img src="../images/icons/2.png" alt="">
-                                    <span class="menu-title">Orden Salida</span>
+                                    <i class="fa fa-truck"></i>
+									<span class="menu-title"> Orden Salida</span>
                                 </a>
                             </li>
     						<li class="nav-item">
                                 <a id="B_alistamiento" class="nav-link" href="../Logica de presentacion/AlistamientoPreoperacional_Logica.php">
-                                    <img src="../images/icons/2.png" alt="">
-                                    <span class="menu-title">Alistamiento <br /> Preoperacional</span>
+                                    <i class="fa fa-check-square-o"></i>
+                                    <span class="menu-title"> Alistamiento <br /> Preoperacional</span>
                                 </a>
                             </li>
     						<li class="nav-item">
@@ -251,96 +275,95 @@ class Principal
                                     <span class="menu-title">Alertas</span>
                                 </a>
                             </li>
-    						<li class="nav-item">
-                                <a class="nav-link" href="..pages/widgets.html">
-                                    <img src="../images/icons/2.png" alt="">
-                                    <span class="menu-title">Widgets</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="..pages/forms.html">
-                                    <!-- <i class="fa fa-wpforms"></i> -->
-                                    <img src="../images/icons/3.png" alt="">
-                                    <span class="menu-title">Forms</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="..pages/buttons.html">
-                                    <!-- <i class="fa fa-calculator"></i> -->
-                                    <img src="../images/icons/4.png" alt="">
-                                    <span class="menu-title">Buttons</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="..pages/tables.html">
-                                    <!-- <i class="fa fa-table"></i> -->
-                                    <img src="../images/icons/5.png" alt="">
-                                    <span class="menu-title">Tables</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="..pages/charts.html">
-                                    <!-- <i class="fa fa-bar-chart"></i> -->
-                                    <img src="../images/icons/6.png" alt="">
-                                    <span class="menu-title">Charts</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="..pages/icons.html">
-                                    <!-- <i class="fa fa-font"></i> -->
-                                    <img src="../images/icons/7.png" alt="">
-                                    <span class="menu-title">Icons</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="..pages/typography.html">
-                                    <!-- <i class="fa fa-bold"></i> -->
-                                    <img src="../images/icons/8.png" alt="">
-                                    <span class="menu-title">Typography</span>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    						
+							<li class="nav-item">
+                                <a class="nav-link" data-toggle="collapse" href="#collapseInformes" aria-expanded="false" aria-controls="collapseInformes">
                                     <!-- <i class="fa fa-address-book"></i> -->
-                                    <img src="../images/icons/9.png" alt="">
-                                    <span class="menu-title">Sample Pages<i class="fa fa-sort-down"></i></span>
+                                    <img src="../images/icons/10.png" alt="">
+                                    <span class="menu-title">Informes<i class="fa fa-sort-down"></i></span>
                                 </a>
-                                <div class="collapse" id="collapseExample">
+                                <div class="collapse" id="collapseInformes">
                                     <ul class="nav flex-column sub-menu">
                                         <li class="nav-item">
-                                            <a class="nav-link" href="samples/blank_page.html">
-                                          Blank Page
-                                        </a>
+                                            <a id="B_informeTiempo" class="nav-link" href="../Logica de presentacion/Informes_Logica.php">
+											  Informe Tiempos <br /> Mecánico
+											</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="samples/register.html">
-                                          Register
+                                          Actividades
                                         </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="samples/login.html">
-                                          Login
+                                          Presentación
+                                        </a>
+                                        </li>
+										<li class="nav-item">
+                                            <a class="nav-link" href="samples/login.html">
+                                          Clasificación
                                         </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="samples/not-found.html">
-                                          404
+                                          Empresas
                                         </a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="samples/error.html">
-                                          500
+                                          CheckList
                                         </a>
                                         </li>
                                     </ul>
                                 </div>
                             </li>
+    						
                             <li class="nav-item">
-                                <a class="nav-link" href="#">
-                                    <!-- <i class="fa fa-bold"></i> -->
+                                <a class="nav-link" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                    <!-- <i class="fa fa-address-book"></i> -->
                                     <img src="../images/icons/10.png" alt="">
-                                    <span class="menu-title">Settings</span>
+                                    <span class="menu-title">Administración<i class="fa fa-sort-down"></i></span>
                                 </a>
+                                <div class="collapse" id="collapseExample">
+                                    <ul class="nav flex-column sub-menu">
+                                        <li class="nav-item">
+                                            <a id="B_usuario" class="nav-link" href="../Logica de presentacion/Usuario_Logica.php">
+												<i class="fa fa-user"></i>
+												Usuarios
+											</a>
+                                        </li>
+										<li class="nav-item">
+                                            <a class="nav-link" href="samples/blank_page.html">
+                                          Vehiculos
+                                        </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="samples/register.html">
+                                          Actividades
+                                        </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="samples/login.html">
+                                          Presentación
+                                        </a>
+                                        </li>
+										<li class="nav-item">
+                                            <a class="nav-link" href="samples/login.html">
+                                          Clasificación
+                                        </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="samples/not-found.html">
+                                          Empresas
+                                        </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="samples/error.html">
+                                          CheckList
+                                        </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </li>
                         </ul>
                     </nav>
@@ -655,7 +678,7 @@ class Principal
                 <div class="content-wrapper full-page-wrapper d-flex align-items-center">
                   <div class="card col-lg-4 offset-lg-4">
                     <div class="card-block">
-                      <h3 class="card-title text-primary text-left mb-5 mt-4">Login</h3>
+                      <h3 class="card-title text-primary text-left mb-5 mt-4">Mantenimiento</h3>
                       <form id="login"> 
                         <input type="hidden" id="desea" name="desea" value="" />
                         <div class="form-group">
@@ -672,7 +695,7 @@ class Principal
                         </div>
                         <div class="text-center">
                           <input type="button" onclick="registrarUsuario()" class="btn btn-secondary" value="Registrarse" />
-                          <input type="button" onclick="IniciaSesion()" class="btn btn-primary" value="Login" />
+                          <input type="button" onclick="IniciaSesion()" class="btn btn-primary" value="Iniciar Sesión" />
                         </div>
                       </form>
                     </div>
@@ -705,7 +728,7 @@ class Principal
                                   <label for="TB_nombre">Nombre</label>
                                   <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                    <input id="TB_nombre" name="TB_nombre" type="text" class="form-control p_input" placeholder="Nombre" />
+                                    <input id="TB_nombre" name="TB_nombre" type="text" class="form-control p_input" placeholder="Nombre" maxlength="50" />
                                   </div>
                                 </div>
                             </div>
@@ -715,7 +738,7 @@ class Principal
                                   <label for="TB_apellido">Apellido</label>
                                   <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                    <input id="TB_apellido" name="TB_apellido" type="text" class="form-control p_input" placeholder="Apellido" />
+                                    <input id="TB_apellido" name="TB_apellido" type="text" class="form-control p_input" placeholder="Apellido" maxlength="50"  />
                                   </div>
                                 </div>
                             </div>
@@ -727,7 +750,7 @@ class Principal
                                   <label for="TB_documento">Documento</label>
                                   <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-drivers-license-o"></i></span>
-                                    <input id="TB_documento" name="TB_documento" type="text" class="form-control p_input" placeholder="Número de Documento" />
+                                    <input id="TB_documento" name="TB_documento" type="text" class="form-control p_input" placeholder="Número de Documento" maxlength="50"  />
                                   </div>
                                 </div>
                             </div>
@@ -737,7 +760,7 @@ class Principal
                                   <label for="TB_telefono">Teléfono</label>
                                   <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-phone"></i></span>
-                                    <input id="TB_telefono" name="TB_telefono" type="text" class="form-control p_input" placeholder="Teléfono" />
+                                    <input id="TB_telefono" name="TB_telefono" type="text" class="form-control p_input" placeholder="Teléfono" maxlength="50"  />
                                   </div>
                                 </div>
                             </div>
@@ -763,7 +786,7 @@ class Principal
                                   <label for="TB_direccion">Dirección</label>
                                   <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-home"></i></span>
-                                    <input id="TB_direccion" name="TB_direccion" type="text" class="form-control p_input" placeholder="Dirección" />
+                                    <input id="TB_direccion" name="TB_direccion" type="text" class="form-control p_input" placeholder="Dirección" maxlength="50"  />
                                   </div>
                                 </div>
                             </div>
@@ -773,7 +796,7 @@ class Principal
                                   <label for="TB_email">Email</label>
                                   <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-envelope-open"></i></span>
-                                    <input id="TB_email" name="TB_email" type="text" class="form-control p_input" placeholder="Email" />
+                                    <input id="TB_email" name="TB_email" type="text" class="form-control p_input" placeholder="Email" maxlength="50"  />
                                   </div>
                                 </div>
                             </div>
@@ -786,7 +809,7 @@ class Principal
                                   <label for="TB_clave">Clave</label>
                                   <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                                    <input type="password" id="TB_clave" name="TB_clave" type="text" class="form-control p_input" placeholder="Clave" />
+                                    <input type="password" id="TB_clave" name="TB_clave" type="text" class="form-control p_input" placeholder="Clave" maxlength="50"  />
                                   </div>
                                 </div>
                             </div>
@@ -797,7 +820,7 @@ class Principal
                                   <label for="TB_confirmaclave">Confirmar Clave</label>
                                   <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                                    <input type="password" id="TB_confirmaclave" name="TB_confirmaclave" type="text" class="form-control p_input" placeholder="Confirmar Clave" />
+                                    <input type="password" id="TB_confirmaclave" name="TB_confirmaclave" type="text" class="form-control p_input" placeholder="Confirmar Clave" maxlength="50"  />
                                   </div>
                                 </div>
                             </div>

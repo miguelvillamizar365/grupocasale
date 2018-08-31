@@ -202,8 +202,21 @@ if(isset($_POST['desea']))
 		
 		case 'verReferencias':{
 			
-			$noOrden = $_POST["NumeroOrden"];			
-			echo $objPresenta-> verReferencias($noOrden);
+			$noOrden = $_POST["NumeroOrden"];	
+			$Placas = $_POST["Placas"];	
+			$Fecha = $_POST["Fecha"];	
+			$Kilometraje = $_POST["Kilometraje"];	
+			$mecanico = $_POST["mecanico"];	
+			$conductor = $_POST["conductor"];	
+			$Observaciones = $_POST["Observaciones"];
+
+			echo $objPresenta-> verReferencias($noOrden,
+								$Placas,
+								$Fecha,
+								$Kilometraje,
+								$mecanico,
+								$conductor,
+								$Observaciones);
 		}break;
 		
 		case'cargaReferenciaOrdenes':{
@@ -218,12 +231,25 @@ if(isset($_POST['desea']))
 			
 			$id_referencia = $_POST["id_referencia"];
 			$id_orden = $_POST["id_orden"];
+			$Placas = $_POST["Placas"];
+			$Fecha = $_POST["Fecha"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones = $_POST["Observaciones"];
 			
 			$cantidadRef = $objData->ValidarCantidadReferencia($id_referencia);
 			
 			if($cantidadRef > 0)
 			{
-				echo $objPresenta->verReferenciaInfo($id_orden, $id_referencia);
+				echo $objPresenta->verReferenciaInfo($id_orden, 
+												$id_referencia,
+												$Placas,
+												$Fecha,
+												$Kilometraje,
+												$mecanico,
+												$conductor,
+												$Observaciones);
 				
 			}				
 			else{
@@ -250,6 +276,14 @@ if(isset($_POST['desea']))
 			$Id_empaque = $_POST["Id_empaque"];
 			$ValorUnitario = $_POST["ValorUnitario"];
 			$utilidad = $_POST["utilidad"];
+			
+			$Placas = $_POST["Placas"];
+			$Fecha = $_POST["Fecha"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones = $_POST["Observaciones"];
+			
 			$ValorTotal = ($cantidad * $ValorUnitario);
 			$ValorTotalUtilidad = (($cantidad * $ValorUnitario) + (($utilidad * $ValorUnitario)/100) * $cantidad);
 						
@@ -279,24 +313,36 @@ if(isset($_POST['desea']))
 				}
 				else
 				{
-					//$error = $objData-> ModificarInventario($id_referencia, $cantidad);
-					//if($error != "")
-					//{
-					//	header('HTTP/1.1 500');
-					//	echo "¡Se ha generado un error al guardar la información! ".$error;    
-					//}
-					//else
-					//{
-						echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarReferenciasOrden(".$Id_ordentrabajo.",1)");
-					//}
+					echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarReferenciasOrden(
+					'".$Placas."',
+					'".$Fecha."',
+					".$Kilometraje.",
+					'".$mecanico."',
+					'".$conductor."',
+					'".$Observaciones."',
+					".$Id_ordentrabajo.",
+					1)");			
 				}  
 			}			
 		}break;
 		
 		case 'verActividades':{
 			
-			$noOrden = $_POST["NumeroOrden"];			
-			echo $objPresenta-> verActividadesInfo($noOrden);
+			$noOrden = $_POST["NumeroOrden"];
+			$Placas = $_POST["Placas"];
+			$Fecha = $_POST["Fecha"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones = $_POST["Observaciones"];	
+						
+			echo $objPresenta-> verActividadesInfo($noOrden,
+													$Placas,
+													$Fecha,
+													$Kilometraje,
+													$mecanico,
+													$conductor,
+													$Observaciones);
 		}break;
 		
 		
@@ -309,8 +355,21 @@ if(isset($_POST['desea']))
 		}break;
 		
 		case 'crearActividad':{			
-			$id_orden = $_POST["id_orden"];
-			$objPresenta->CrearActividad($id_orden);				
+			$id_orden = $_POST["id_orden"];			
+			$Placas = $_POST["Placas"];
+			$Fecha = $_POST["Fecha"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones = $_POST["Observaciones"];	
+			
+			$objPresenta->CrearActividad($id_orden,
+										$Placas,
+										$Fecha,
+										$Kilometraje,
+										$mecanico,
+										$conductor,
+										$Observaciones);				
 		}break;
 		
 		case 'consultaActividad':{
@@ -335,6 +394,14 @@ if(isset($_POST['desea']))
 			$Fecha = $_POST["TB_fecha"];
 			$Id_orden = $_POST["id_ordentrabajo"];
 			$TB_utilidad = $_POST["TB_utilidad"];
+						
+			$Placas = $_POST["Placas"];
+			$Fecha2 = $_POST["Fecha"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones2 = $_POST["Observaciones"];
+			
 			$Observaciones = $_POST["TB_observaciones"];
             $fechaFormat = explode('/', $Fecha); 
 			$valorUtilidad = (($Valor * $TB_utilidad)/100);
@@ -403,17 +470,165 @@ if(isset($_POST['desea']))
 					}
 					else
 					{
-						echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarActividadesOrden(".$Id_orden.", 1)");
+						echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarOrdenesActividades(".$Id_orden.",
+																															'".$Placas."', 
+																															'".$Fecha2."', 
+																															".$Kilometraje.", 
+																															'".$mecanico."', 
+																															'".$conductor."', 
+																															'".$Observaciones2."',
+																															1)");
 					}
 				}
 			}
 			
+		}break;		
+				
+		case 'editarActividad':{			
+			
+			$id = $_POST["id"];
+			$id_orden = $_POST["id_orden"];
+			$tiempoHoras = $_POST["tiempoHoras"];
+			$fecha = $_POST["fecha"];
+			$tb_valor = $_POST["tb_valor"];
+			$TB_utilidad = $_POST["TB_utilidad"];
+			$TB_observaciones = $_POST["TB_observaciones"];
+			
+			
+			$Placas = $_POST["Placas"];
+			$Fecha2 = $_POST["Fecha2"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones2 = $_POST["Observaciones2"];
+			
+			$objPresenta->EditarActividad($id,	
+										$id_orden,	
+										$tiempoHoras, 
+										$fecha, 
+										$tb_valor, 
+										$TB_utilidad,
+										$TB_observaciones,
+										$Placas,
+										$Fecha2,
+										$Kilometraje,
+										$mecanico,
+										$conductor,
+										$Observaciones2);				
+		}break;
+		
+		case 'guardarEditarActividad':{
+			
+			$id_ActividadOrden = $_POST["id_ActividadOrden"];
+			$id_orden = $_POST["id_ordentrabajo"];
+			$Id_actividad = $_POST["id_actividad"];
+			$id_mecanico = $_POST["id_mecanico"];			
+			$Tiempo = $_POST["TB_tiempo"];
+			$Valor = $_POST["TB_valor"];
+			$Fecha = $_POST["TB_fecha"];
+			$TB_utilidad = $_POST["TB_utilidad"];
+			$Observaciones = $_POST["TB_observaciones"];
+			
+			
+			$Placas = $_POST["Placas"];
+			$Fecha2 = $_POST["Fecha"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones2 = $_POST["Observaciones"];
+			
+            $fechaFormat = explode('/', $Fecha); 
+			$valorUtilidad = (($Valor * $TB_utilidad)/100);
+			$valorTotalUtilidad = ($Valor + $valorUtilidad);
+			
+			if(trim($Id_actividad) == "")
+			{
+				header('HTTP/1.1 500');
+				echo "¡La actividad es obligatoria! ";    
+			}
+			else if(trim($id_mecanico) == "")
+			{
+				header('HTTP/1.1 500');
+				echo "¡El mecánico es obligatorio! ";    
+			}
+			else if(trim($Tiempo) == "")
+			{
+				header('HTTP/1.1 500');
+				echo "¡El tiempo es obligatorio! ";    
+			}			
+			else if(trim($Valor) == "")
+			{
+				header('HTTP/1.1 500');
+				echo "¡El Valor es obligatorio! ";    
+			}
+			else if(trim($Fecha) == "")
+			{
+				header('HTTP/1.1 500');
+				echo "¡La Fecha es obligatoria! ";    
+			}
+			else if(trim($TB_utilidad) == "")
+			{
+				header('HTTP/1.1 500');
+				echo "¡La utilidad es obligatoria! ";    
+			}
+			else if(trim($Observaciones) == "")
+			{
+				header('HTTP/1.1 500');
+				echo "¡La Observacion es obligatoria! ";    
+			}
+			else{
+						
+				$fechaActual = getdate();
+				$error = $objDataAuditoria->guardarAuditoria("Edita actividad orden", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"],
+				( "id_ActividadOrden: ".$id_ActividadOrden.",". 
+				"Id_actividad: ".$Id_actividad.",". 
+				"id_mecanico: ".$id_mecanico.",".
+				"Tiempo: ".$Tiempo.",".
+				"Valor: ".$Valor.",".
+				"Fecha: ".$Fecha.",".
+				"utilidad: ".$TB_utilidad.",".
+				"valorTotalUtilidad: ".$valorTotalUtilidad.",".
+				"Id_orden: ".$id_orden.",".
+				"Observaciones: ".$Observaciones));
+				if($error == "error")
+				{
+					header('HTTP/1.1 500');
+					echo "¡Se ha generado un error al guardar la auditoria! ";    
+				}
+				else
+				{
+					$error = $objData -> GuardarEditarActividades($id_ActividadOrden, $Id_actividad, $id_mecanico, $Tiempo, $Valor, $Fecha, $Observaciones, $TB_utilidad, $valorTotalUtilidad);
+					if(trim($error) != "")
+					{
+						header('HTTP/1.1 500');
+						echo "¡Se ha generado un error al guardar la información! ".$error;    
+					}
+					else
+					{
+						echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarOrdenesActividades(".$id_orden.",
+																															'".$Placas."', 
+																															'".$Fecha2."', 
+																															".$Kilometraje.", 
+																															'".$mecanico."', 
+																															'".$conductor."', 
+																															'".$Observaciones2."',
+																															1)");
+					}
+				}
+			}			
 		}break;		
 		
 		case 'eliminarReferenciaOrden': 
 		{
 			$id_referenciaOrden = $_POST["id_referenciaOrden"];
 			$id_orden = $_POST["id_orden"];
+				
+			$Placas = $_POST["Placas"];
+			$Fecha = $_POST["Fecha"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones = $_POST["Observaciones"];	
 			
 			$error = $objData->EliminarReferenciasOrden($id_referenciaOrden);
 			if(trim($error) != "")
@@ -422,16 +637,29 @@ if(isset($_POST['desea']))
 				echo "¡Se ha generado un error al guardar la información! ".$error;    
 			}
 			else{
-				echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarReferenciasOrden(".$id_orden.",1)");
+				echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarReferenciasOrden('".$Placas."',
+																													'".$Fecha."',
+																													".$Kilometraje.",
+																													'".$mecanico."',
+																													'".$conductor."',
+																													'".$Observaciones."',
+																													".$id_orden.",
+																													1)");			
+				
 			}
-			
 		}break;
-		
-		
+				
 		case 'eliminarActividadOrden': 
 		{
 			$Id_actividadOrden = $_POST["id_actividadOrden"];
 			$id_orden = $_POST["id_orden"];
+			
+			$Placas = $_POST["Placas"];
+			$Fecha = $_POST["Fecha"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones = $_POST["Observaciones"];			
 			
 			$error = $objData->EliminarActividades($Id_actividadOrden);
 			if(trim($error) != "")
@@ -440,9 +668,15 @@ if(isset($_POST['desea']))
 				echo "¡Se ha generado un error al guardar la información! ".$error;    
 			}
 			else{
-				echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarActividadesOrden(".$id_orden.", 1)");
-			}
-			
+				echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarOrdenesActividades(".$id_orden.",
+																														'".$Placas."', 
+																														'".$Fecha."', 
+																														".$Kilometraje.", 
+																														'".$mecanico."', 
+																														'".$conductor."', 
+																														'".$Observaciones."',
+																														1)");
+			}			
 		}break;
 		
         default:{

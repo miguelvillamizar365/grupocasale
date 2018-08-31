@@ -14,6 +14,11 @@ global $objPresenta, $objData, $objDataAuditoria;
 include('../Acceso a datos/OrdenSalidaData.php');
 include('../Acceso a datos/AuditoriaData.php');
 include('../Presentacion/OrdenSalida.php');
+include('../dompdf-master/lib/html5lib/Parser.php');
+include('../dompdf-master/lib/Cpdf.php');
+include('../dompdf-master/src/Autoloader.php');
+Dompdf\Autoloader::register();
+use Dompdf\Dompdf;
 
 $objPresenta= new OrdenSalida();
 $objData = new OrdenSalidaData();
@@ -43,6 +48,50 @@ if(isset($_POST['desea']))
 			}			
 		}break;
 		
+		case 'ExportarInformeOrdenTrabajo':{
+			
+            $id_orden = $_POST["id_orden"];
+			$Placas = $_POST["Placas"];
+			$Fecha = $_POST["Fecha"];
+			$ValorTotalReferencia = $_POST["ValorTotalReferencia"];
+			$ValorTotalUtilidadReferencia = $_POST["ValorTotalUtilidadReferencia"];
+			$ValorTotalActividad = $_POST["ValorTotalActividad"];
+			$ValorTotalUtilidadActividad = $_POST["ValorTotalUtilidadActividad"];
+			$Kilometraje = $_POST["Kilometraje"];
+			$mecanico = $_POST["mecanico"];
+			$conductor = $_POST["conductor"];
+			$Observaciones = $_POST["Observaciones"];
+			$id_ordenUtilidad = $_POST["id_ordenUtilidad"];
+						
+			$informeDataReferencia = $objData->InformeOrdenTrabajoReferencia($id_orden);
+			$informeDataActividad = $objData->InformeOrdenTrabajoActividad($id_orden);
+			
+            $report = $objPresenta->exportarInformeOrdenTrabajo($id_orden, 
+			$Placas, 
+			$Fecha , 
+			$ValorTotalReferencia, 
+			$ValorTotalUtilidadReferencia, 
+			$ValorTotalActividad , 
+			$ValorTotalUtilidadActividad, 
+			$Kilometraje, 
+			$mecanico, 
+			$conductor, 
+			$Observaciones,
+			$informeDataReferencia, 
+			$informeDataActividad,
+			$id_ordenUtilidad);
+
+			
+            $dompdf = new Dompdf();                                              
+            $dompdf->loadHtml($report);                                           
+            
+			//cambia la posicion a horizontal
+            //$dompdf->setPaper('A4', 'landscape');
+            $dompdf->set_option('isHtml5ParserEnabled', true);
+            $dompdf->render();
+            
+            $dompdf->stream("ReporteOrdenSalida".$id_orden.".pdf");
+		}break;
 		
 		default:{
             $objPresenta-> mostrarOrdenTrabajo();

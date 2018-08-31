@@ -318,29 +318,24 @@
 						$Kilometraje, 
 						$id_conductor, 
 						$id_mecanico, 
-						$Observaciones)
+						$Observaciones,
+						$checkList)
 	{
 		global $conexion;
         $conexion ->conectarAdo();
         
         $cadena = "				
-					UPDATE grupocasale.alistamientopreoperacional SET
-						Id_vehiculo = ?, 
-						fecha = ?, 
-						Kilometraje = ?, 
-						id_conductor = ?, 
-						id_mecanico = ?, 
-						Observaciones = ?
-					WHERE Id = ?
+					CALL SP_EditarAlistamientoPreoperacional(?,?,?,?,?,?,?,?);
 				";
         
-        $arr = array($Id_vehiculo, 
+        $arr = array($IdAlistamiento,
+					 $Id_vehiculo, 
 		             $fecha, 
 		             $Kilometraje, 
 		             $id_conductor,
 		             $id_mecanico, 
 		             $Observaciones,
-					 $IdAlistamiento);
+					 $checkList);
 		
         $recordSet = $conexion->EjecutarP($cadena, $arr);
                 

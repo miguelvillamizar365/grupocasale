@@ -14,6 +14,42 @@ $(document).ready(function(){
         data: null,
         scrollX: true,
         columns: [
+			{ 
+                title: "Editar",
+                targets: -1,
+                render: function (data, type, row) {
+					
+					if(row.EstadoId == 1)
+					{
+						return "<button class='A_editar btn btn-primary' >Editar</button>";
+					}
+					else{
+						return "";
+					}                    
+                }
+            },
+            { 
+                title: "Eliminar",
+                targets: -1,
+                render: function (data, type, row) {
+					
+					if(row.EstadoId == 1)
+					{
+						return "<button class='A_eliminar btn btn-secondary' >Eliminar</button>";
+					}
+					else
+					{
+						return "";
+					}
+                }  
+            },
+            { 
+                title: "Ver Detalle",
+                targets: -1,
+                render: function (data, type, row) {
+                    return "<button class='A_detalle btn btn-outline-primary' >Detalle</button>";
+                }  
+            },
             { data: "NumeroFactura",    title: "No. Factura",   },
             { data: "empresaId",    title: "Empresa que compra"},
             { data: "EmpresaCompra",    title: "Empresa que compra",},
@@ -21,51 +57,49 @@ $(document).ready(function(){
 				data: "ValorFactura",
 				title: "Valor Factura",
 				mRender: function (data, type, full) {
-					 var formmatedvalue = data.replace(/\D/g, "");
-						formmatedvalue = formmatedvalue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-					  return formmatedvalue;
+					  
+						var number = data.replace(",", ""),
+						thousand_separator = ',',
+						decimal_separator = '.';
+
+						var	number_string = number.toString(),
+						split	  = number_string.split(decimal_separator),
+						result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+								
+						if(split[1] != "")
+						{
+							result = split[1] != undefined ? result + decimal_separator + split[1] : result;
+						}
+
+						return result;
 					}
 			},
-            { data: "proveedorId",        title: "Proveedor"},
-            { data: "proveedor",        title: "Proveedor",   },
-            { data: "modopagoId",         title: "Modo de pago"},
-            { data: "modopago",         title: "Modo de pago",      },
-            { data: "Fecha",            title: "Fecha",            },
-            { 
-                title: "Editar",
-                targets: -1,
-                render: function (data, type, row) {
-                    return "<button class='A_editar btn btn-primary' >Editar</button>";
-                }
-            },
-            { 
-                title: "Eliminar",
-                targets: -1,
-                render: function (data, type, row) {
-                    return "<button class='A_eliminar btn btn-secondary' >Eliminar</button>";
-                }  
-            },
-            { 
-                title: "Ver Detalle",
-                targets: -1,
-                render: function (data, type, row) {
-                    return "<button class='A_detalle btn btn-danger' >Detalle</button>";
-                }  
-            }
+            { data: "proveedorId",      title: "Proveedor" 		},
+            { data: "proveedor",        title: "Proveedor",   	},
+            { data: "modopagoId",       title: "Modo de pago"	},
+            { data: "modopago",         title: "Modo de pago",  },
+            { data: "Fecha",            title: "Fecha",         },
+            { data: "EstadoId",         title: "EstadoId",      },
+			{ data: "Estado",           title: "Estado",        }
         ],
 		columnDefs: [
-			{
-				targets: [ 1 ],
-				visible: false,
-				searchable: false
-			},
 			{
 				targets: [ 4 ],
 				visible: false,
 				searchable: false
 			},
 			{
-				targets: [ 6 ],
+				targets: [ 7 ],
+				visible: false,
+				searchable: false
+			},
+			{
+				targets: [ 9 ],
+				visible: false,
+				searchable: false
+			},
+			{
+				targets: [ 12 ],
 				visible: false,
 				searchable: false
 			}
@@ -162,7 +196,35 @@ function cargarRefFacturas()
         data: null,
         scrollX: true,
         columns: [
-            { data: "id_referencia",title: "No. Referencia"   },
+			{ 
+                title: "Editar",
+                targets: -1,
+                render: function (data, type, row) {
+                    
+					if(row.EstadoId == 1)
+					{
+						return "<button class='A_editar btn btn-primary' >Editar</button>";
+					}
+					else{
+						return "";
+					}    					
+                }
+            },
+            { 
+                title: "Eliminar",
+                targets: -1,
+                render: function (data, type, row) {
+                   
+					if(row.EstadoId == 1)
+					{
+						return "<button class='A_eliminar btn btn-secondary' >Eliminar</button>";
+					}
+					else{
+						return "";
+					}    				   
+                }  
+            },
+            { data: "codigo",title: "Codigo Referencia"   },
             { data: "Nombre",		title: "Nombre de la referencia"},
             { data: "TipoEmpaqueId",	title: "Tipo de empaque Id"},
 			{ data: "TipoEmpaque",	title: "Tipo de empaque"},
@@ -179,7 +241,6 @@ function cargarRefFacturas()
             { data: "descuento",	title: "Descuento %"   },
 			{ data: "asumeiva",		title: "Asume Iva"  },
             { data: "iva",          title: "Iva %"},
-            { data: "Utilidad", 	title: "Utilidad %"      },
             { 
 				data: "valortotal",	
 				title: "Valor Total",
@@ -188,25 +249,18 @@ function cargarRefFacturas()
 						formmatedvalue = formmatedvalue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 					  return formmatedvalue;
 					}				
-			},
-            { 
-                title: "Editar",
-                targets: -1,
-                render: function (data, type, row) {
-                    return "<button class='A_editar btn btn-primary' >Editar</button>";
-                }
-            },
-            { 
-                title: "Eliminar",
-                targets: -1,
-                render: function (data, type, row) {
-                    return "<button class='A_eliminar btn btn-secondary' >Eliminar</button>";
-                }  
-            }
+			},			
+            { data: "EstadoId",     title: "EstadoId"},			
+            { data: "Estado",       title: "Estado"  },
         ],
 		columnDefs: [
 			{
-				targets: [ 2 ],
+				targets: [ 4 ],
+				visible: false,
+				searchable: false
+			},
+			{
+				targets: [ 12 ],
 				visible: false,
 				searchable: false
 			}
@@ -222,21 +276,36 @@ function cargarRefFacturas()
                },
     	success:  function (data) {
     	     
+				
 			var valorTotal =parseFloat(0);
 			var cont =0;
 			while(cont < data.length)
 			{
-				valorTotal = parseFloat(valorTotal) + parseFloat(data[0].valortotal);
+				valorTotal = parseFloat(valorTotal) + parseFloat(data[cont].valortotal);
 				cont ++;
 			}
 			
 			var formmatedvalue = parseFloat(valorTotal).toString().replace(/\D/g, "");
 			formmatedvalue = formmatedvalue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 			
-			console.log(formmatedvalue);
             $('#table_reffacturas').DataTable().clear().draw().rows.add(data).draw();
 			$("#totalFactura").text("Valor Total: " + formmatedvalue);
     	},
+		complete: function(data)
+		{
+			table = $('#table_reffacturas').DataTable().rows().data()[0];
+		
+			if(table != undefined)
+			{
+				if(table.EstadoId == 1)
+				{
+					$("#B_crear").show();
+				}
+				else{
+					$("#B_crear").hide();
+				}
+			}
+		},
         error: function(ex){
             console.log(ex);
         }
@@ -460,7 +529,6 @@ function guardarFacturas(){
     var mensaje = $("#mensajeEmergente");    
     var empresaCompra = $("#id_empresaCompra").val();
     var proveedor = $("#id_proveedor").val();
-    var valor = $("#TB_valor").val();
     var modopago = $("#id_modopago").val();
     var fecha = $("#TB_fecha").val();
        
@@ -475,9 +543,61 @@ function guardarFacturas(){
         $("#mensaje").html("¡El proveedor es requerida!");
 		mensaje.modal("show");
     }    
-    else if($.trim(valor) == "")
+    else if($.trim(modopago) == "")
     {
-        $("#mensaje").html("¡El valor es requerido!");
+        $("#mensaje").html("¡El modo de pago es requerido!");
+		mensaje.modal("show");
+    }
+    else if($.trim(fecha) == "")
+    {
+        $("#mensaje").html("¡La fecha es requerida!");
+		mensaje.modal("show");
+    }
+    else
+    {
+        $.ajax({
+    		url:   '../Logica de presentacion/Factura_Logica.php',
+    		type:  'post',
+    		dataType:'html',
+    		data: $("#factura").serialize(),
+    		success:  function (data) {
+    			if(data){    			 
+    		      $('.dashboard').html(data);
+    			}
+                else {               
+    				$("#mensaje").html("¡se genero un error al guardar la información!");
+    				mensaje.modal("show"); 
+                }
+    		},
+            error: function(ex){
+                
+                console.log(ex);                
+                $("#mensaje").html(ex.responseText);
+        		mensaje.modal("show");
+            }            
+    	});	   
+    }
+}
+
+function editarFacturas(){
+        
+    $('#desea').val("guardarEditarFactura");
+    
+    var mensaje = $("#mensajeEmergente");    
+    var empresaCompra = $("#id_empresaCompra").val();
+    var proveedor = $("#id_proveedor").val();
+    var modopago = $("#id_modopago").val();
+    var fecha = $("#TB_fecha").val();
+       
+    
+    if(empresaCompra == "")
+    {
+        $("#mensaje").html("¡La empresa que compra es requerida!");
+		mensaje.modal("show");
+    }
+    else if( proveedor == "")
+    {
+        $("#mensaje").html("¡El proveedor es requerida!");
 		mensaje.modal("show");
     }    
     else if($.trim(modopago) == "")
@@ -492,9 +612,6 @@ function guardarFacturas(){
     }
     else
     {
-		valor = valor.replace(",","");
-		$("#TB_valor").val(valor);
-		
         $.ajax({
     		url:   '../Logica de presentacion/Factura_Logica.php',
     		type:  'post',
@@ -679,7 +796,6 @@ function guardarReferenciaFactura()
     var TB_valorUnitario = $("#TB_valorUnitario").val();
     var TB_descuento = $("#TB_descuento").val();
 	var TB_iva = $("#TB_iva").val();
-	var TB_utilidad = $("#TB_utilidad").val();
 	var TB_valortotal = $("#TB_valortotal").val();
        
     
@@ -711,11 +827,6 @@ function guardarReferenciaFactura()
     else if($.trim(TB_iva) == "")
     {
         $("#mensaje").html("¡El iva es requerido!");
-		mensaje.modal("show");
-    }
-    else if($.trim(TB_utilidad) == "")
-    {
-        $("#mensaje").html("¡La utilidad es requerida!");
 		mensaje.modal("show");
     }
     else if($.trim(TB_valortotal) == "")
@@ -764,7 +875,6 @@ function actualizarCalculos()
 	var TB_valorUnitario = $("#TB_valorUnitario").val();
 	var TB_descuento = $("#TB_descuento").val();
 	var TB_iva = $("#TB_iva").val();
-	var TB_utilidad = $("#TB_utilidad").val();
 	
 	
 	TB_valorUnitario = TB_valorUnitario.replace(",","");
@@ -773,13 +883,12 @@ function actualizarCalculos()
 	var valorTotalFinal = (parseInt(TB_cantidad) * parseFloat(TB_valorUnitario));
 	var valorIva = ((parseInt(TB_iva) * valorTotalFinal)/100);
 	var valorDescuento = ((parseInt(TB_descuento)*valorTotalFinal)/100);
-	var valorUtilidad = ((parseInt(TB_utilidad)*valorTotalFinal)/100);
 	
 	if ($('#CB_iva').is(':checked')) {
-		valorTotalFinal = ((valorTotalFinal - valorDescuento) + valorIva + valorUtilidad);
+		valorTotalFinal = ((valorTotalFinal - valorDescuento) + valorIva);
 	}
 	else{
-		valorTotalFinal = ((valorTotalFinal - valorDescuento) + valorUtilidad);
+		valorTotalFinal = ((valorTotalFinal - valorDescuento));
 	}
 	
 	
@@ -787,10 +896,43 @@ function actualizarCalculos()
 	
 	  // format number
 	$("#TB_valortotal").val(function(index, value) {
-		return value
-		.replace(/\D/g, "")
-		.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		var number = value.replace(",", ""),
+		thousand_separator = ',',
+		decimal_separator = '.';
+			
+		var	number_string = number.toString(),
+		split	  = number_string.split(decimal_separator),
+		result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+						
+		if(split[1] != "")
+		{
+			result = split[1] != undefined ? result + decimal_separator + split[1].substring(0, 2) : result;
+		}
+
+		return (result);
 	});
+	
+	ActualizarCambios();
+}
+
+
+ 
+function ActualizarCambios()
+{
+	var number = $("#TB_valorUnitario").val().replace(",", ""),
+		thousand_separator = ',',
+		decimal_separator = '.';
+		
+	var	number_string = number.toString(),
+	split	  = number_string.split(decimal_separator),
+	result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					
+	if(split[1] != "")
+	{
+		result = split[1] != undefined ? result + decimal_separator + split[1] : result;
+	}
+
+	$("#TB_valorUnitario").val(result);
 }
 
 function editarReferenciaFactura()
@@ -805,7 +947,6 @@ function editarReferenciaFactura()
     var TB_valorUnitario = $("#TB_valorUnitario").val();
     var TB_descuento = $("#TB_descuento").val();
 	var TB_iva = $("#TB_iva").val();
-	var TB_utilidad = $("#TB_utilidad").val();
 	var TB_valortotal = $("#TB_valortotal").val();
        
     
@@ -837,11 +978,6 @@ function editarReferenciaFactura()
     else if($.trim(TB_iva) == "")
     {
         $("#mensaje").html("¡El iva es requerido!");
-		mensaje.modal("show");
-    }
-    else if($.trim(TB_utilidad) == "")
-    {
-        $("#mensaje").html("¡La utilidad es requerida!");
 		mensaje.modal("show");
     }
     else if($.trim(TB_valortotal) == "")

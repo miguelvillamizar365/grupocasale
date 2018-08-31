@@ -10,19 +10,16 @@ $(document).ready(function(){
     $('#table_referencias').DataTable({
         
         language: { url: '../datatables/Spanish.json' },
+		dom: 'Bfrtip',
+        buttons: [
+            { extend: 'excelHtml5', footer: true },
+            { extend: 'csvHtml5', footer: true },
+            { extend: 'pdfHtml5', footer: true }
+        ],
         data: null,
         scrollX: true,
         columns: [
-            { data: "Id",               title: "Id Referencia",   },
-            { data: "Nombre",           title: "Nombre",          },
-            { data: "tipoempaqueId",      title: "Tipo Empaque"},
-            { data: "tipoempaque",      title: "Tipo Empaque",    },
-            { data: "clasificacionId",    title: "Clasificacion"},
-            { data: "clasificacion",    title: "Clasificacion",   },
-            { data: "Stante",           title: "Stante",          },
-            { data: "Piso",             title: "Piso",            },
-            { data: "Stock",            title: "Stock",           },
-            { 
+			{ 
                 title: "Editar",
                 targets: -1,
                 render: function (data, type, row) {
@@ -40,18 +37,98 @@ $(document).ready(function(){
                 title: "Imprimir Rotulo",
                 targets: -1,
                 render: function (data, type, row) {
-                    return "<button class='A_imprimir btn btn-danger' >Imprimir</button>";
+                    return "<button class='A_imprimir btn btn-outline-primary' >Imprimir</button>";
                 }  
-            }
+            },
+            { data: "Id"},
+			{ data: "Codigo",           title: "Codigo Referencia"},
+            { data: "Nombre",           title: "Nombre"           },
+            { data: "tipoempaqueId",    title: "Tipo Empaque"     },
+            { data: "tipoempaque",      title: "Tipo Empaque"     },
+            { data: "clasificacionId",  title: "Clasificacion"	  },
+            { data: "clasificacion",    title: "Clasificacion"    },
+            { data: "Stante",           title: "Stante"           },
+            { data: "Piso",             title: "Piso"             },
+			{ data: "Cantidad",         title: "Cantidad Inicial" },
+			{ 
+				data: "ValorUnitario",
+				title: "Valor Unitario",
+				mRender: function (data, type, full) {
+					  
+						var number = data.replace(",", ""),
+						thousand_separator = ',',
+						decimal_separator = '.';
+
+						var	number_string = number.toString(),
+						split	  = number_string.split(decimal_separator),
+						result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+								
+						if(split[1] != "")
+						{
+							result = split[1] != undefined ? result : result;
+						}
+
+						return result;
+					}
+			},
+			{ data: "CantidadActual",   title: "Cantidad Actual", },
+			{ 
+				data: "ValorTotalActual",
+				title: "Valor Total Actual",
+				mRender: function (data, type, full) {
+					  
+						var number = data.replace(",", ""),
+						thousand_separator = ',',
+						decimal_separator = '.';
+
+						var	number_string = number.toString(),
+						split	  = number_string.split(decimal_separator),
+						result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+								
+						if(split[1] != "")
+						{
+							result = split[1] != undefined ? result : result;
+						}
+
+						return result;
+					}
+			},
+			{ data: "CantidadUsada",    title: "Cantidad Usada",  },
+			{ 
+				data: "ValorTotalUsado",
+				title: "Valor Total Usado",
+				mRender: function (data, type, full) {
+					  
+						var number = data.replace(",", ""),
+						thousand_separator = ',',
+						decimal_separator = '.';
+
+						var	number_string = number.toString(),
+						split	  = number_string.split(decimal_separator),
+						result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+								
+						if(split[1] != "")
+						{
+							result = split[1] != undefined ? result : result;
+						}
+
+						return result;
+					}
+			},
         ],
 		columnDefs: [
 			{
-				targets: [ 2 ],
+				targets: [ 3 ],
 				visible: false,
 				searchable: false
 			},
 			{
-				targets: [ 4 ],
+				targets: [ 6 ],
+				visible: false,
+				searchable: false
+			},
+			{
+				targets: [ 8 ],
 				visible: false,
 				searchable: false
 			}
@@ -66,6 +143,29 @@ $(document).ready(function(){
     	success:  function (data) {
     	     
             $('#table_referencias').DataTable().clear().draw().rows.add(data).draw();
+			var valorTotal =parseFloat(0);
+			var cont =0;
+			while(cont < data.length)
+			{
+				valorTotal = parseFloat(valorTotal) + parseFloat(data[cont].ValorTotalActual);
+				cont ++;
+			}
+			
+
+			var number = 
+			thousand_separator = ',',
+			decimal_separator = '.';
+
+			var	number_string = valorTotal.toString(),
+			split	  = number_string.split(decimal_separator),
+			result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+					
+			if(split[1] != "")
+			{
+				result = split[1] != undefined ? result : result;
+			}
+
+			$("#L_total").html("<b> Valor Total Actual: $ "+result+"</b>");
     	},
         error: function(ex){
             console.log(ex);
@@ -88,10 +188,10 @@ $(document).ready(function(){
         	dataType:'html',
         	data: {'desea': 'editarReferencia', 
                    'Id': dataItem.Id, 
+				   'Codigo': dataItem.Codigo, 
                    'Nombre': dataItem.Nombre, 
                    'Piso':dataItem.Piso, 
-                   'Stante':dataItem.Stante, 
-                   'Stock': dataItem.Stock},
+                   'Stante':dataItem.Stante, },
         	success:  function (data) {  
     		  $('.dashboard').html(data);
               cargarListasDesplegables(dataItem.clasificacionId, dataItem.tipoempaqueId);
@@ -129,6 +229,7 @@ $(document).ready(function(){
         	dataType:'html',
         	data: {'desea': 'imprimirReferencia', 
                    'Id': dataItem.Id,
+				   'Codigo': dataItem.Codigo,
                    'articulo': dataItem.Nombre,
                    'stante': dataItem.Stante,
                    'piso': dataItem.Piso },
@@ -265,15 +366,20 @@ function guardarReferencias(){
     
     var mensaje = $("#mensajeEmergente");
     
-    var nombre = $("#TB_nombre").val();
+    var codigo = $("#TB_referencia").val();
+	var nombre = $("#TB_nombre").val();
     var tipoEmpaque = $("#id_tipoempaque").val();
     var clasifica = $("#id_clasificacion").val();
     var stante = $("#TB_stante").val();
     var piso = $("#TB_piso").val();
-    var stock = $("#TB_stock").val();
     
     
-    if($.trim(nombre) == "")
+    if($.trim(codigo) == "")
+    {
+        $("#mensaje").html("¡El código es requerido!");
+		mensaje.modal("show");
+    }    	
+    else if($.trim(nombre) == "")
     {
         $("#mensaje").html("¡El nombre es requerido!");
 		mensaje.modal("show");
@@ -296,11 +402,6 @@ function guardarReferencias(){
     else if($.trim(piso) == "")
     {
         $("#mensaje").html("¡El piso es requerido!");
-		mensaje.modal("show");
-    }
-    else if($.trim(stock) == "")
-    {
-        $("#mensaje").html("¡El stock es requerido!");
 		mensaje.modal("show");
     }
     else
@@ -334,14 +435,19 @@ function editarReferencias(){
     
     var mensaje = $("#mensajeEmergente");
     
+    var codigo = $("#TB_referencia").val();
     var nombre = $("#TB_nombre").val();
     var tipoEmpaque = $("#id_tipoempaque").val();
     var clasifica = $("#id_clasificacion").val();
     var stante = $("#TB_stante").val();
     var piso = $("#TB_piso").val();
-    var stock = $("#TB_stock").val();
     
     
+    if($.trim(codigo) == "")
+    {
+        $("#mensaje").html("¡El código es requerido!");
+		mensaje.modal("show");
+    }    
     if($.trim(nombre) == "")
     {
         $("#mensaje").html("¡El nombre es requerido!");
@@ -365,11 +471,6 @@ function editarReferencias(){
     else if($.trim(piso) == "")
     {
         $("#mensaje").html("¡El piso es requerido!");
-		mensaje.modal("show");
-    }
-    else if($.trim(stock) == "")
-    {
-        $("#mensaje").html("¡El stock es requerido!");
 		mensaje.modal("show");
     }
     else

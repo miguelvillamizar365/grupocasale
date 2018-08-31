@@ -213,13 +213,14 @@ if(isset($_POST['desea']))
         case 'imprimirReferencia':{
             
             $id_referencia = $_POST["Id"];
+			$Codigo = $_POST["Codigo"];
             $articulo = $_POST["articulo"];
             $stante = $_POST["stante"];
             $piso = $_POST["piso"];
             $generator = new \Picqer\Barcode\BarcodeGeneratorPNG();
-            $imagen = '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode($id_referencia, $generator::TYPE_CODE_128)) . '">';
+            $imagen = '<img src="data:image/png;base64,' . base64_encode($generator->getBarcode($Codigo, $generator::TYPE_CODE_128)) . '">';
             
-            echo $objPresenta->mensajeImprimirReferencia($articulo, $stante,$piso, $imagen , $id_referencia, "mostrarReferencias(2)");
+            echo $objPresenta->mensajeImprimirReferencia($articulo, $stante,$piso, $imagen , $Codigo, "mostrarReferencias(2)");
         }break;
         
         case 'exportarReferencia':{

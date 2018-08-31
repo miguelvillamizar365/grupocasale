@@ -250,12 +250,11 @@
         $conexion->conectarAdo();
 		
         $cadena = "   
-							
 				SELECT 
 					rf.Id,
-					rf.id_referencia, 
+					r.codigo, 
 					f.id facturaId, 
-				r.Nombre,
+					r.Nombre,
 					te.Id TipoEmpaqueId,
 				te.descripcion TipoEmpaque,
 				rf.cantidad,
@@ -266,7 +265,15 @@
 					CASE WHEN ( rf.asumeiva = 1 ) 
 							THEN 'Si'
 							ELSE 'No'
-						END asumeiva
+						END asumeiva,
+				f.Estado EstadoId, 
+				(CASE WHEN f.Estado = 1 THEN 
+						'Sin Autorizar'
+						  WHEN f.Estado = 0 THEN
+							'Eliminada'
+						  WHEN f.Estado = 2 THEN
+						'Autorizado' 
+					END) AS Estado
 				FROM referenciafactura rf 
 				INNER JOIN factura f
 				ON rf.id_factura = f.id
@@ -275,8 +282,6 @@
 				INNER JOIN tipoempaque te 
 				ON te.id = rf.id_tipoempaque
 				WHERE f.id = ?
-				AND r.estado = 1
-				AND f.estado = 1
 				ORDER BY rf.id ASC
 			"; 
 				

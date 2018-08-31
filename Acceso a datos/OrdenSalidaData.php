@@ -27,6 +27,7 @@ class OrdenSalidaData{
         $cadena = "     
 					
 			SELECT o.Id,
+				o.Id,
 				o.id_vehiculo,
 				v.Placas,
 				DATE_FORMAT(o.Fecha, '%Y/%m/%d %H:%i') Fecha,
@@ -105,6 +106,52 @@ class OrdenSalidaData{
         else
         {
             return "";   
+        }
+        $conexion -> Close(); 
+	}	
+	
+	
+	public function InformeOrdenTrabajoReferencia($NumeroOrden)
+	{
+		global $conexion;
+        $conexion ->conectarAdo();
+        
+        $cadena = "CALL SP_informeOrdenTrabajoReferencia(?);";
+        
+        $arr = array($NumeroOrden);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        
+        if($conexion->ObtenerError() != "" )
+        {
+            return $conexion->ObtenerError();
+        }
+        else
+        {
+            return $recordSet;   
+        }
+        $conexion -> Close(); 
+	}	
+	
+	
+	public function InformeOrdenTrabajoActividad($NumeroOrden)
+	{
+		global $conexion;
+        $conexion ->conectarAdo();
+        
+        $cadena = "CALL SP_informeOrdenTrabajoActividad(?);";
+        
+        $arr = array($NumeroOrden);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        
+        if($conexion->ObtenerError() != "" )
+        {
+            return $conexion->ObtenerError();
+        }
+        else
+        {
+            return $recordSet;   
         }
         $conexion -> Close(); 
 	}	

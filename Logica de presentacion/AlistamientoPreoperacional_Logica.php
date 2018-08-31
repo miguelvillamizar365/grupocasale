@@ -240,6 +240,8 @@ if(isset($_POST['desea']))
             }
 			else 
 			{
+				$checkList = str_replace('"',"",$checkList );
+				
 				$fechaActual = getdate();
                 $error = $objDataAuditoria->guardarAuditoria("Edita Alistamiento Preoperacional", ($fechaActual["year"] . "/". $fechaActual["mon"] . "/". (intval($fechaActual["mday"]) - 1)), $_SESSION["id_usuario"],
 				"idAlistamiento: ".$idAlistamiento.",".
@@ -248,7 +250,8 @@ if(isset($_POST['desea']))
 				"TB_kilometraje: ".$TB_kilometraje.",". 
 				"id_conductor: ".$id_conductor.",".
 				"id_mecanico: ".$id_mecanico.",".
-				"TB_observaciones: ".$TB_observaciones );
+				"TB_observaciones: ".$TB_observaciones.",".
+				"checkList: ".$checkList);
 				
                 if($error == "error")
                 {
@@ -264,7 +267,8 @@ if(isset($_POST['desea']))
 														$TB_kilometraje, 
 														$id_conductor, 
 														$id_mecanico, 
-														$TB_observaciones);
+														$TB_observaciones,
+														$checkList);
 					
 					if($respuesta != "")
                     {
@@ -272,42 +276,8 @@ if(isset($_POST['desea']))
                         echo "¡Se ha generado un error al guardar la información del alistamiento!";
                     }
                     else
-                    {						
-						//elimino los checkList seleccionados anteriormente						
-						$respuesta = $objData->eliminaCheckListAlistamiento($idAlistamiento);
-						
-						if($respuesta != "")
-						{
-							 header('HTTP/1.1 500');
-							 echo "¡Se ha generado un error al modificar el checkList!";
-						}
-						else
-						{							
-							$cont = 0;
-							$tempError = 0;
-							$checkListArray = json_decode($checkList);
-							
-							while( $cont < count($checkListArray) )
-							{						
-								$respuesta = $objData->guardarCheckListAlistamiento($idAlistamiento, $checkListArray[$cont]);
-								$cont = $cont + 1;
-								
-								if($respuesta == "error")
-								{
-									$tempError = 1;
-								}
-							}
-						
-							if($tempError == 1)
-							{
-							 header('HTTP/1.1 500');
-							 echo "¡Se ha generado un error al guardar los checkList!";
-							}
-							else
-							{
-							 echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarAlistamiento(1)");
-							}
-						}
+                    {			
+						echo $objPresenta->mensajeRedirect("'Los datos se han guardado con exito'", "mostrarAlistamiento(1)");
 					}
 				}			
 			}

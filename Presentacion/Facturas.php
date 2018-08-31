@@ -26,7 +26,7 @@ class Facturas
                             <br />
                             <br />
                             
-                            <table id="table_facturas" class="display" cellspacing="0"></table>
+                            <table id="table_facturas" class="cell-border display" cellspacing="0"></table>
 							
                         </div>
                     </div>
@@ -457,11 +457,11 @@ class Facturas
                 <div class="col-lg-12">                    
                     <div class="card">
                         <div class="card-block">
-                            <button type="button" class="btn btn-primary" onclick="formularioCrearReferenciasFacturas()">Crear Nueva</button>
+                            <button id="B_crear" type="button" class="btn btn-primary" onclick="formularioCrearReferenciasFacturas()">Crear Nueva</button>
                             <br />
                             <br />
                             
-                            <table id="table_reffacturas" class="display" cellspacing="0"></table>
+                            <table id="table_reffacturas" class="cell-border display" cellspacing="0"></table>
 							
 							
 							<br />
