@@ -176,14 +176,13 @@
 						$Kilometraje, 
 						$id_conductor, 
 						$id_mecanico, 
-						$Observaciones,
-						$checkList)
+						$Observaciones)
 	{
 		global $conexion;
         $conexion ->conectarAdo();
         
         $cadena = "				
-					CALL SP_AgregarAlistamientoPreoperacional(?,?,?,?,?,?,?);
+					CALL SP_AgregarAlistamientoPreoperacional(?,?,?,?,?,?);
 				";
         
         $arr = array($Id_vehiculo, 
@@ -191,8 +190,7 @@
 		             $Kilometraje, 
 		             $id_conductor,
 		             $id_mecanico, 
-		             $Observaciones,
-					 $checkList);
+		             $Observaciones);
 		
         $recordSet = $conexion->EjecutarP($cadena, $arr);
            		
@@ -215,7 +213,7 @@
 				return "error";
 			}
 			else{
-				return "";
+				return $mensaje;
 			}         
         }
         $conexion->Close();
@@ -318,14 +316,13 @@
 						$Kilometraje, 
 						$id_conductor, 
 						$id_mecanico, 
-						$Observaciones,
-						$checkList)
+						$Observaciones)
 	{
 		global $conexion;
         $conexion ->conectarAdo();
         
         $cadena = "				
-					CALL SP_EditarAlistamientoPreoperacional(?,?,?,?,?,?,?,?);
+					CALL SP_EditarAlistamientoPreoperacional(?,?,?,?,?,?,?);
 				";
         
         $arr = array($IdAlistamiento,
@@ -334,8 +331,7 @@
 		             $Kilometraje, 
 		             $id_conductor,
 		             $id_mecanico, 
-		             $Observaciones,
-					 $checkList);
+		             $Observaciones);
 		
         $recordSet = $conexion->EjecutarP($cadena, $arr);
                 
@@ -345,9 +341,59 @@
         }
         else
         {
-			return "";
+			$mensaje = "";        
+			while(!$recordSet->EOF)
+			{        
+				$mensaje=$recordSet->fields[0];
+				$recordSet->MoveNext();
+			}       
+			
+			if($mensaje == "error")
+			{
+				return "error";
+			}
+			else{
+				return $mensaje;
+			}         
         }	
         $conexion -> Close();   
 	}	
+	
+	
+    public function consultarAlistamientoCheckListInforme($id_alistamiento)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = 		
+		"				
+			CALL SP_ObtenerCheckAlistamiento(?);
+		"; 
+		$arr = array($id_alistamiento);
+        
+        $recordSet = $conexion->EjecutarP($cadena, $arr);    
+
+		if($conexion->ObtenerError() != "" )
+        {
+            return "error";
+        }
+        else
+        {
+			$alistamiento[][] = array();
+			$i=0;
+			
+			while(!$recordSet->EOF)
+			{        
+				$alistamiento[$i][0]=$recordSet->fields[0];
+				$alistamiento[$i][1]=$recordSet->fields[1];
+				$alistamiento[$i][2]=$recordSet->fields[2];
+				$recordSet->MoveNext();
+				$i++;
+			}       
+			return $alistamiento;  
+        }
+		
+        $conexion->Close();	
+	}
  } 
 ?>

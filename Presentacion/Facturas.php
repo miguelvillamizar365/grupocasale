@@ -14,19 +14,90 @@ class Facturas
 		header('Content-Type:text/html; charset=iso-8859-1');
         ?>                
         <input type="hidden" id="id_factura" name="id_factura" value="" /> 
-        <div class="content-wrapper" style="width: 80% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Facturas</h3>
             
             <div class="row mb-2">
                 <div class="col-lg-12">
                     
                     <div class="card">
-                        <div class="card-block">
+                        <div class="card-body">
                             <button type="button" class="btn btn-primary" onclick="formularioCrearFacturas()">Crear Nueva</button>
                             <br />
                             <br />
-                            
-                            <table id="table_facturas" class="cell-border display" cellspacing="0"></table>
+													  						
+							<div class="row">				  
+								<div class="col-md-6">
+									<div class="form-group">
+									  <label for="TB_fechaIni">Fecha Inicial</label> 
+									  <div class="input-group">
+										
+										<div class="input-group date form_datetime" data-link-field="TB_fechaIni" >
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											<input id="TB_fechaDateIni" class="form-control p_input" type="text" readonly >
+										</div>
+										
+										<input id="TB_fechaIni" name="TB_fechaIni" type="hidden" />
+										
+									  </div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+									  <label for="TB_fechaFin">Fecha Final</label> 
+									  <div class="input-group">
+										
+										<div class="input-group date form_datetime" data-link-field="TB_fechaFin" >
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											<input id="TB_fechaDateFin" class="form-control p_input" type="text" readonly >
+										</div>
+										
+										<input id="TB_fechaFin" name="TB_fechaFin" type="hidden" />
+										
+									  </div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+									  <label for="TB_referencia">Referencia</label> 
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-archive"></i></span>                                    
+											<select style="width: 400px!important;" id="id_referencia" name="id_referencia" class="show-tick form-control" >                                   
+											</select>
+										</div>   
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+
+									</div>
+								</div>
+							</div>	
+				
+							<div class="row">
+								<div class="col-md-12">
+									<button type="button" class="btn btn-primary" onclick="buscarFacturas()">Buscar</button>
+								</div>
+							</div>
+							
+							
+							<div class="row">
+								<div class="col-md-12">
+								<br />
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="col-md-12">
+									<div class="table-responsive">
+										<table id="table_facturas" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+									</div>
+								</div>
+							</div>
+							
 							
                         </div>
                     </div>
@@ -53,6 +124,12 @@ class Facturas
             </div>
           </div>
         </div>   
+		<script>
+		
+		$(document).ready(function(){
+		 cargarFechas();
+		});
+		</script>
         <?php
     }
     
@@ -61,7 +138,7 @@ class Facturas
 		header('Content-Type:text/html; charset=iso-8859-1');
     ?>
 	
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
            <h3 class="text-primary mb-4">Agregar Factura</h3>
             
            <form id="factura">                
@@ -238,7 +315,7 @@ class Facturas
     
 		header('Content-Type:text/html; charset=iso-8859-1');
     ?>
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Editar Factura</h3>
             
            <form id="factura">                
@@ -450,19 +527,19 @@ class Facturas
         ?>        
         <input type="hidden" id="id_factura" name="id_factura" value="" /> 
 		<input type="hidden" id="id_referenciafac" name="id_referenciafac" value="" /> 
-        <div class="content-wrapper" style="width: 80% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Referencias de la Factura</h3>
             
             <div class="row mb-2">
                 <div class="col-lg-12">                    
                     <div class="card">
-                        <div class="card-block">
+                        <div class="card-body">
                             <button id="B_crear" type="button" class="btn btn-primary" onclick="formularioCrearReferenciasFacturas()">Crear Nueva</button>
                             <br />
                             <br />
-                            
-                            <table id="table_reffacturas" class="cell-border display" cellspacing="0"></table>
-							
+                            <div class="table-responsive">
+								<table id="table_reffacturas" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+							</div>
 							
 							<br />
                             <br />
@@ -502,7 +579,7 @@ class Facturas
 	{
 		header('Content-Type:text/html; charset=iso-8859-1');
 		?>
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
            <h3 class="text-primary mb-4">Agregar Referencia de la Factura</h3>
             
            <form id="referenciafactura">                
@@ -751,7 +828,7 @@ class Facturas
 		
 		header('Content-Type:text/html; charset=iso-8859-1');
 		?>
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
            <h3 class="text-primary mb-4">Editar Referencia de la Factura</h3>
             
            <form id="referenciafactura">                

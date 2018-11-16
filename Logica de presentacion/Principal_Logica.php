@@ -16,6 +16,20 @@ $objPresentacion = new Principal();
 $objData = new usuarioData();
 $objData->Conectar();
 
+$time = $_SERVER['REQUEST_TIME'];
+// 300 = 5 minutos
+$timeout_duration = $objData->ConsultaTiempoSesion();
+
+if (isset($_SESSION['LAST_ACTIVITY']) && 
+   ($time - $_SESSION['LAST_ACTIVITY']) > $timeout_duration) {
+	session_unset();
+	session_destroy();
+	session_start();
+	
+    echo "<script> parent.window.location.reload(); </script>";
+}
+$_SESSION['LAST_ACTIVITY'] = $time;    
+
 if(isset($_POST['desea']))
 {
     switch($_POST['desea'])
@@ -44,20 +58,26 @@ if(isset($_POST['desea']))
             $usuario = $objData->consultarUsuario($correo);
             
             $_SESSION["id_usuario"] = $usuario[0][0];
-            $_SESSION["id_rol"] = $usuario[0][10];
-                               
-            $objPresentacion->cargaContenido();
+            $_SESSION["nombre_usuario"] = $usuario[0][1]." ".$usuario[0][2];
+            $_SESSION["id_rol"] = $usuario[0][3];
+			$_SESSION["nombre_rol"] = $usuario[0][4];
+
+			$_SESSION['LAST_ACTIVITY'] = $time;         
+				
+			$MenuLista = $objData->consultarMenuUsuario($_SESSION["id_rol"], $_SESSION["id_usuario"]);
+						
+            $objPresentacion->cargaContenido($MenuLista);
             jsInclude();			
 			jsInclude2();
                 
         }break;   
 		
 		case 'cargarInicio':{
-                        
+                        		
+		
             $objPresentacion->dashboard();
             //jsInclude();			
-			 jsInclude3();
-			jsInclude2();
+			jsInclude3();
         }break;   
         
         case 'validaUsuario':{
@@ -69,10 +89,12 @@ if(isset($_POST['desea']))
         
         case 'cerrarSesion':{
                 
-            unset($_SESSION["id_usuario"]);
-            unset($_SESSION["id_rol"]);
-            session_unset();
-            $objPresentacion->cargaLogin();
+			session_unset();
+			session_destroy();
+			session_start();
+			
+            $objPresentacion->PaginaPrincipal();
+			jsInclude2();
         }break;
         
         case 'limpiaLogin':{
@@ -182,26 +204,32 @@ else
 function jsInclude()
 {
     ?>        
+	
+		<script src="../js/off-canvas.js"></script>
+		<script src="../js/misc.js"></script>
+		<script src="../js/dashboard.js"></script>
+		
+	
         <script src="../node_modules/chart.js/dist/Chart.min.js"></script>
-        <script src="../node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
-        <script src="../js/off-canvas.js"></script>
-        <script src="../js/hoverable-collapse.js"></script>
-        <script src="../js/misc.js"></script>
+        
         <script src="../js/chart.js"></script>
         <script src="../js/maps.js"></script>
         
-        <script src="../js/datatables.min.js"></script>
+        <!-- <script src="../js/datatables.min.js"></script>-->
         <script src="../js/jszip.min.js"></script>      
         <script src="../js/bootstrap-datetimepicker.js"></script>      
         <script src="../js/bootstrap-datetimepicker.es.js"></script>        
         <script type="text/javascript" src="../datatables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
-        <!--<script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>-->
+        
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/dataTables.buttons.min.js"></script>
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.bootstrap4.min.js"></script>
         <script type="text/javascript" src="../datatables/Buttons-1.4.2/js/buttons.html5.min.js"></script>
-        <script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.responsive.js"></script>
-            
+		<script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js"></script>
+        <!--<script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.responsive.js"></script>
+		<script type="text/javascript" src="../datatables/DataTables-1.10.16/js/responsive.bootstrap.js"></script>
+		<!--<script type="text/javascript" src="../datatables/DataTables-1.10.16/js/dataTables.bootstrap.min.js"></script>-->
+			
         <script src="../selectize.js-master/dist/js/standalone/selectize.js"></script>
         <script src="../selectize.js-master/examples/js/index.js"></script>
 		<script src="../js/jquery.blockUI.js"></script>
@@ -221,15 +249,18 @@ function jsInclude2()
 
 function jsInclude3()
 {
-    ?>  
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>	
-        <script src="../node_modules/chart.js/dist/Chart.min.js"></script>
+    ?>  	
         <script src="../js/off-canvas.js"></script>
         <script src="../js/hoverable-collapse.js"></script>
         <script src="../js/misc.js"></script>
         <script src="../js/chart.js"></script>
-        <script src="../js/maps.js"></script>
-        <!--
+		
+		<script src="../node_modules/chart.js/dist/Chart.min.js"></script>
+       <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB5NXz9eVnyJOA81wimI8WYE08kW_JMe8g&callback=initMap" async defer></script>
+        
+		<!--<script type="text/javascript" src="../datatables/DataTables-1.10.16/js/jquery.dataTables.min.js"></script>
+        
+        
 		<script src="../node_modules/perfect-scrollbar/dist/js/perfect-scrollbar.jquery.min.js"></script>
         
         

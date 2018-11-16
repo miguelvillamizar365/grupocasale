@@ -25,9 +25,7 @@ class OrdenSalidaData{
         $conexion->conectarAdo();
 		
         $cadena = "     
-					
-			SELECT o.Id,
-				o.Id,
+					SELECT o.Id,
 				o.id_vehiculo,
 				v.Placas,
 				DATE_FORMAT(o.Fecha, '%Y/%m/%d %H:%i') Fecha,
@@ -44,8 +42,8 @@ class OrdenSalidaData{
 				FROM referenciaordentrabajo ro 
 				WHERE ro.Id_ordentrabajo = o.Id) ValorTotalUtilidadReferencia,
 				(SELECT CASE
-					WHEN SUM(ao.Valor) IS NULL THEN 0
-					ELSE SUM(ao.Valor)
+					WHEN SUM(ao.ValorTotal) IS NULL THEN 0
+					ELSE SUM(ao.ValorTotal)
 					END
 				FROM actividadordentrabajo ao 
 				WHERE ao.Id_ordentrabajo = o.Id) ValorTotalActividad,
@@ -75,7 +73,7 @@ class OrdenSalidaData{
 			LEFT JOIN usuario con
 				ON o.id_conductor = con.id 
 			LEFT JOIN vehiculo v
-				ON o.id_vehiculo = v.id ;
+				ON o.id_vehiculo = v.id ;	
                 "; 
                 
         $recordSet = $conexion->Ejecutar($cadena);

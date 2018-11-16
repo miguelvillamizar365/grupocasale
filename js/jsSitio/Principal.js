@@ -104,21 +104,6 @@ $(document).ready(function(){
 			}
 		});		
 	});	
-	
-
-    $("#B_ordenTrabajo").click(function(event){
-		
-		event.preventDefault();
-		$.ajax({
-			url:   $(this).attr("href"),
-			type:  'post',
-			dataType:'html',
-			data: { 'desea': ''},
-			success:  function (data) {
-				$('.dashboard').html(data);
-			}
-		});		
-	});	
     
 	
     $("#B_alistamiento").click(function(event){
@@ -272,11 +257,7 @@ function IniciaSesion()
 	
 
 function AlertaCerrarSesion()
-{      
-	
-	var table = $('#table_referencias').DataTable();
-	var dataItem = table.row($(this).closest('tr')).data();        
-			
+{   
 	$("#mensajeConfSesion").html("¿Esta seguro de cerrar sesión?");
 	$("#mensajeConfirmaSession").modal("show");
 }
@@ -300,7 +281,7 @@ function CerrarSesion()
 		url: '../Logica de presentacion/Principal_Logica.php',
 		method: 'post',
 		dataType: 'html',
-		data: {'desea': 'cerrarSesion'},
+		data: {'desea': ''},
 		success: function (data) {                 
 			$('.row1').html(data);
             $('.row2').html('');    

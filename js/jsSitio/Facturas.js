@@ -6,17 +6,17 @@
  
  
 $(document).ready(function(){
-
-
+	
+	
     $('#table_facturas').DataTable({
         
         language: { url: '../datatables/Spanish.json' },
         data: null,
         scrollX: true,
         columns: [
-			{ 
+			{ 	
                 title: "Editar",
-                targets: -1,
+                targets: 0,
                 render: function (data, type, row) {
 					
 					if(row.EstadoId == 1)
@@ -30,7 +30,7 @@ $(document).ready(function(){
             },
             { 
                 title: "Eliminar",
-                targets: -1,
+                targets: 0,
                 render: function (data, type, row) {
 					
 					if(row.EstadoId == 1)
@@ -45,7 +45,7 @@ $(document).ready(function(){
             },
             { 
                 title: "Ver Detalle",
-                targets: -1,
+                targets: 0,
                 render: function (data, type, row) {
                     return "<button class='A_detalle btn btn-outline-primary' >Detalle</button>";
                 }  
@@ -82,7 +82,9 @@ $(document).ready(function(){
             { data: "EstadoId",         title: "EstadoId",      },
 			{ data: "Estado",           title: "Estado",        }
         ],
-		columnDefs: [
+		columnDefs: [	
+			{ "width": "150px", "targets": [0,1] },       
+			{ "width": "40px", "targets": [4] },		
 			{
 				targets: [ 4 ],
 				visible: false,
@@ -120,8 +122,79 @@ $(document).ready(function(){
             console.log(ex);
         }
     });    
+	
+	$.ajax({
+		url: '../Logica de presentacion/Factura_Logica.php',
+		method: 'post',
+		dataType: 'json',
+		data: { 'desea': 'consultarReferencias' },
+		success: function (data) {   
+		  
+          for (var i = 0; i < data.length; i++) {            
+             $('#id_referencia').append("<option value=" + data[i][0] + ">" + data[i][1] + "</option>");
+          } 
+		},
+        complete: function()
+        {            
+            $('#id_referencia').selectize({
+            	create: false,
+            	sortField: {
+            		field: 'text',
+            		direction: 'asc'
+            	},
+            	dropdownParent: 'body'
+            }); 
+                 
+        }
+	}); 
  });
  
+ function cargarFechas()
+ {
+	 
+	$("#TB_fechaIni").val(getDate());
+	$("#TB_fechaFin").val(getDate());
+	$("#TB_fechaDateIni").val(getDate());
+	$("#TB_fechaDateFin").val(getDate());
+	$('.form_datetime').datetimepicker({
+		language:  'es',
+		format: 'yyyy/mm/dd hh:ii',
+		weekStart: 1,
+		todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		showMeridian: 1,
+		date: new Date(),
+		icons: {
+		  time: "fa fa-clock-o",
+		  date: "fa fa-calendar",
+		  up: "fa fa-caret-up",
+		  down: "fa fa-caret-down",
+		  previous: "fa fa-caret-left",
+		  next: "fa fa-caret-right",
+		  today: "fa fa-today",
+		  clear: "fa fa-clear",
+		  close: "fa fa-close"
+		}
+	});
+	
+	function getDate()
+	{
+		var fecha = new Date();
+		
+		var dia = fecha.getDate();
+		var mes = fecha.getMonth()+1 > 12 ? 1: fecha.getMonth()+1;
+		var anio = fecha.getFullYear();
+		var hora = fecha.getHours();
+		var minutes = fecha.getMinutes();
+		
+		return anio+"/"+mes+"/"+dia+" "+hora+":"+minutes;
+	}		
+
+ }
+ 
+  
 
 $('#table_facturas').on('click', 'td .A_editar', function (e) {
             
@@ -188,6 +261,38 @@ $('#table_facturas').on( 'click', 'td .A_detalle', function (e) {
         }
     });    
 });
+
+function buscarFacturas()
+{
+	 var fechaInicial = $("#TB_fechaIni").val();
+	 var fechaFinal = $("#TB_fechaFin").val();
+	 var id_referencia = $("#id_referencia").val();
+	 	 
+	if(($("#id_referencia").val() == ""))
+	{
+		 id_referencia = "";
+	}
+	
+	$.ajax({
+		url: '../Logica de presentacion/Factura_Logica.php',
+		type:  'post',
+		dataType:'json',
+		data: {
+				'desea': 'cargaFacturasFiltros',
+				'referencia': id_referencia,
+				'fechaInicial': fechaInicial,
+				'fechaFinal': fechaFinal
+		},
+		success:  function (data) {
+			 
+			$('#table_facturas').DataTable().clear().draw().rows.add(data).draw();
+			
+		},
+		error: function(ex){
+			console.log(ex);
+		}
+	});    
+}
 
 function cargarRefFacturas()
 {
@@ -294,7 +399,7 @@ function cargarRefFacturas()
 		complete: function(data)
 		{
 			table = $('#table_reffacturas').DataTable().rows().data()[0];
-		
+			
 			if(table != undefined)
 			{
 				if(table.EstadoId == 1)

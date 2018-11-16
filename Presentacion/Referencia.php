@@ -14,27 +14,29 @@ class Referencias{
 		?>  
         
         <input type="hidden" id="id_referencia" name="id_referencia" value="" /> 
-        <div class="content-wrapper" style="width: 65% !important;">
-            <h3 class="text-primary mb-4">Referencias</h3>
-            
-            <div class="row mb-2">
-                <div class="col-lg-12">
-                    
-                    <div class="card">
-                        <div class="card-block">
-                            <button type="button" class="btn btn-primary" onclick="formularioCrearReferencias()">Crear Nueva</button>
-                            <br />
-                            <br />
-                            
-                            <table id="table_referencias" class="cell-border display" cellspacing="0"></table>
-							
-							<label id="L_total" name="L_total" text="0" >0.00</label>
-                        </div>
-                    </div>
-                </div>                    
-            </div>               
-        </div>     
         
+		<h3 class="text-primary mb-4">Referencias</h3>
+		
+		<div class="row mb-2">
+			<div class="col-lg-12">
+				
+				<div class="card">
+					<div class="card-body">
+					
+						<button type="button" class="btn btn-primary" onclick="formularioCrearReferencias()">Crear Nueva</button>
+						<br />
+						<br />
+						
+						<div class="table-responsive">
+							<table id="table_referencias" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+						</div>
+						
+						<label id="L_total" name="L_total" text="0" >0.00</label>
+					</div>
+				</div>
+			</div>                    
+		</div>               
+                
         <div class="modal fade" id="mensajeConfirma" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -63,8 +65,8 @@ class Referencias{
 		header('Content-Type:text/html; charset=iso-8859-1');
         ?>
         
-        <div class="content-wrapper" style="width: 90% !important;">
-            <h3 class="text-primary mb-4">Agregar Referencia</h3>            
+        <div class="">
+           <h3 class="text-primary mb-4">Agregar Referencia</h3>            
            <form id="referencia">                
                 <input type="hidden" id="desea" name="desea" value="" /> 
 
@@ -155,7 +157,7 @@ class Referencias{
 		header('Content-Type:text/html; charset=iso-8859-1');
         ?>
      
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Editar Referencia</h3>            
            <form id="editarReferencia">                
                 

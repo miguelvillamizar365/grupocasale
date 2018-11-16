@@ -22,17 +22,63 @@ class Informes
 			<input type="hidden" id="Tiempo" name="Tiempo" value="" /> 
 			<input type="hidden" id="Valor" name="Valor" value="" /> 
 			
-			<div class="content-wrapper" style="width: 100% !important;">
+			<div class="">
 				<h3 class="text-primary mb-4">INFORME TIEMPOS POR MECANICO</h3>
-				
 				<div class="row mb-2">
 					<div class="col-lg-12">
-						
+					
 						<div class="card">
-							<div class="card-block" style="width: 75% !important;">
+							<div class="card-body" style="width: 100% !important;">
+											
+								<label for="id_referencia" style="font-weight: bold;">El usuario debe ingresar la fecha inicial y la fecha final:</label> 
 								
-								<table id="table_tiempoMecanico" class="cell-border display" cellspacing="0"></table>
+								<br />
+								<div class="row">				  
+									<div class="col-md-6">
+										<div class="form-group">
+										  <label for="TB_fechaIni">Fecha Inicial</label> 
+										  <div class="input-group">
+											
+											<div class="input-group date form_datetime" data-link-field="TB_fechaIni" >
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+												<input id="TB_fechaDateIni" class="form-control p_input" type="text" readonly >
+											</div>
+											
+											<input id="TB_fechaIni" name="TB_fechaIni" type="hidden" />
+											
+										  </div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+										  <label for="TB_fechaFin">Fecha Final</label> 
+										  <div class="input-group">
+											
+											<div class="input-group date form_datetime" data-link-field="TB_fechaFin" >
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+												<input id="TB_fechaDateFin" class="form-control p_input" type="text" readonly >
+											</div>
+											
+											<input id="TB_fechaFin" name="TB_fechaFin" type="hidden" />
+											
+										  </div>
+										</div>
+									</div>
+								</div>
 								
+								<div class="row">									
+									<div class="col-md-12">
+										<button type="button" onclick="filtarMecanicos()" class="btn btn-primary">Buscar</button>
+									</div>
+								</div>
+					
+								<div class="row">									
+									<div class="col-md-12">							
+										<div class="table-responsive">
+											<table id="table_tiempoMecanico" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>                    
@@ -40,80 +86,12 @@ class Informes
 			</div> 
 		</form> 
 		
-		<script>
-				
+		<script>			
+
 		$(document).ready(function(){
-			$('#table_tiempoMecanico').DataTable({
-				
-				language: { url: '../datatables/Spanish.json' },
-				data: null,
-				scrollX: true,
-				columns: [
-					{ 
-						title: "Imprimir",
-						targets: -1,
-						render: function (data, type, row) {
-							return "<button class='A_imprimir btn btn-primary' >Imprimir</button>";							                   
-						}
-					},					
-					{ data: "Documento",    title: "Documento",   },
-					{ data: "Nombre",    title: "Nombre",   },
-					{ data: "Apellido",    title: "Apellido"},
-					{ data: "tiempo",    title: "Tiempo"},
-					{ 
-						data: "valor",
-						title: "Valor",
-						mRender: function (data, type, full) {
-						  
-							var number = data,
-							thousand_separator = ',',
-							decimal_separator = '.';
+			cargarTiemposMecanico();
+		 });	
 
-							var	number_string = number.toString(),
-							split  = number_string.split(decimal_separator),
-							result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-									
-							if(split[1] != "")
-							{
-								result = split[1] != undefined ? result + decimal_separator + split[1] : result;
-							}
-							return result;
-						}
-					}
-				]
-			});
-			
-			$.ajax({
-				url: '../Logica de presentacion/Informes_Logica.php',
-				type:  'post',
-				dataType:'json',
-				data: {'desea': 'cargaInformeTiemposMecanico'},
-				success:  function (data) {
-					 
-					$('#table_tiempoMecanico').DataTable().clear().draw().rows.add(data).draw();
-					
-				},
-				error: function(ex){
-					console.log(ex);
-				}
-			});  
-		});
-
-		$('#table_tiempoMecanico').on('click', 'td .A_imprimir', function (e) {
-					
-			e.preventDefault();
-			
-			var table = $('#table_tiempoMecanico').DataTable();
-			var dataItem = table.row($(this).closest('tr')).data();        
-			
-			$("#Documento").val(dataItem.Documento);
-			$("#Nombre").val(dataItem.Nombre);
-			$("#Apellido").val(dataItem.Apellido);
-			$("#Tiempo").val(dataItem.tiempo);
-			$("#Valor").val(dataItem.valor);
-			
-			$("#ExportarInformeTiempoMecanico").submit();
-		});			
 		</script>
 		<?php
 	}
@@ -195,7 +173,7 @@ class Informes
 		$body = "<table style='width:100%;'>
 					<thead>
 						<tr>
-							<th>Fecha</th>
+							<th>Fecha de Actividad</th>
 							<th>Kilometraje</th>
 							<th>Placa</th>
 							<th>Orden Trabajo</th>

@@ -12,23 +12,89 @@ class OrdenTrabajo
 {
 	function mostrarOrdenTrabajo()
 	{
-		?> 
-        <meta charset="iso-8859-1" />        
+		
+		header('Content-Type:text/html; charset=iso-8859-1');
+		?>   
         <input type="hidden" id="id_orden" name="id_orden" value="" /> 
-        <div class="content-wrapper" style="width: 60% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Ordenes de Trabajo</h3>
             
             <div class="row mb-2">
                 <div class="col-lg-12">
                     
                     <div class="card">
-                        <div class="card-block">
+                        <div class="card-body">
                             <button type="button" class="btn btn-primary" onclick="formularioCrearOrden()">Crear Nueva</button>
                             <br />
                             <br />
-                            
-                            <table id="table_OrdenesAll" class="cell-border display" cellspacing="0"></table>
+													  						
+							<div class="row">				  
+								<div class="col-md-6">
+									<div class="form-group">
+									  <label for="TB_fechaIni">Fecha Inicial</label> 
+									  <div class="input-group">
+										
+										<div class="input-group date form_datetime" data-link-field="TB_fechaIni" >
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											<input id="TB_fechaDateIni" class="form-control p_input" type="text" readonly >
+										</div>
+										
+										<input id="TB_fechaIni" name="TB_fechaIni" type="hidden" />
+										
+									  </div>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+									  <label for="TB_fechaFin">Fecha Final</label> 
+									  <div class="input-group">
+										
+										<div class="input-group date form_datetime" data-link-field="TB_fechaFin" >
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											<input id="TB_fechaDateFin" class="form-control p_input" type="text" readonly >
+										</div>
+										
+										<input id="TB_fechaFin" name="TB_fechaFin" type="hidden" />
+										
+									  </div>
+									</div>
+								</div>
+							</div>
 							
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+									  <label for="TB_referencia">Referencia</label> 
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-archive"></i></span>                                    
+											<select style="width: 400px!important;" id="id_referencia" name="id_referencia" class="show-tick form-control" >                                   
+											</select>
+										</div>   
+									</div>
+								</div>								
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="id_actividad">Actividad</label>   
+										<div class="input-group">
+											<span class="input-group-addon"><i class="fa fa-briefcase"></i></span>                                    
+											<select style="width: 400px!important;" id="id_actividad" name="id_actividad" class="show-tick form-control" >                                   
+											</select>
+										</div>                                                      
+									</div>
+								</div>
+							</div>	
+							
+							<div class="row">
+								<div class="col-md-12">
+									<button type="button" class="btn btn-primary" onclick="buscarOrdenesTrabajo()">Buscar</button>
+								</div>
+							</div>
+							
+							<br />
+                            <br />
+                            <div class="table-responsive">
+								<table id="table_OrdenesAll" class="table center-aligned-table table-striped table-bordered nowrap" cellspacing="0"></table>
+							</div>
                         </div>
                     </div>
                 </div>                    
@@ -36,187 +102,9 @@ class OrdenTrabajo
         </div>   
 		<script>
 		
-			$('#table_OrdenesAll').DataTable({
-				
-				language: { url: '../datatables/Spanish.json' },
-				data: null,
-				scrollX: true,
-				columns: [
-					{ 
-						title: "Editar",
-						targets: -1,
-						render: function (data, type, row) {
-							if(row.EstadoId == 1)
-							{
-								return "<button class='A_editar btn btn-primary' >Editar</button>";
-							}
-							else
-							{
-								return "";
-							}
-						}
-					},
-					{ 
-						title: "Referencias",
-						targets: -1,
-						render: function (data, type, row) {
-							return "<button class='A_detalleRef btn btn-secondary' >Ver Detalle</button>";
-						}  
-					},
-					{ 
-						title: "Actividades",
-						targets: -1,
-						render: function (data, type, row) {
-							return "<button class='A_detalleActi btn btn-outline-primary' >Ver Detalle</button>";
-						}  
-					},
-					{ data: "Id",    title: "No. Orden Trabajo"},
-					{ data: "id_vehiculo",    title: "id_vehiculo"},
-					{ data: "Placas",    title: "Placa"},
-					{ data: "Fecha",    title: "Fecha"},
-					{ 
-						data: "ValorTotalReferencia",
-						title: "Valor Total Referencia",
-						mRender: function (data, type, full) {
-							  
-								var number = data.replace(",", ""),
-								thousand_separator = ',',
-								decimal_separator = '.';
-
-								var	number_string = number.toString(),
-								split	  = number_string.split(decimal_separator),
-								result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-										
-								if(split[1] != "")
-								{
-									result = split[1] != undefined ? result + decimal_separator + split[1] : result;
-								}
-
-								return result;
-							}
-					},
-					{ 
-						data: "ValorTotalUtilidadReferencia",
-						title: "Valor Total Utilidad Referencia",
-						mRender: function (data, type, full) {
-							  
-								var number = data.replace(",", ""),
-								thousand_separator = ',',
-								decimal_separator = '.';
-
-								var	number_string = number.toString(),
-								split	  = number_string.split(decimal_separator),
-								result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-										
-								if(split[1] != "")
-								{
-									result = split[1] != undefined ? result + decimal_separator + split[1] : result;
-								}
-
-								return result;
-							}
-					},
-					{ 
-						data: "ValorTotalActividad",
-						title: "Valor Total Actividad",
-						mRender: function (data, type, full) {
-							  
-								var number = data.replace(",", ""),
-								thousand_separator = ',',
-								decimal_separator = '.';
-
-								var	number_string = number.toString(),
-								split	  = number_string.split(decimal_separator),
-								result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-										
-								if(split[1] != "")
-								{
-									result = split[1] != undefined ? result + decimal_separator + split[1] : result;
-								}
-
-								return result;
-							}
-					},
-					{ 
-						data: "ValorTotalUtilidadActividad",
-						title: "ValorTotal Utilidad Actividad",
-						mRender: function (data, type, full) {
-							  
-								var number = data.replace(",", ""),
-								thousand_separator = ',',
-								decimal_separator = '.';
-
-								var	number_string = number.toString(),
-								split	  = number_string.split(decimal_separator),
-								result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-										
-								if(split[1] != "")
-								{
-									result = split[1] != undefined ? result + decimal_separator + split[1] : result;
-								}
-
-								return result;
-							}
-					},
-					{ 
-						data: "Kilometraje",   
-						title: "Kilometraje",
-						mRender: function (data, type, full) {
-						 var formmatedvalue = data.replace(/\D/g, "");
-							formmatedvalue = formmatedvalue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-						  return formmatedvalue;
-						}
-					},
-					{ data: "id_mecanico", title: "Mecánico" },
-					{ data: "mecanico", title: "Mecánico" },
-					{ data: "id_conductor", title: "Conductor"},
-					{ data: "conductor", title: "Conductor"},
-					{ data: "Observaciones", title: "Observaciones"},
-					{ data: "EstadoId", title: "EstadoId"},
-					{ data: "Estado", title: "Estado"}
-				],
-				columnDefs: [
-					{
-						targets: [ 4 ],
-						visible: false,
-						searchable: false
-					},
-					{
-						targets: [ 12 ],
-						visible: false,
-						searchable: false
-					},
-					{
-						targets: [ 14 ],
-						visible: false,
-						searchable: false
-					},
-					{
-						targets: [ 17 ],
-						visible: false,
-						searchable: false
-					}
-				]
-			});
-			
-			$.ajax({
-				url: '../Logica de presentacion/Orden_Trabajo_Logica.php',
-				type:  'post',
-				dataType:'json',
-				data: {'desea': 'cargaOrdenes'},
-				success:  function (data) {
-					 
-					$('#table_OrdenesAll').DataTable().clear().draw().rows.add(data).draw();
-					
-				},
-				complete: function()
-				{
-					
-				},
-				error: function(ex){
-					console.log(ex);
-				}
-			}); 
+		$(document).ready(function(){
+		 cargarFechas();
+		});
 		</script>
 		<?php
 	}
@@ -225,7 +113,7 @@ class OrdenTrabajo
 	{
 		?>
 		<meta charset="iso-8859-1" />
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
            <h3 class="text-primary mb-4">Agregar Orden Trabajo</h3>
             
            <form id="ordentrabajo">                
@@ -398,7 +286,7 @@ class OrdenTrabajo
 	{
 		?>
 		<meta charset="iso-8859-1" />
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
            <h3 class="text-primary mb-4">Editar Orden Trabajo</h3>
             
            <form id="ordentrabajo">                
@@ -613,7 +501,7 @@ class OrdenTrabajo
 		?>		
         <input type="hidden" id="id_orden" name="id_orden" value="<?php echo $noOrden;?>" /> 
 		<input type="hidden" id="id_referenciaOrden" name="id_referenciaOrden" value="" /> 
-        <div class="content-wrapper" style="width: 80% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Detalle Orden de Trabajo</h3>
 			<br />
 			
@@ -634,8 +522,7 @@ class OrdenTrabajo
 						</div>
 					</div>
 					
-					<div class="col-md-6">
-						
+					<div class="col-md-6">						
 					</div>
 				</div>
 				
@@ -752,8 +639,8 @@ class OrdenTrabajo
             <div class="row mb-2">
                 <div class="col-lg-12">                     
                     <div class="card">
-                        <div class="card-block">							
-                            <table id="table_OrdenesReferencia" class="cell-border display" cellspacing="0"></table>							
+                        <div class="card-body">							
+                            <table id="table_OrdenesReferencia" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>							
                         </div>
                     </div>
                 </div>                    
@@ -792,7 +679,7 @@ class OrdenTrabajo
 	{
 		?>                
 		<meta charset="iso-8859-1" />
-        <div class="content-wrapper" >
+        <div class="" >
 		
 		 <h3 class="text-primary mb-4">Detalle Orden de Trabajo</h3>
 			<br />
@@ -919,8 +806,8 @@ class OrdenTrabajo
 					<div class="col-lg-12">
 						
 						<div class="card" style="width: 100% !important;">
-							<div class="card-block">
-								<table id="table_referencia" class="cell-border display" cellspacing="0"></table>
+							<div class="card-body">
+								<table id="table_referencia" class="cell-border display table table-striped table-bordered nowrap" cellspacing="0"  style="width:100%"></table>
 							</div>
 						</div>
 					</div>                    
@@ -1078,7 +965,7 @@ class OrdenTrabajo
 	{
 		?>                
 		<meta charset="iso-8859-1" />
-        <div class="content-wrapper" style="width: 80% !important;">
+        <div class="">
 			
 			<h3 class="text-primary mb-4">Detalle Orden de Trabajo</h3>
 			<br />
@@ -1207,8 +1094,10 @@ class OrdenTrabajo
                             <br />
                             
 						<div class="card">
-							<div class="card-block">
-								<table id="table_actividades" class="cell-border display" cellspacing="0"></table>
+							<div class="card-body">
+								<div class="table-responsive">
+									<table id="table_actividades" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+								</div>
 							</div>
 						</div>
 					</div>                    
@@ -1248,7 +1137,7 @@ class OrdenTrabajo
 	{
 		?>
 		<meta charset="iso-8859-1" />
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
 		
 			<h3 class="text-primary mb-4">Detalle Orden de Trabajo</h3>
 			<br />
@@ -1385,7 +1274,9 @@ class OrdenTrabajo
 						  <label for="TB_tiempo">Tiempo/Horas</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
-							<input id="TB_tiempo" name="TB_tiempo" type="text" class="form-control p_input" placeholder="Tiempo" />
+							<input id="TB_tiempo" name="TB_tiempo" type="text" 
+							class="form-control p_input" placeholder="Tiempo" 
+							onblur="actualizaDatosActividad()"/>
 						  </div>
 						</div>
 					</div>
@@ -1426,12 +1317,12 @@ class OrdenTrabajo
 					
 					<div class="col-md-6">
 						<div class="form-group">
-						  <label for="TB_valor">Valor</label> 
+						  <label for="TB_valorHora">Valor Hora Mecánico</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-							<input id="TB_valor" name="TB_valor" type="text" 
+							<input id="TB_valorHora" name="TB_valorHora" type="text" 
 							class="form-control p_input" placeholder="Valor" maxlength="11" 
-							onblur="actualizarDatos();"/>
+							onblur="actualizaDatosActividad();"/>
 						  </div>
 						</div>
 					</div>
@@ -1442,7 +1333,7 @@ class OrdenTrabajo
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
 							<input id="TB_utilidad" name="TB_utilidad" type="text" 
 							class="form-control p_input" placeholder="Utilidad" maxlength="11"
-							onblur="actualizarDatos();" />
+							onblur="actualizaDatosActividad();" />
 						  </div>
 						</div>
 					</div>
@@ -1452,6 +1343,15 @@ class OrdenTrabajo
 				
 					<div class="col-md-6">
 						<div class="form-group">
+						  <label for="TB_valor">Valor Total </label> 
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_valor" name="TB_valor" type="text" class="form-control p_input" placeholder="Valor" maxlength="11" readonly />
+						  </div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="form-group">
 						  <label for="TB_valorTotalUtilidad">Valor Total + Utilidad</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
@@ -1459,6 +1359,10 @@ class OrdenTrabajo
 						  </div>
 						</div>
 					</div>
+				</div>
+				
+				<div class="row">	
+				
 					<div class="col-md-6">
 						<div class="form-group">
 						  <label for="TB_observaciones">Observaciones</label> 
@@ -1472,6 +1376,12 @@ class OrdenTrabajo
 							maxlength="500">
 							</textarea>
 						  </div>
+						</div>
+					</div>
+					
+					<div class="col-md-6">
+						<div class="form-group">
+						 
 						</div>
 					</div>
 				</div>
@@ -1530,33 +1440,8 @@ class OrdenTrabajo
 				return anio+"/"+mes+"/"+dia+" "+hora+":"+minutes;
 			}		
 			
-			function actualizarDatos()
-			{
-				var utilidad = parseInt($("#TB_utilidad").val());
-				var valor = ($("#TB_valor").val());								
-				valor = valor.replace(",","");
-				
-				var valorTotalUtilidad = ((parseFloat(valor) * (utilidad))/100);				
-				
-				valorTotalUtilidad = (parseFloat(valor) + parseFloat(valorTotalUtilidad));
-				
-				var number = valorTotalUtilidad	,
-				thousand_separator = ',',
-				decimal_separator = '.';
-
-				var	number_string = number.toString(),
-				split	  = number_string.split(decimal_separator),
-				result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-						
-				if(split[1] != "")
-				{
-					result = split[1] != undefined ? result + decimal_separator + split[1] : result;
-				}
-				
-				$("#TB_valorTotalUtilidad").val(result);
-			}
-			
 			$("#TB_tiempo").keydown(function(event) {
+								
 				if(event.shiftKey)
 				{
 					event.preventDefault();
@@ -1662,6 +1547,7 @@ class OrdenTrabajo
 								 if(data)
 								 {
 									$("#TB_tiempo").val(data);
+									actualizaDatosActividad();
 								 }
 								 else{
 									 $("#mensaje").html("¡se genero un error al traer la información!");
@@ -1674,7 +1560,39 @@ class OrdenTrabajo
 					}); 
 				}				
 			});
-		</script>
+					
+			
+			$("#id_mecanico").change(function() {
+				
+				
+			$.ajax({
+				url: '../Logica de presentacion/Orden_Trabajo_Logica.php',
+				type:  'post',
+				dataType:'html',
+				data: {'desea': 'consultaValorHora', 
+					   "id_mecanico": $("#id_mecanico").val()},
+				success:  function (data) {  
+					
+					if(data)
+					{							
+						$("#TB_valorHora").val(parseFloat(data));
+						
+						actualizaDatosActividad();
+					}
+					else{
+						
+					}					
+				},
+				error: function(ex){
+					console.log(ex);
+				}
+			});	 
+				
+			});
+
+
+
+			</script>
 		<?php
 	}
 		
@@ -1683,7 +1601,9 @@ class OrdenTrabajo
 	$id_orden, 
 	$tiempoHoras, 
 	$fecha, 
-	$tb_valor, 
+	$tb_valorHoraMecanico, 
+	$tb_valorTotalUtilidad,
+	$tb_valorTotal,
 	$TB_utilidad,
 	$TB_observaciones,
 	$Placas,
@@ -1692,10 +1612,10 @@ class OrdenTrabajo
 	$mecanico,
 	$conductor,
 	$Observaciones)
-	{
+	{	
 		?>
 		<meta charset="iso-8859-1" />
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
 		
 			<h3 class="text-primary mb-4">Detalle Orden de Trabajo</h3>
            <form id="ordentrabajo">                
@@ -1850,7 +1770,6 @@ class OrdenTrabajo
                         </div>
 					</div>
 					
-					
 					<div class="col-md-6">
 						<div class="form-group">
 						  <label for="TB_fecha">Fecha</label> 
@@ -1868,45 +1787,63 @@ class OrdenTrabajo
 					</div>
 				</div>
 				
-				<div class="row">					
-					
+				<div class="row">	
 					<div class="col-md-6">
 						<div class="form-group">
-						  <label for="TB_valor">Valor</label> 
+						  <label for="TB_valorHora">Valor Hora Mécanico</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-							<input id="TB_valor" name="TB_valor" type="text" 
+							<input id="TB_valorHora" name="TB_valorHora" type="text" 
 							class="form-control p_input" placeholder="Valor" maxlength="11" 
-							value="<?php echo $tb_valor;?>"
-							onblur="actualizarDatos();"/>
+							value="<?php echo $tb_valorHoraMecanico;?>"
+							onblur="actualizaDatosActividad();"/>
 						  </div>
 						</div>
 					</div>
+					
 					<div class="col-md-6">
 						<div class="form-group">
 						  <label for="TB_utilidad">% Utilidad</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							
 							<input id="TB_utilidad" name="TB_utilidad" type="text" 
-							class="form-control p_input" placeholder="Utilidad" maxlength="11"
-							value="<?php echo $TB_utilidad;?>"
-							onblur="actualizarDatos();" />
+							class="form-control p_input" placeholder="Valor" maxlength="110" 
+							value="<?php echo trim($TB_utilidad);?>"
+							onblur="actualizaDatosActividad();"/>
 						  </div>
 						</div>
 					</div>
 				</div>
 				
-				<div class="row">	
-				
+				<div class="row">
+					<div class="col-md-6">
+						<div class="form-group">
+						  <label for="TB_valor">Valor Total </label> 
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_valor" name="TB_valor" type="text" 
+							class="form-control p_input" placeholder="Valor" 
+							maxlength="11" readonly value="<?php echo $tb_valorTotal; ?>" />
+						  </div>
+						</div>
+					</div>
+					
 					<div class="col-md-6">
 						<div class="form-group">
 						  <label for="TB_valorTotalUtilidad">Valor Total + Utilidad</label> 
 						  <div class="input-group">
 							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
-							<input id="TB_valorTotalUtilidad" name="TB_valorTotalUtilidad" type="text" class="form-control p_input" placeholder="Valor + Utilidad" maxlength="11" readonly />
+							<input id="TB_valorTotalUtilidad" name="TB_valorTotalUtilidad" 
+							type="text" class="form-control p_input" 
+							placeholder="Valor + Utilidad" maxlength="11" readonly
+							value="<?php echo $tb_valorTotalUtilidad; ?>" />
 						  </div>
 						</div>
-					</div>
+					</div>					
+				</div>
+				
+				<div class="row">				
 					<div class="col-md-6">
 						<div class="form-group">
 						  <label for="TB_observaciones">Observaciones</label> 
@@ -1921,6 +1858,13 @@ class OrdenTrabajo
 							<?php echo $TB_observaciones;?>
 							</textarea>
 						  </div>
+						</div>
+					</div>
+					
+					
+					<div class="col-md-6">
+						<div class="form-group">
+						
 						</div>
 					</div>
 				</div>
@@ -2005,7 +1949,6 @@ class OrdenTrabajo
 				$("#TB_valorTotalUtilidad").val(result);
 			}
 			
-			actualizarDatos();
 			
 			$("#TB_tiempo").keydown(function(event) {
 				if(event.shiftKey)
@@ -2073,24 +2016,24 @@ class OrdenTrabajo
 			  });			  
 			});
 
-			$("#TB_utilidad").keydown(function(event) {
-				if(event.shiftKey)
+			$("#tb_utilidad").keydown(function(event) {
+				if(event.shiftkey)
 				{
-					event.preventDefault();
+					event.preventdefault();
 				}
 
-				if (event.keyCode == 46 || event.keyCode == 8 )    
+				if (event.keycode == 46 || event.keycode == 8 )    
 				{
 				}
 				else {
-					if (event.keyCode < 95) {
-					  if (event.keyCode < 48 || event.keyCode > 57) {
-							event.preventDefault();
+					if (event.keycode < 95) {
+					  if (event.keycode < 48 || event.keycode > 57) {
+							event.preventdefault();
 					  }
 					} 
 					else {
-						  if (event.keyCode < 96 || event.keyCode > 105) {
-							  event.preventDefault();
+						  if (event.keycode < 96 || event.keycode > 105) {
+							  event.preventdefault();
 						  }
 					}
 				}
@@ -2113,6 +2056,7 @@ class OrdenTrabajo
 								 if(data)
 								 {
 									$("#TB_tiempo").val(data);
+									actualizaDatosActividad();
 								 }
 								 else{
 									 $("#mensaje").html("¡se genero un error al traer la información!");
@@ -2124,6 +2068,36 @@ class OrdenTrabajo
 						 }
 					}); 
 				}				
+			});
+			
+			
+			
+			$("#id_mecanico").change(function() {
+				
+				
+			$.ajax({
+				url: '../Logica de presentacion/Orden_Trabajo_Logica.php',
+				type:  'post',
+				dataType:'html',
+				data: {'desea': 'consultaValorHora', 
+					   "id_mecanico": $("#id_mecanico").val()},
+				success:  function (data) {  
+					
+					if(data)
+					{							
+						$("#TB_valorHora").val(parseFloat(data));
+						
+						actualizaDatosActividad();
+					}
+					else{
+						
+					}					
+				},
+				error: function(ex){
+					console.log(ex);
+				}
+			});	 
+				
 			});
 		</script>
 		<?php

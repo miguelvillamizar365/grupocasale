@@ -33,7 +33,7 @@ class usuarioData {
 			RenovacionLicencia, 
 			LicenciaTrancito, 
 			Id_Rol, 
-			(SELECT rol FROM Rol WHERE id = Id_Rol) Rol,
+			(SELECT rol FROM rol WHERE id = Id_Rol) Rol,
 			HoraMecanico,
 			(CASE WHEN Estado = 1 THEN 
 				'Activo'
@@ -97,7 +97,15 @@ class usuarioData {
 		global $conexion;
         $conexion->conectarAdo();
 		
-        $cadena = " SELECT * FROM usuario WHERE Correo = ? AND estado = 1"; 
+        $cadena = " SELECT  U.Id, 
+							U.Nombre,
+							U.Apellido,
+							R.Id,
+							R.Rol
+					FROM usuario U INNER JOIN
+						 rol R ON U.id_rol = R.Id						 
+					WHERE Correo = ? 
+						  AND estado = 1"; 
 		$arr= array($correo);
         
         $recordSet = $conexion->EjecutarP($cadena,$arr);
@@ -114,12 +122,6 @@ class usuarioData {
             $usuario[0][2]=$recordSet->fields[2];
             $usuario[0][3]=$recordSet->fields[3];
             $usuario[0][4]=$recordSet->fields[4];
-            $usuario[0][5]=$recordSet->fields[5];
-            $usuario[0][6]=$recordSet->fields[6];
-            $usuario[0][7]=$recordSet->fields[7];
-            $usuario[0][8]=$recordSet->fields[8];
-            $usuario[0][9]=$recordSet->fields[9];
-            $usuario[0][10]=$recordSet->fields[10];
             $recordSet->MoveNext();
             $i++;
         }       
@@ -131,16 +133,22 @@ class usuarioData {
 		global $conexion;
         $conexion->conectarAdo();
 		
-        $cadena = " SELECT * FROM Rol;"; 
+        $cadena = " SELECT * FROM rol;"; 
         
         $recordSet = $conexion->Ejecutar($cadena);
-        
-        $conexion->Close();
-		
-        return $recordSet; 
+                
+        if($conexion->ObtenerError() != "" )
+        {
+            echo $conexion->ObtenerError();
+        }
+        else
+        {
+			return $recordSet; 
+        }
+		$conexion->Close();
 	}
     
-    public function guardarUsuario($nombre, $apellido, $documento, $telefono, $rol, $direccion, $email, $clave)
+    public function guardarUsuario($nombre, $apellido, $documento, $telefono, $rol, $direccion, $email, $clave, $valorHora)
 	{
 		global $conexion;
         $conexion->conectarAdo();
@@ -159,7 +167,8 @@ class usuarioData {
                     	RenovacionLicencia, 
                     	LicenciaTrancito, 
                     	Id_Rol, 
-                    	Estado
+                    	Estado,
+						HoraMecanico
                     )
                     VALUES (
                     	?,
@@ -173,10 +182,11 @@ class usuarioData {
                         ?,
                         ?,
                         ?,
-						1
+						1,
+						?
                     )"; 
 					
-		$arr = array($nombre, $apellido, $documento, $telefono, $direccion, $email, $clave, '', '', '', $rol);
+		$arr = array($nombre, $apellido, $documento, $telefono, $direccion, $email, $clave, '', '', '', $rol, $valorHora);
         $recordSet = $conexion->EjecutarP($cadena,$arr);
         
         if($conexion->ObtenerError() != "" )
@@ -190,7 +200,7 @@ class usuarioData {
         $conexion->Close();		
 	}	
 	
-    public function EditarUsuario($id_usuario, $nombre, $apellido, $documento, $telefono, $rol, $direccion, $email)
+    public function EditarUsuario($id_usuario, $nombre, $apellido, $documento, $telefono, $rol, $direccion, $email, $valorHora)
 	{
 		global $conexion;
         $conexion->conectarAdo();
@@ -203,10 +213,11 @@ class usuarioData {
 						Telefono= ?,  
 						Direccion= ?,  
 						Correo= ?,   
-						Id_Rol = ?
+						Id_Rol = ?,
+						HoraMecanico = ?
 					WHERE Id = ?; "; 
 					
-		$arr = array( $nombre, $apellido, $documento, $telefono, $direccion, $email, $rol, $id_usuario);
+		$arr = array( $nombre, $apellido, $documento, $telefono, $direccion, $email, $rol, $valorHora, $id_usuario);
         $recordSet = $conexion->EjecutarP($cadena,$arr);
         
         if($conexion->ObtenerError() != "" )
@@ -260,6 +271,113 @@ class usuarioData {
 		
         return $recordSet; 
 	}    
-    
+	
+	
+    public function consultarMenuUsuario($id_rol, $id_usuario)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = " 
+		SELECT 
+			m.id, 
+			m.Menu,
+			m.Url,	
+			m.NodoPadre,
+			m.Icon,
+			m.Imagen,
+			m.Boton
+		FROM menu m
+		INNER JOIN rol_menu rm 
+			ON m.id = rm.id_menu
+		INNER JOIN usuario u
+			ON rm.id_rol = u.Id_Rol
+		WHERE rm.id_rol = ?
+		AND u.Id = ?
+		ORDER BY m.Orden ASC "; 
+		
+		$arr= array($id_rol, $id_usuario);
+        
+        $recordSet = $conexion->EjecutarP($cadena,$arr);
+        
+        $conexion->Close();
+		
+        $menu[][] = array();
+        $i=0;
+        
+        while(!$recordSet->EOF)
+        {        
+            $menu[$i][0]=$recordSet->fields[0];
+            $menu[$i][1]=$recordSet->fields[1];
+            $menu[$i][2]=$recordSet->fields[2];
+            $menu[$i][3]=$recordSet->fields[3];
+            $menu[$i][4]=$recordSet->fields[4];
+            $menu[$i][5]=$recordSet->fields[5];
+            $menu[$i][6]=$recordSet->fields[6];
+            $recordSet->MoveNext();
+            $i++;
+        }       
+        return $menu; 
+	}    
+	
+	
+    public function consultarMenuUsuarioPermiso($id_rol, $id_usuario, $id_permiso)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = " 
+		SELECT COUNT(*)
+		FROM menu m
+		INNER JOIN rol_menu rm 
+			ON m.id = rm.id_menu
+		INNER JOIN usuario u
+			ON rm.id_rol = u.Id_Rol
+		WHERE rm.id_rol = ?
+		AND u.Id = ?
+		AND m.Id = ?
+		ORDER BY m.Orden ASC "; 
+		
+		$arr= array($id_rol, $id_usuario, $id_permiso);
+        
+        $recordSet = $conexion->EjecutarP($cadena,$arr);
+        
+        $conexion->Close();
+		
+        $menu = 0;
+        $i=0;
+        
+        while(!$recordSet->EOF)
+        {        
+            $menu = $recordSet->fields[0];
+            $recordSet->MoveNext();
+        }       
+        return $menu; 
+	}    
+	
+	
+    public function ConsultaTiempoSesion()
+    {
+        global $conexion;
+        $conexion->conectarAdo();
+        
+        $cadena = "SELECT valor FROM parametros WHERE id_parametro = 1";
+        
+        $recordSet = $conexion->Ejecutar($cadena);
+        
+        $conexion->Close();              
+                       
+        $usuario = 0;
+        $i=0;
+        
+        while(!$recordSet->EOF)
+        {        
+            $usuario=$recordSet->fields[0];
+            $recordSet->MoveNext();
+            $i++;
+        }       
+        return $usuario;  
+    }
+	        
 }
 ?>

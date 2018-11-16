@@ -8,7 +8,8 @@
 $(document).ready(function(){
 
 
-    $('#table_facturas').DataTable({        
+    $('#table_facturas').DataTable({       
+		
         language: { url: '../datatables/Spanish.json' },
         data: null,
         scrollX: true,
@@ -102,7 +103,33 @@ $(document).ready(function(){
         error: function(ex){
             console.log(ex);
         }
-    });    
+    });  
+
+
+	$.ajax({
+		url: '../Logica de presentacion/Factura_Logica.php',
+		method: 'post',
+		dataType: 'json',
+		data: { 'desea': 'consultarReferencias' },
+		success: function (data) {   
+		  
+          for (var i = 0; i < data.length; i++) {            
+             $('#id_referencia').append("<option value=" + data[i][0] + ">" + data[i][1] + "</option>");
+          } 
+		},
+        complete: function()
+        {            
+            $('#id_referencia').selectize({
+            	create: false,
+            	sortField: {
+            		field: 'text',
+            		direction: 'asc'
+            	},
+            	dropdownParent: 'body'
+            }); 
+                 
+        }
+	}); 	
  });
   
 
@@ -137,7 +164,6 @@ $('#table_facturas').on('click', 'td .A_imprimir', function (e) {
     var table = $('#table_facturas').DataTable();
     var dataItem = table.row($(this).closest('tr')).data();        
     
-	console.log(dataItem);
 	$("#NumeroFactura").val(dataItem.NumeroFactura);
 	$("#empresaId").val(dataItem.empresaId);
 	$("#EmpresaCompra").val(dataItem.EmpresaCompra);
@@ -152,6 +178,83 @@ $('#table_facturas').on('click', 'td .A_imprimir', function (e) {
 });
  
  
+ function cargarFechas()
+ {
+	 
+	$("#TB_fechaIni").val(getDate());
+	$("#TB_fechaFin").val(getDate());
+	$("#TB_fechaDateIni").val(getDate());
+	$("#TB_fechaDateFin").val(getDate());
+	$('.form_datetime').datetimepicker({
+		language:  'es',
+		format: 'yyyy/mm/dd hh:ii',
+		weekStart: 1,
+		todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		showMeridian: 1,
+		date: new Date(),
+		icons: {
+		  time: "fa fa-clock-o",
+		  date: "fa fa-calendar",
+		  up: "fa fa-caret-up",
+		  down: "fa fa-caret-down",
+		  previous: "fa fa-caret-left",
+		  next: "fa fa-caret-right",
+		  today: "fa fa-today",
+		  clear: "fa fa-clear",
+		  close: "fa fa-close"
+		}
+	});
+	
+	function getDate()
+	{
+		var fecha = new Date();
+		
+		var dia = fecha.getDate();
+		var mes = fecha.getMonth()+1 > 12 ? 1: fecha.getMonth()+1;
+		var anio = fecha.getFullYear();
+		var hora = fecha.getHours();
+		var minutes = fecha.getMinutes();
+		
+		return anio+"/"+mes+"/"+dia+" "+hora+":"+minutes;
+	}		
+
+ }
+ 
+function buscarFacturas()
+{
+	 var fechaInicial = $("#TB_fechaIni").val();
+	 var fechaFinal = $("#TB_fechaFin").val();
+	 var TB_referencia = $("#id_referencia").val();
+	 
+	if($("#TB_referencia").val() == "")
+	{
+		 TB_referencia = "";
+		 TB_nombreRepuesto = "";
+	}
+	
+	$.ajax({
+		url: '../Logica de presentacion/AutorizaFactura_Logica.php',
+		type:  'post',
+		dataType:'json',
+		data: {
+				'desea': 'cargaFacturasFiltros',
+				'referencia': TB_referencia,
+				'fechaInicial': fechaInicial,
+				'fechaFinal': fechaFinal
+		},
+		success:  function (data) {
+			 
+			$('#table_facturas').DataTable().clear().draw().rows.add(data).draw();
+			
+		},
+		error: function(ex){
+			console.log(ex);
+		}
+	});    
+}
  
 function mostrarFacturas(temp)
 {

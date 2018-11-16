@@ -20,6 +20,13 @@ $(document).ready(function(){
                     return "<button class='A_editar btn btn-primary' >Editar</button>";
                 }
             },
+			{ 
+                title: "Imprimir",
+                targets: -1,
+                render: function (data, type, row) {
+                    return "<button class='A_imprimir btn btn-primary'>Imprimir</button>";
+                }
+            },
             { data: "Id",    title: "No. Alistamiento"   },
             { data: "Placas",    title: "Placas"},
             { data: "fecha",    title: "Fechas"},
@@ -44,6 +51,8 @@ $(document).ready(function(){
             console.log(ex);
         }
     });    
+	
+	
  });
  
 
@@ -84,7 +93,8 @@ $('#table_alistamiento').on( 'click', 'td .A_editar', function (e) {
 					$("#TB_observaciones").val(data[0].Observaciones);
 					cargarListasDesplegables(data[0].id_conductor, data[0].id_mecanico, data[0].Id_vehiculo);
 						  
-					$('#table_alistamientoCheckList').DataTable({						
+					$('#table_alistamientoCheckList').DataTable({	
+						responsive: true,
 						language: { url: '../datatables/Spanish.json' },
 						data: null,
 						scrollX: true,
@@ -113,10 +123,10 @@ $('#table_alistamiento').on( 'click', 'td .A_editar', function (e) {
 						]
 					});
 
-					$('#example-select-all').on('click', function(){
-					  var rows = $('#table_alistamientoCheckList').DataTable().rows({ 'search': 'applied' }).nodes();
-					   $('input[type="checkbox"]', rows).prop('checked', this.checked);
-					});
+					// $('#example-select-all').on('click', function(){
+					  // var rows = $('#table_alistamientoCheckList').DataTable().rows({ 'search': 'applied' }).nodes();
+					   // $('input[type="checkbox"]', rows).prop('checked', this.checked);
+					// });
 
 
 					$.ajax({
@@ -140,9 +150,27 @@ $('#table_alistamiento').on( 'click', 'td .A_editar', function (e) {
 				}
 			});
 		}
-	});
+	});	
+});
+
+
+$('#table_alistamiento').on( 'click', 'td .A_imprimir', function (e) {
+			
+	e.preventDefault();
 	
+	var table = $('#table_alistamiento').DataTable();
+	var dataItem = table.row($(this).closest('tr')).data();        
 	
+	console.log(dataItem);
+	$("#IdAlistamiento").val(dataItem.Id);
+	$("#fechainspeccion").val(dataItem.fecha);
+	$("#mecanico").val(dataItem.Mecanico);
+	$("#conductor").val(dataItem.Conductor);
+	$("#kilometraje").val(dataItem.Kilometraje);
+	$("#placas").val(dataItem.Placas);
+	$("#observaciones").val(dataItem.Observaciones);
+	
+	$("#ExportarInformeAlistamiento").submit();
 });
  
  
@@ -209,12 +237,12 @@ function formularioCrearAlistamiento()
 				]
 			});
 			
-			$('#example-select-all').on('click', function(){
-			  // Get all rows with search applied
-			  var rows = $('#table_alistamientoCheckList').DataTable().rows({ 'search': 'applied' }).nodes();
-			  // Check/uncheck checkboxes for all rows in the table
-			  $('input[type="checkbox"]', rows).prop('checked', this.checked);
-		   });
+			// $('#example-select-all').on('click', function(){
+			  // // Get all rows with search applied
+			  // var rows = $('#table_alistamientoCheckList').DataTable().rows({ 'search': 'applied' }).nodes();
+			  // // Check/uncheck checkboxes for all rows in the table
+			  // $('input[type="checkbox"]', rows).prop('checked', this.checked);
+		   // });
 
    
 			$.ajax({

@@ -66,7 +66,48 @@
 		
         return $recordSet; 
 	}    
+	
+	
+    public function validaFechas($fechaInicial, $fechaFinal)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
 		
+        $cadena =		
+		"
+			SELECT STR_TO_DATE(?, '%Y/%m/%d') > STR_TO_DATE(?, '%Y/%m/%d');
+		"; 
+        
+		$arr = array($fechaInicial, $fechaFinal);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        		
+        $valida =0;
+        $i=0;
+        
+        while(!$recordSet->EOF)
+        {        
+            $valida=$recordSet->fields[0];
+            $recordSet->MoveNext();
+            $i++;
+        }       
+        return $valida; 
+	}
+				
+    public function consultarFacturaFiltro($referencia, $fechaInicial, $fechaFinal)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = "CALL SP_ConsultarFacturas(?, ?, ?)"; 
+        
+		$arr = array( $referencia, $fechaInicial, $fechaFinal);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        $conexion->Close();
+		
+        return $recordSet; 
+	}    
+	
     public function AutorizarFactura($IdFactura)
     {
         global $conexion;

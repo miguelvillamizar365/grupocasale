@@ -14,19 +14,19 @@ class Usuarios{
 		?>  
         
         <input type="hidden" id="id_usuario" name="id_usuario" value="" /> 
-        <div class="content-wrapper" style="width: 65% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Usuarios</h3>
             
             <div class="row mb-2">
                 <div class="col-lg-12">                    
                     <div class="card">
-                        <div class="card-block">
+                        <div class="card-body">
                             <button type="button" class="btn btn-primary" onclick="formularioCrearUsuarios()">Crear Nuevo</button>
                             <br />
                             <br />
-                            
-                            <table id="table_usuarios" class="cell-border display" cellspacing="0"></table>
-							
+                            <div class="table-responsive">
+								<table id="table_usuarios" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+							</div>
                         </div>
                     </div>
                 </div>                    
@@ -96,7 +96,7 @@ class Usuarios{
     {
         ?>
         
-        <div class="content-wrapper" style="width: 100% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Agregar Usuario</h3>            
           
 			 <form id="registro">
@@ -158,6 +158,15 @@ class Usuarios{
 						  </div>
 						</div>
 					</div>
+					<div class="col-md-6">
+						<div id="valorHora" class="form-group">
+						  <label for="TB_valor">Valor Hora Mecánico</label>
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_valor" name="TB_valor" type="text" class="form-control p_input" placeholder="Valor"  maxlength="11" />
+						  </div>
+						</div>
+					</div>
 				</div>
 
 				<div class="row">
@@ -211,7 +220,52 @@ class Usuarios{
 					<button type="button" onclick="guardarUsuario()" class="btn btn-primary">Guardar</button>
 				</div>
 			 </form>
-        </div>                
+        </div>           
+		<script>
+			
+			$('input#TB_valor').keyup(function(event) {
+			  // skip for arrow keys
+			  if(event.which >= 37 && event.which <= 40)
+				  return;
+
+			  // format number
+			  $(this).val(function(index, value) {
+					var number = value.replace(",", ""),
+					thousand_separator = ',',
+					decimal_separator = '.';
+
+					var	number_string = number.toString(),
+					split	  = number_string.split(decimal_separator),
+					result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+						
+					result = split[1] != undefined ? result + decimal_separator + split[1] : result;
+					
+					return result;
+			  });			  
+			});
+			$("#TB_valor").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 190 || event.keyCode == 37 || event.keyCode == 39)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});   		
+					
+		</script>
         <?php
     }
 	
@@ -222,11 +276,12 @@ class Usuarios{
 							  $documento, 
 							  $telefono,
 							  $direccion,
-							  $email)
+							  $email,
+							  $valorHora)
     {
         ?>
         
-        <div class="content-wrapper" style="width: 100% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Editar Usuario</h3>            
           
 			 <form id="registro">
@@ -298,6 +353,17 @@ class Usuarios{
 						  </div>
 						</div>
 					</div>
+					<div class="col-md-6">
+						<div id="valorHora" class="form-group">
+						  <label for="TB_valor">Valor Hora Mecánico</label>
+						  <div class="input-group">
+							<span class="input-group-addon"><i class="fa fa-dollar"></i></span>
+							<input id="TB_valor" name="TB_valor" type="text" class="form-control p_input" 
+							placeholder="Valor"  maxlength="11"
+							value="<?php echo $valorHora;?>"/>
+						  </div>
+						</div>
+					</div>
 				</div>
 
 				<div class="row">
@@ -331,7 +397,52 @@ class Usuarios{
 					<button type="button" onclick="guardarUsuarioEditar()" class="btn btn-primary">Guardar</button>
 				</div>
 			 </form>
-        </div>                
+        </div>    
+         
+		<script>
+			
+			$('input#TB_valor').keyup(function(event) {
+			  // skip for arrow keys
+			  if(event.which >= 37 && event.which <= 40)
+				  return;
+
+			  // format number
+			  $(this).val(function(index, value) {
+					var number = value.replace(",", ""),
+					thousand_separator = ',',
+					decimal_separator = '.';
+
+					var	number_string = number.toString(),
+					split	  = number_string.split(decimal_separator),
+					result = split[0].replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+						
+					result = split[1] != undefined ? result + decimal_separator + split[1] : result;
+					
+					return result;
+			  });			  
+			});
+			$("#TB_valor").keydown(function(event) {
+				if(event.shiftKey)
+				{
+					event.preventDefault();
+				}
+
+				if (event.keyCode == 46 || event.keyCode == 8 || event.keyCode == 190 || event.keyCode == 37 || event.keyCode == 39)    {
+				}
+				else {
+					if (event.keyCode < 95) {
+					  if (event.keyCode < 48 || event.keyCode > 57) {
+							event.preventDefault();
+					  }
+					} 
+					else {
+						  if (event.keyCode < 96 || event.keyCode > 105) {
+							  event.preventDefault();
+						  }
+					}
+				  }
+			});  
+		</script>			
         <?php
     }
 }

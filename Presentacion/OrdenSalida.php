@@ -1,4 +1,4 @@
-	<?php 
+<?php 
 
 /*
 *
@@ -30,17 +30,18 @@ class OrdenSalida
 			<input type="hidden" id="Observaciones" name="Observaciones" value="" /> 
 			<input type="hidden" id="id_ordenUtilidad" name="id_ordenUtilidad" value="" /> 
 			
-			<div class="content-wrapper" style="width: 60% !important;">
+			<div class="">
 				<h3 class="text-primary mb-4">Ordenes de Salida</h3>
 				
 				<div class="row mb-2">
 					<div class="col-lg-12">
 						
 						<div class="card">
-							<div class="card-block">
+							<div class="card-body">
 								
-								<table id="table_OrdenesAll" class="cell-border display" cellspacing="0"></table>
-								
+								<div class="table-responsive">
+									<table id="table_OrdenesAll" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+								</div>
 							</div>
 						</div>
 					</div>                    
@@ -50,7 +51,7 @@ class OrdenSalida
 		<script>
 		
 	$('#table_OrdenesAll').DataTable({
-		
+		responsive: true,
 		language: { url: '../datatables/Spanish.json' },
 		data: null,
 		scrollX: true,
@@ -525,9 +526,9 @@ class OrdenSalida
 								<th>Mecánico</th>
 								<th>Tiempo</th>
 								<th>Utilidad %</th>
-								<th>ValorTotal</th>
 								<th>Fecha</th>
 								<th>Observaciones</th>
+								<th>Valor Total</th>
 							</tr>
 						</thead>
 						<tbody>";
@@ -550,15 +551,15 @@ class OrdenSalida
 				$Utilidad = $informeDataActividad->fields[4];
 				$body = $body."<td>".$Utilidad."</td>";
 				
-				$ValorTotalUtilidad = $informeDataActividad->fields[5];
-				$body = $body."<td>".number_format($ValorTotalUtilidad, 2,'.',',')."</td>";
-				$ValorTotalUtilidadF = $ValorTotalUtilidadF + $ValorTotalUtilidad;
-								
 				$Fecha = $informeDataActividad->fields[6];
 				$body = $body."<td>".$Fecha."</td>";
 				
 				$Observaciones = $informeDataActividad->fields[7];
 				$body = $body."<td>".$Observaciones."</td>";
+								
+				$ValorTotalUtilidad = $informeDataActividad->fields[5];
+				$body = $body."<td>".number_format($ValorTotalUtilidad, 2,'.',',')."</td>";
+				$ValorTotalUtilidadF = $ValorTotalUtilidadF + $ValorTotalUtilidad;
 								
 				$body = $body."</tr>";			
 				$informeDataActividad->MoveNext();
@@ -579,14 +580,15 @@ class OrdenSalida
 					</td>
 					
 					<td>
+					</td>
+					
+					<td>
+					</td>
+					
+					<td>
 					".number_format($ValorTotalUtilidadF, 2,'.',',')."
 					</td>
 					
-					<td>
-					</td>
-					
-					<td>
-					</td>
 									
 				</tr>";
 		}

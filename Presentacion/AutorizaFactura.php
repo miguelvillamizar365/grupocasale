@@ -14,7 +14,7 @@ class AutorizaFactura
 		header('Content-Type:text/html; charset=iso-8859-1');
         ?>                
         <input type="hidden" id="id_factura" name="id_factura" value="" /> 
-        <div class="content-wrapper" style="width: 80% !important;">
+        <div class="">
             <h3 class="text-primary mb-4">Autoriza Facturas</h3>
             
 			<form id="ExportarInformeFactura" action="../Logica de presentacion/AutorizaFactura_Logica.php" method="post" target="_blank" >
@@ -35,10 +35,72 @@ class AutorizaFactura
 					<div class="col-lg-12">
 						
 						<div class="card">
-							<div class="card-block">
+							<div class="card-body">
 								
-								<table id="table_facturas" class="cell-border display" cellspacing="0"></table>
+								<br />
+								<br />
+																				
+								<div class="row">				  
+									<div class="col-md-6">
+										<div class="form-group">
+										  <label for="TB_fechaIni">Fecha Inicial</label> 
+										  <div class="input-group">
+											
+											<div class="input-group date form_datetime" data-link-field="TB_fechaIni" >
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+												<input id="TB_fechaDateIni" class="form-control p_input" type="text" readonly >
+											</div>
+											
+											<input id="TB_fechaIni" name="TB_fechaIni" type="hidden" />
+											
+										  </div>
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+										  <label for="TB_fechaFin">Fecha Final</label> 
+										  <div class="input-group">
+											
+											<div class="input-group date form_datetime" data-link-field="TB_fechaFin" >
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+												<input id="TB_fechaDateFin" class="form-control p_input" type="text" readonly >
+											</div>
+											
+											<input id="TB_fechaFin" name="TB_fechaFin" type="hidden" />
+											
+										  </div>
+										</div>
+									</div>
+								</div>
 								
+								<div class="row">
+									<div class="col-md-6">
+										<div class="form-group">
+										  <label for="TB_referencia">Referencia</label> 
+											<div class="input-group">
+												<span class="input-group-addon"><i class="fa fa-archive"></i></span>                                    
+												<select style="width: 400px!important;" id="id_referencia" name="id_referencia" class="show-tick form-control" >                                   
+												</select>
+											</div>   
+										</div>
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+										
+										</div>
+									</div>
+								</div>	
+					
+								<div class="row">
+									<div class="col-md-12">
+										<button type="button" class="btn btn-primary" onclick="buscarFacturas()">Buscar</button>
+									</div>
+								</div>
+							
+							
+								<div class="table-responsive">
+									<table id="table_facturas" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+								</div>
 							</div>
 						</div>
 					</div>                    
@@ -65,6 +127,13 @@ class AutorizaFactura
             </div>
           </div>
         </div>   
+		
+		<script>
+		
+		$(document).ready(function(){
+		 cargarFechas();
+		});
+		</script>
         <?php
     }  
 	

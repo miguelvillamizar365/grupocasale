@@ -84,10 +84,32 @@ $('#table_usuarios').on( 'click', 'td .A_editar', function (e) {
 			   'documento':dataItem.Documento, 
 			   'telefono':dataItem.Telefono, 
 			   'direccion':dataItem.Direccion,
-			   'email':dataItem.Correo},
+			   'email':dataItem.Correo,
+			   'valorHora':dataItem.HoraMecanico},
 		success:  function (data) {  
 		  $('.dashboard').html(data);
 		  cargarListasDesplegables(dataItem.Id_Rol);
+		  
+		  if(dataItem.Id_Rol == 5) //si es igual al mecanico
+			{
+				$("#valorHora").show();
+			}
+			else{
+				$("#valorHora").hide();
+			}
+			
+		  $("#valorHora").hide();
+			$("#id_rol").change(function() {
+				if($("#id_rol").val() == 5) //si es igual al mecanico
+				{
+					$("#valorHora").show();
+				}
+				else{
+					$("#valorHora").hide();
+				}
+			});
+			
+			
 		},
 		error: function(ex){
 			console.log(ex);
@@ -119,10 +141,23 @@ function formularioCrearUsuarios()
     	data: {'desea':'cargaFormularioCrear'},
     	success:  function (data) {
     		$('.dashboard').html(data);
-    	}
+    	},
+		complete: function()
+		{
+			$("#valorHora").hide();
+			$("#id_rol").change(function() {
+				if($("#id_rol").val() == 5) //si es igual al mecanico
+				{
+					$("#valorHora").show();
+				}
+				else{
+					$("#valorHora").hide();
+				}
+			});
+
+			cargarListasDesplegables(0);
+		}
     });	
-    
-    cargarListasDesplegables(0);
 }
 
 function cargarListasDesplegables(id_rol)
@@ -230,8 +265,17 @@ function guardarUsuario()
         $("#mensaje").html("¡El correo electrónico ya esta registrado!");
 		mensaje.modal("show");
     }
+	else if(($("#id_rol").val() == 5) && ($("#TB_valor").val() == "")) //si es igual al mecanico
+	{
+        $("#mensaje").html("¡El valor hora es requerido para este usuario!");
+		mensaje.modal("show");		
+	}
     else 
     {            
+		TB_valor = $("#TB_valor").val();
+		TB_valor = TB_valor.replace(",","");
+		$("#TB_valor").val(TB_valor);
+		
         $('#desea').val("guardarUsuario");
         $.ajax({
     		url: '../Logica de presentacion/Usuario_Logica.php',
@@ -336,8 +380,17 @@ function guardarUsuarioEditar()
         $("#mensaje").html("¡El correo electrónico es invalido!");
 		mensaje.modal("show");
     }    
+	else if(($("#id_rol").val() == 5) && ($("#TB_valor").val() == "")) //si es igual al mecanico
+	{
+        $("#mensaje").html("¡El valor hora es requerido para este usuario!");
+		mensaje.modal("show");		
+	}
     else 
     {            
+		TB_valor = $("#TB_valor").val();
+		TB_valor = TB_valor.replace(",","");
+		$("#TB_valor").val(TB_valor);
+		
         $('#desea').val("guardarEditarUsuario");
         $.ajax({
     		url: '../Logica de presentacion/Usuario_Logica.php',

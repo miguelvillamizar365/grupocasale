@@ -6,26 +6,49 @@ class AlistamientoPreoperacional
 	{   
 	?>                
         <meta charset="iso-8859-1" />
-        
-        <input type="hidden" id="id_alistamiento" name="id_alistamiento" value="" /> 
-        <div class="content-wrapper" style="width: 80% !important;">
+		
+			  
+        <div class="">
             <h3 class="text-primary mb-4">Alistamiento Preoperacional</h3>
             
-            <div class="row mb-2">
-                <div class="col-lg-12">
-                    
-                    <div class="card">
-                        <div class="card-block">
-                            <button type="button" class="btn btn-primary" onclick="formularioCrearAlistamiento()">Agregar Inspección</button>
-                            <br />
-                            <br />
-                            
-                            <table id="table_alistamiento" class="cell-border display" cellspacing="0"></table>
-							
-                        </div>
-                    </div>
-                </div>                    
-            </div>               
+			<form id="ExportarInformeAlistamiento" action="../Logica de presentacion/AlistamientoPreoperacional_Logica.php" method="post" target="_blank" >
+				
+				<input type="hidden" id="desea" name="desea" value="ImprimirInformeReporteAlistamiento" /> 
+				<input type="hidden" id="IdAlistamiento" name="IdAlistamiento" value="" /> 
+				<input type="hidden" id="fechainspeccion" name="fechainspeccion" value="" /> 
+				<input type="hidden" id="mecanico" name="mecanico" value="" /> 
+				<input type="hidden" id="conductor" name="conductor" value="" />   
+				<input type="hidden" id="kilometraje" name="kilometraje" value="" />   
+				<input type="hidden" id="placas" name="placas" value="" />   
+				<input type="hidden" id="observaciones" name="observaciones" value="" />   
+			
+
+				<div class="row mb-2">
+					<div class="col-lg-12">
+						
+						<div class="card">
+							<div class="card-body">
+								<button type="button" class="btn btn-primary" onclick="formularioCrearAlistamiento()">Agregar Inspección</button>
+								<br />
+								<br />
+								
+								<div class="form-group">
+									<div class="form-check form-check-flat">
+										<label class="form-check-label">
+											<input type="checkbox" class="form-check-input" /> Default
+										</label>
+									</div>
+								</div>
+							  
+							  
+								<div class="table-responsive">
+									<table id="table_alistamiento" class="display table table-striped table-bordered nowrap" cellspacing="0"></table>
+								</div>
+							</div>
+						</div>
+					</div>                    
+				</div>   
+			</form>            
         </div>   
         
         <div class="modal fade" id="mensajeConfirma" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -55,7 +78,7 @@ class AlistamientoPreoperacional
     
 		?>	
         <meta charset="iso-8859-1" />
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
            <h3 class="text-primary mb-4">Agregar Alistamiento</h3>
             
            <form id="alistamiento">                
@@ -139,29 +162,30 @@ class AlistamientoPreoperacional
 				<div class="row" >
 					<div class="col-md-12">   
 						<div class="card">
-							<div class="card-block" style="width: 80% !important;">
+							<div class="card-block" style=";">
 								
 								<h4 class="text-primary mb-4">Seleccione los tipos de alistamiento:</h4>
 		
 								<br />
 								<br />
-								
-								<table id="table_alistamientoCheckList" class="cell-border display" cellspacing="0" >
-								   <thead>
-									  <tr>
-										 <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
-										 <th>Id</th>
-										 <th>Descripcion</th>
-									  </tr>
-								   </thead>
-								   <tfoot>
-									  <tr>
-										 <th></th>
-										 <th>Id</th>
-										 <th>Descripcion</th>
-									  </tr>
-								   </tfoot>
-								</table>
+								<div class="table-responsive">
+									<table id="table_alistamientoCheckList" class="display table table-striped table-bordered nowrap" cellspacing="0" >
+									   <thead>
+										  <tr>
+											 <th></th>
+											 <th>Id</th>
+											 <th>Descripcion</th>
+										  </tr>
+									   </thead>
+									   <tfoot>
+										  <tr>
+											 <th></th>
+											 <th>Id</th>
+											 <th>Descripcion</th>
+										  </tr>
+									   </tfoot>
+									</table>
+								</div>
 
 							</div>
 						</div>
@@ -259,12 +283,14 @@ class AlistamientoPreoperacional
     
 		?>	
         <meta charset="iso-8859-1" />
-        <div class="content-wrapper" style="width: 90% !important;">
+        <div class="">
            <h3 class="text-primary mb-4">Editar Alistamiento</h3>
             
            <form id="alistamiento">                
                 <input type="hidden" id="desea" name="desea" value="" />       
-                <input type="hidden" id="IdAlistamiento" name="IdAlistamiento" value="" />                                              
+                <input type="hidden" id="IdAlistamiento" name="IdAlistamiento" value="" /> 
+				
+				
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -349,24 +375,25 @@ class AlistamientoPreoperacional
 		
 								<br />
 								<br />
-								
-								<table id="table_alistamientoCheckList" class="display" cellspacing="0" >
-								   <thead>
-									  <tr>
-										 <th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>
-										 <th>Id</th>
-										 <th>Descripcion</th>
-									  </tr>
-								   </thead>
-								   <tfoot>
-									  <tr>
-										 <th></th>
-										 <th>Id</th>
-										 <th>Descripcion</th>
-									  </tr>
-								   </tfoot>
-								</table>
-
+								<div class="table-responsive">
+									<table id="table_alistamientoCheckList" class="display table table-striped table-bordered nowrap" cellspacing="0" >
+									   <thead>
+										  <tr>
+											 <!--<th><input type="checkbox" name="select_all" value="1" id="example-select-all"></th>-->
+											 <th></th>
+											 <th>Id</th>
+											 <th>Descripcion</th>
+										  </tr>
+									   </thead>
+									   <tfoot>
+										  <tr>
+											 <th></th>
+											 <th>Id</th>
+											 <th>Descripcion</th>
+										  </tr>
+									   </tfoot>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -479,6 +506,112 @@ class AlistamientoPreoperacional
         <?php
     }
 	
+	function ReporteAlistamientoPdf($id_alistamiento,
+									$fechainspeccion,
+									$mecanico,
+									$conductor,
+									$kilometraje,
+									$placas,
+									$observaciones)
+	{
+				
+				
+		$fechaActual = getdate();
+		$head = "
+				<html>
+				<head>
+				
+				<style>
+				
+				thead,
+				tfoot {
+					background-color: #3f87a6;
+					color: #fff;
+				}
+
+				tbody {
+					background-color: #00000;
+				}
+
+				caption {
+					padding: 10px;
+					caption-side: bottom;
+				}
+
+				table,
+				label {
+					border-collapse: collapse;
+					border: 2px solid rgb(200, 200, 200);
+					letter-spacing: 1px;
+					font-family: sans-serif;
+					font-size: .8rem;
+				}
+
+				td,
+				th {
+					border: 1px solid rgb(190, 190, 190);
+					padding: 2px 5px;
+				}
+
+				td {
+					text-align: center;
+				}
+				
+				</style>
+				</head>
+				<body>
+				
+				<table align='center' style='width:100%'>
+					<tr align='left'>
+						<td colspan='8' align='left'>
+							<img height='50' width='130' src='../images/logo_centro2.jpg'>
+						</td>
+					</tr>
+					<tr>
+						<td colspan='4' align='left'>
+							<b>INFORME INSPECCIÓN VEHICULAR</b>  
+														".($fechaActual["year"].
+														"/". $fechaActual["mon"]. 
+														"/". (intval($fechaActual["mday"])-1))."
+						</td>		
+						
+						<td colspan='2'>						
+							<b>ALISTAMIENTO NO. </b> 
+						</td>	
+						<td colspan='2' style='color:red;'>						
+							 ".$id_alistamiento."
+						</td>	
+					</tr>
+				</table>";
+				
+		
+		$body = "	
+				<table style='width:100%; '>
+					<tbody>
+						<tr style='text-align:left; border:0px !important; '>
+							<td><b>Detalles Inspección</b></td>
+							<td><b>Detalles Vehiculo</b></td>
+						</tr>
+						<tr style='align:left; border:0px !important; '>
+							<td>Fecha Inspección: ".$fechainspeccion."</td>
+							<td>Kilometraje: ".$kilometraje."</td>
+						</tr>
+						<tr style='align:left; border:0px !important; '>
+							<td>Mecánico: ".$mecanico."</td>
+							<td>Placas: ".$placas."</td>
+						</tr>
+						<tr style='align:left; border:0px !important; '>
+							<td>Conductor: ".$conductor."</td>
+							<td>Observaciones: ".$observaciones."</td>
+						</tr>						
+					</tbody>
+				</table>
+				
+				</body>
+				</html>";
+				
+		return $head.$body;
+	}	
 }
 
 ?>

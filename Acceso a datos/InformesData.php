@@ -17,7 +17,7 @@ class InformeData{
         $conexion = new Ado();
     }  
     
-	public function ObtenerMecanicos()
+	public function ObtenerMecanicos($fechaInicio, $fechaFin)
 	{
 		global $conexion;
         $conexion->conectarAdo();
@@ -40,30 +40,58 @@ class InformeData{
 					INNER JOIN vehiculo v
 						ON ot.id_vehiculo = v.id
 				WHERE u.id_rol= 5
+				AND (aot.Fecha >= STR_TO_DATE(?, '%Y/%m/%d') AND 
+					aot.Fecha <= STR_TO_DATE(?, '%Y/%m/%d'))
 				GROUP BY 
 				u.Documento,
 				u.Nombre,
 				u.Apellido;
 			";
                 
-        $recordSet = $conexion->Ejecutar($cadena);
+		$arr = array($fechaInicio, $fechaFin);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
         
         $conexion->Close();
 		
         return $recordSet; 
 	}
 		
-    public function consultarInformeMecanico($nombre, $documento)
+    public function validaFechas($fechaInicial, $fechaFinal)
 	{
 		global $conexion;
         $conexion->conectarAdo();
 		
         $cadena =		
 		"
-			CALL SP_InformeMecanico(? , ?);
+			SELECT STR_TO_DATE(?, '%Y/%m/%d') > STR_TO_DATE(?, '%Y/%m/%d');
 		"; 
         
-		$arr = array($nombre, $documento);
+		$arr = array($fechaInicial, $fechaFinal);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        		
+        $valida =0;
+        $i=0;
+        
+        while(!$recordSet->EOF)
+        {        
+            $valida=$recordSet->fields[0];
+            $recordSet->MoveNext();
+            $i++;
+        }       
+        return $valida; 
+	}
+	
+    public function consultarInformeMecanico($nombre, $documento, $fechaInicio, $fechaFin)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena =		
+		"
+			CALL SP_InformeMecanico(?, ?, ?, ?);
+		"; 
+        
+		$arr = array($nombre, $documento, $fechaInicio, $fechaFin);
         $recordSet = $conexion->EjecutarP($cadena, $arr);
         
         $conexion->Close();

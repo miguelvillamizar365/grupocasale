@@ -43,8 +43,8 @@ class OrdenTrabajoData{
 				FROM referenciaordentrabajo ro 
 				WHERE ro.Id_ordentrabajo = o.Id) ValorTotalUtilidadReferencia,
 				(SELECT CASE
-					WHEN SUM(ao.Valor) IS NULL THEN 0
-					ELSE SUM(ao.Valor)
+					WHEN SUM(ao.ValorTotal) IS NULL THEN 0
+					ELSE SUM(ao.ValorTotal)
 					END
 				FROM actividadordentrabajo ao 
 				WHERE ao.Id_ordentrabajo = o.Id) ValorTotalActividad,
@@ -74,7 +74,7 @@ class OrdenTrabajoData{
 			LEFT JOIN usuario con
 				ON o.id_conductor = con.id 
 			LEFT JOIN vehiculo v
-				ON o.id_vehiculo = v.id ;			
+				ON o.id_vehiculo = v.id ;					
 		"; 
                 
         $recordSet = $conexion->Ejecutar($cadena);
@@ -83,6 +83,47 @@ class OrdenTrabajoData{
 		
         return $recordSet; 
 	}
+	
+    
+    public function validaFechas($fechaInicial, $fechaFinal)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena =		
+		"
+			SELECT STR_TO_DATE(?, '%Y/%m/%d') > STR_TO_DATE(?, '%Y/%m/%d');
+		"; 
+        
+		$arr = array($fechaInicial, $fechaFinal);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        		
+        $valida =0;
+        $i=0;
+        
+        while(!$recordSet->EOF)
+        {        
+            $valida=$recordSet->fields[0];
+            $recordSet->MoveNext();
+            $i++;
+        }       
+        return $valida; 
+	}
+     
+    public function consultarOrdenesFiltro($referencia, $actividad,  $fechaInicial, $fechaFinal)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = "CALL SP_ConsultarOrdenes(?, ?, ?, ?)"; 
+        
+		$arr = array( $referencia, $actividad, $fechaInicial, $fechaFinal);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);
+        
+        $conexion->Close();
+		
+        return $recordSet; 
+	}    
 	
 	public function consultarVehiculo()
 	{
@@ -349,28 +390,30 @@ class OrdenTrabajoData{
         $conexion->conectarAdo();
 		
         $cadena = " 
-		SELECT 	aot.Id, 
-			aot.Id_actividad,
-			(SELECT a.Nombre FROM Actividad a WHERE a.id = aot.Id_actividad) actividad, 
-			aot.Id_mecanico,
-			(SELECT u.Nombre FROM usuario u WHERE u.id = aot.Id_mecanico ) mecanico, 
-			aot.Tiempo, 
-			(aot.Valor) Valor, 
-			aot.Utilidad, 
-			aot.ValorTotalUtilidad,
-			DATE_FORMAT(aot.Fecha, '%Y/%m/%d %H:%i') Fecha,				
-			aot.Observaciones,
-			ot.Estado EstadoId,
-			(CASE WHEN ot.Estado = 1 THEN 
-				'Sin Autorizar'
-				  WHEN ot.Estado = 0 THEN
-					'Eliminada'
-				  WHEN ot.Estado = 2 THEN
-				'Autorizado' 
-			END) AS Estado
-		FROM actividadordentrabajo aot
-		INNER JOIN ordentrabajo ot
-			ON aot.id_ordentrabajo = ot.Id
+		
+			SELECT 	aot.Id, 
+				aot.Id_actividad,
+				(SELECT a.Nombre FROM actividad a WHERE a.id = aot.Id_actividad) actividad, 
+				aot.Id_mecanico,
+				(SELECT u.Nombre FROM usuario u WHERE u.id = aot.Id_mecanico ) mecanico, 
+				aot.Tiempo, 
+				aot.ValorHoraMecanico,
+				aot.ValorTotal, 
+				aot.Utilidad, 
+				aot.ValorTotalUtilidad,
+				DATE_FORMAT(aot.Fecha, '%Y/%m/%d %H:%i') Fecha,				
+				aot.Observaciones,
+				ot.Estado EstadoId,
+				(CASE WHEN ot.Estado = 1 THEN 
+					'Sin Autorizar'
+					  WHEN ot.Estado = 0 THEN
+						'Eliminada'
+					  WHEN ot.Estado = 2 THEN
+					'Autorizado' 
+				END) AS Estado
+			FROM actividadordentrabajo aot
+			INNER JOIN ordentrabajo ot
+				ON aot.id_ordentrabajo = ot.Id
 			WHERE aot.id_ordentrabajo = ?"; 
 		 
         $arr = array($id_orden);
@@ -420,17 +463,17 @@ class OrdenTrabajoData{
 	}
 	
 	
-	public function GuardarActividades($Id_actividad, $id_mecanico, $Tiempo, $Valor, $Fecha, $Id_ordentrabajo, $Observaciones, $utilidad, $valorTotalUtilidad)
+	public function GuardarActividades($Id_actividad, $id_mecanico, $Tiempo, $ValorHoraMecanico, $Fecha, $Id_ordentrabajo, $Observaciones, $valorTotal, $utilidad, $valorTotalUtilidad)
 	{
 		global $conexion;
         $conexion ->conectarAdo();
         
         $cadena = "
 				INSERT INTO actividadordentrabajo
-				(Id_actividad, id_mecanico, Tiempo, Valor, Fecha, Id_ordentrabajo, Observaciones, Utilidad, ValorTotalUtilidad)
-				VALUES (?, ?, ? ,? ,? ,?, ?, ?, ?) ";
+				(Id_actividad, id_mecanico, Tiempo, ValorHoraMecanico, Fecha, Id_ordentrabajo, Observaciones, ValorTotal, Utilidad, ValorTotalUtilidad)
+				VALUES (?, ?, ? ,? ,? ,?, ?, ?, ?, ?) ";
         
-        $arr = array($Id_actividad, $id_mecanico, $Tiempo, $Valor, $Fecha, $Id_ordentrabajo, $Observaciones, $utilidad, $valorTotalUtilidad);
+        $arr = array($Id_actividad, $id_mecanico, $Tiempo, $ValorHoraMecanico, $Fecha, $Id_ordentrabajo, $Observaciones, $valorTotal, $utilidad, $valorTotalUtilidad);
         $recordSet = $conexion->EjecutarP($cadena, $arr);        
         
         if($conexion->ObtenerError() != "" )
@@ -493,7 +536,7 @@ class OrdenTrabajoData{
 	
 	
 	
-	public function GuardarEditarActividades($Id, $Id_actividad, $id_mecanico, $Tiempo, $Valor, $Fecha, $Observaciones, $utilidad, $valorTotalUtilidad)
+	public function GuardarEditarActividades($Id, $Id_actividad, $id_mecanico, $Tiempo, $ValorHoraMecanico, $Fecha, $Observaciones,$valortotal, $utilidad, $valorTotalUtilidad)
 	{
 		global $conexion;
         $conexion ->conectarAdo();
@@ -503,14 +546,15 @@ class OrdenTrabajoData{
 				Id_actividad = ?,
 				id_mecanico = ?, 
 				Tiempo = ?, 
-				Valor = ?, 
+				ValorHoraMecanico = ?, 
 				Fecha = ?,  
 				Observaciones = ?, 
+				ValorTotal = ?,
 				Utilidad = ?, 
 				ValorTotalUtilidad = ?
 				WHERE Id = ?";
         
-        $arr = array($Id_actividad, $id_mecanico, $Tiempo, $Valor, $Fecha, $Observaciones, $utilidad, $valorTotalUtilidad, $Id);
+        $arr = array($Id_actividad, $id_mecanico, $Tiempo, $ValorHoraMecanico, $Fecha, $Observaciones, $valortotal, $utilidad, $valorTotalUtilidad, $Id);
         $recordSet = $conexion->EjecutarP($cadena, $arr);        
         
         if($conexion->ObtenerError() != "" )
@@ -523,5 +567,50 @@ class OrdenTrabajoData{
         }
         $conexion -> Close();
 	}
+	
+	public function consultarMecanicoId($id_medico)
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = "                    
+				SELECT CAST(u.HoraMecanico AS DECIMAL) HoraMecanico
+				FROM usuario u INNER JOIN rol r
+				ON u.Id_Rol = r.Id
+				WHERE r.Id = 5
+				AND  u.Id = ?"; 
+        
+		$arr = array($id_medico);
+        $recordSet = $conexion->EjecutarP($cadena, $arr);        
+
+		$valor = 0;        
+		while(!$recordSet->EOF)
+		{        
+			$valor=$recordSet->fields[0];
+			$recordSet->MoveNext();
+		}   
+		
+        $conexion->Close();		
+        return $valor;
+	}
+	
+	public function ConsultarReferencias()
+	{
+		global $conexion;
+        $conexion->conectarAdo();
+		
+        $cadena = "      		
+				SELECT Id, 
+				CONCAT(codigo,' - ', nombre) nombre 
+				FROM referencia 
+				WHERE Estado = 1
+				ORDER BY nombre ASC
+                "; 
+        
+        $recordSet = $conexion->Ejecutar($cadena);        
+        $conexion->Close();		
+        return $recordSet; 
+	}	
+
 }
 ?>
